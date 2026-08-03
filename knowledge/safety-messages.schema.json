@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/xiaoliuren/safety-messages.schema.json",
+  "title": "Controlled Safety Messages",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "knowledgeVersion", "conclusions", "realityActions", "contexts"],
+  "properties": {
+    "schemaVersion": {"const": "1.0.0"},
+    "knowledgeVersion": {"type": "string"},
+    "status": {"type": "string", "enum": ["provisional", "approved"]},
+    "conclusions": {"$ref": "#/$defs/messageArray"},
+    "realityActions": {"$ref": "#/$defs/messageArray"},
+    "contexts": {"$ref": "#/$defs/messageArray"}
+  },
+  "$defs": {
+    "messageArray": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/message"}
+    },
+    "message": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "text", "severity", "tags", "status"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]+$"},
+        "text": {"type": "string", "minLength": 1},
+        "severity": {"type": "string", "enum": ["information", "caution", "hard-block", "hard-stop"]},
+        "tags": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "status": {"type": "string", "enum": ["provisional", "approved"]}
+      }
+    }
+  }
+}
