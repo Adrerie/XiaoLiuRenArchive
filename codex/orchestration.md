@@ -1,312 +1,238 @@
 # Codex 子代理编排规范
 
+Version: `1.1.0`
+
 ## 1. 总则
 
 本项目必须由总控代理协调多个专职子代理完成。禁止单个代理在同一工作区中同时设计历法、修改核心算法、撰写知识库、构建界面并自行宣称审计通过。
+
+Batch 04 后，所有强制子代理均有独立任务书，位于 `codex/tasks/`。总控代理必须实际创建并使用这些子代理，不能仅在报告中列名。
 
 总控代理负责：
 
 - 读取全部规范
 - 创建任务图
-- 分配相互独立的工作区或 worktree
-- 管理接口合同
+- 建立独立 branch 或 worktree
+- 冻结共享接口
+- 分配文件所有权
 - 收集子代理报告
-- 组织合并
+- 组织整合
 - 处理冲突
-- 要求独立审计
+- 请求独立审计
+- 对照验收标准形成完成报告
 
 总控代理不得绕过人工决定未解决的传统异文。
 
-## 2. 强制子代理
+## 2. 强制子代理与任务书
 
-### 2.1 architecture-agent
+| 子代理 | 任务书 | 核心所有权 |
+|---|---|---|
+| `architecture-agent` | `codex/tasks/architecture-agent.md` | 工程骨架、共享类型、应用服务、CI |
+| `calendar-agent` | `codex/tasks/calendar-agent.md` | 历法适配、时区、策略、转换错误 |
+| `core-algorithm-agent` | `codex/tasks/core-algorithm-agent.md` | 冻结起课纯函数与 trace |
+| `knowledge-agent` | `codex/tasks/knowledge-agent.md` | Schema、引用校验、知识加载、解释前半段 |
+| `ethics-agent` | `codex/tasks/ethics-agent.md` | 伦理规则求值与安全输出 |
+| `frontend-agent` | `codex/tasks/frontend-agent.md` | 输入、结果、来源、无障碍 UI |
+| `test-audit-agent` | `codex/tasks/test-audit-agent.md` | 独立测试与合并审计 |
 
-负责：
+可选子代理：
 
-- 项目脚手架
-- 模块边界
-- TypeScript strict 配置
-- 本地数据加载方式
-- 依赖方向与循环依赖检查
+- `interpretation-agent`，当解释引擎工作量需要从 knowledge-agent 分离时
+- `data-validation-agent`，独立实现或复核知识验证
+- `accessibility-agent`
+- `export-agent`
+- `release-agent`
 
-不得：
+## 3. 工作区纪律
 
-- 修改起课公式
-- 填写传统断辞
-- 自行选择异文
-
-交付：
-
-- 架构决策记录
-- 目录结构
-- 公共接口草案
-- 依赖图
-
-### 2.2 calendar-agent
-
-负责：
-
-- 公历到农历适配器
-- IANA 时区
-- 十二时辰映射
-- 闰月标识
-- 子时策略
-- 历法错误结构
-- 历法回归测试
-
-必须阅读：
-
-- `docs/03-calendar-policy.md`
-- `algorithm/contract.md`
-
-不得：
-
-- 在历法适配器中计算六宫解释
-- 静默决定争议策略
-- 在结果中遗漏 `calendarPolicyId`
-
-### 2.3 core-algorithm-agent
-
-负责：
-
-- 六宫常量
-- `positiveMod`
-- 月宫、日宫、时宫纯函数
-- trace 生成
-- 输入校验
-- 核心单元测试和属性测试
-
-必须阅读：
-
-- `algorithm/contract.md`
-- `algorithm/test-vectors.v1.json`
-
-不得：
-
-- 接收身份字段
-- 读取系统时间
-- 调用网络
-- 读取问题内容
-- 加入随机数
-- 根据 UI 需求改变返回语义
-
-### 2.4 knowledge-agent
-
-负责：
-
-- JSON Schema
-- 六宫数据
-- 来源注册表
-- 问事领域知识
-- 异文记录
-- 数据校验脚本
-
-必须阅读：
-
-- `knowledge/source-registry.json`
-- `knowledge/palaces.schema.json`
-- `knowledge/palaces.v1.json`
-- `knowledge/question-domains.v1.json`
-
-不得：
-
-- 将单一网络录文升级为校定本
-- 删除来源与争议状态
-- 把现代解释冒充原典
-- 复制受限制的整本资料
-
-### 2.5 ethics-agent
-
-负责：
-
-- 本地伦理规则引擎
-- 触发条件
-- 禁止结论类型
-- 必需提示
-- 关系多样性支持
-- 健康、法律、金融、生死和失踪边界
-- 伦理测试
-
-必须阅读：
-
-- `docs/06-modern-ethics.md`
-- `knowledge/ethics-rules.v1.json`
-- `knowledge/question-domains.v1.json`
-
-不得：
-
-- 修改宫位
-- 隐藏原典
-- 推断第三方身份
-- 用吉宫覆盖拒绝
-- 把同性关系转换为夫妻角色
-
-### 2.6 frontend-agent
-
-负责：
-
-- 输入流程
-- 排盘 trace 可视化
-- 六宫结果页
-- 原典与现代解释分栏
-- 来源和版本展示
-- 无障碍与响应式界面
-
-不得：
-
-- 在组件内重写核心算法
-- 用界面文案覆盖结构化知识
-- 隐藏争议、警告与历法策略
-- 默认上传用户问题
-
-### 2.7 test-audit-agent
-
-负责独立复核，不参与主要实现。
-
-必须：
-
-- 从合同重新推导测试预期
-- 验证固定测试向量
-- 穷举 12 × 30 × 12 数学输入
-- 测试 identity invariance
-- 测试伦理 hard-block
-- 测试 JSON Schema
-- 测试历法边界
-- 检查是否存在网络调用
-- 检查算法是否散落在 UI
-
-不得：
-
-- 为通过测试而修改预期值
-- 在未运行命令时声称通过
-
-## 3. 可选子代理
-
-### export-agent
-
-负责本地 PNG、PDF 或文本导出。默认应对精确时间、问题原文和身份信息提供隐私选择。
-
-### accessibility-agent
-
-负责键盘操作、屏幕阅读器、对比度、动态效果减弱和中文排版。
-
-### data-validation-agent
-
-独立检查 JSON Schema、重复 ID、缺失来源、无效规则引用和死链接登记。
-
-### release-agent
-
-负责版本号、变更日志、构建产物和 Android 封装。不得在发布阶段修改算法。
-
-## 4. 建议任务图
+推荐每个代理使用独立 worktree：
 
 ```text
-architecture-agent
-   ├── calendar-agent ─────────┐
-   ├── core-algorithm-agent ───┤
-   ├── knowledge-agent ────────┼── integration by controller
-   ├── ethics-agent ───────────┤
-   └── frontend-agent ─────────┘
-                                  ↓
-                         test-audit-agent
-                                  ↓
-                          human review / PR
+../xlr-project-shell
+../xlr-knowledge-validation
+../xlr-calendar
+../xlr-core
+../xlr-interpretation
+../xlr-ethics
+../xlr-frontend
+../xlr-audit
 ```
 
-可以并行的工作：
-
-- calendar-agent 与 core-algorithm-agent
-- knowledge-agent 与 ethics-agent
-- frontend-agent 的静态布局与底层逻辑
-
-必须等待的依赖：
-
-- frontend-agent 接入结果前，核心接口必须冻结
-- ethics-agent 接入前，规则数据必须通过 Schema
-- test-audit-agent 必须在整合完成后运行
-
-## 5. 分支与 worktree
-
-推荐：
+推荐分支：
 
 ```text
 feature/project-shell
+feature/knowledge-validation
 feature/calendar-engine
 feature/core-divination
-feature/knowledge-base
-feature/ethics-layer
+feature/interpretation-engine
+feature/ethics-engine
 feature/frontend
-feature/export
-feature/testing
+feature/testing-audit
+integration/r1-mvp
 ```
 
-每个子代理应使用独立 branch 或 worktree。禁止多个代理同时修改同一文件而不声明所有权。
+禁止多个代理在未声明所有权时同时修改同一文件。
 
-建议文件所有权：
+## 4. 共享接口冻结
 
-| 区域 | 主代理 |
-|---|---|
-| `src/core/**` | core-algorithm-agent |
-| `src/calendar/**` | calendar-agent |
-| `knowledge/**` | knowledge-agent |
-| `src/ethics/**` | ethics-agent |
-| `src/components/**` | frontend-agent |
-| `tests/audit/**` | test-audit-agent |
+`architecture-agent` 必须在并行实现前建立并发布以下接口：
 
-共享类型由 architecture-agent 首先建立，后续改动须通知所有依赖代理。
+- `DivinationRequest`
+- `QuestionContext`
+- `NormalizedLunarInput`
+- `CalculationResult`
+- `CandidateClaim`
+- `InterpretationDraft`
+- `EthicsEvaluationResult`
+- `DivinationResult`
+- typed error union
 
-## 6. 第一轮最小闭环
+共享接口一旦冻结，breaking change 必须：
+
+1. 由提出代理写出原因
+2. 标出所有依赖代理
+3. 更新对应 Schema 或合同
+4. 由总控代理批准
+5. 通知所有工作区
+6. 由 test-audit-agent 检查兼容性
+
+## 5. 文件所有权
+
+| 区域 | 主代理 | 审阅代理 |
+|---|---|---|
+| `src/shared/**`, `src/types/**`, configs | architecture | test-audit |
+| `src/calendar/**` | calendar | test-audit |
+| `src/core/**` | core-algorithm | test-audit |
+| `src/knowledge/**`, `scripts/**` | knowledge | test-audit/data-validation |
+| `src/interpretation/**` | knowledge/interpretation | ethics + test-audit |
+| `src/ethics/**` | ethics | test-audit |
+| `src/components/**`, `src/pages/**` | frontend | accessibility/test-audit |
+| `tests/audit/**` | test-audit | controller |
+| `knowledge/**` | knowledge | controller + test-audit |
+| `algorithm/**` foundation contracts | human-controlled | no agent may change casually |
+
+前端代理不得修改核心算法。算法代理不得为了 UI 便利改变返回语义。
+
+## 6. 建议任务图
+
+```text
+architecture-agent
+   ├── shared contracts ──────────────────────────────┐
+   ├── calendar-agent ────────────────────────────────┤
+   ├── core-algorithm-agent ──────────────────────────┤
+   ├── knowledge-agent ── interpretation pre-ethics ──┼── controller integration
+   ├── ethics-agent ──────────────────────────────────┤
+   └── frontend-agent static shell ───────────────────┘
+                                                        ↓
+                                              integration/r1-mvp
+                                                        ↓
+                                                test-audit-agent
+                                                        ↓
+                                                human review / PR
+```
+
+可以并行：
+
+- calendar 与 core
+- knowledge validation 与 ethics engine skeleton
+- frontend 静态布局与底层逻辑
+
+必须等待：
+
+- 共享类型冻结后才允许跨代理接入
+- Schema 和引用校验通过后才加载正式知识
+- core 测试通过后才接入应用服务
+- CandidateClaim 接口冻结后 ethics 才完成 effect 集成
+- 伦理集成完成后才运行完整黄金与红队样例
+- test-audit 必须在整合完成后独立运行
+
+## 7. 实现顺序
+
+```text
+1. architecture-agent 建立脚手架与共享类型
+2. knowledge-agent 建立 Schema 与引用验证
+3. core-agent 实现冻结算法
+4. calendar-agent 完成手动农历适配
+5. knowledge-agent 实现不可变知识加载与解释前半段
+6. ethics-agent 实现规则引擎
+7. controller 建立 runDivination 应用服务
+8. fixtures 全部运行
+9. frontend 接入服务
+10. calendar-agent 接入公历转换
+11. test-audit 独立审计
+12. controller 开 R1 MVP PR
+```
+
+## 8. 第一轮最小闭环
 
 ### 阶段 A：脚手架
 
-- React + TypeScript + Vite
+- React + TypeScript strict + Vite
 - Vitest
-- JSON Schema 校验
-- 无远程 AI 依赖
+- Draft 2020-12 Schema 校验
 - 基础 CI
+- 无远程 AI 依赖
 
-### 阶段 B：核心
+### 阶段 B：验证
 
-- 历法适配器
+- 数据 Schema
+- 请求和结果 Schema
+- 跨文件引用
+- fixture 校验
+- 现代文本审计
+- 网络依赖审计
+
+### 阶段 C：核心
+
+- 手动农历适配
 - 传统推理机
 - trace
-- 固定测试向量
+- 固定向量与属性测试
 
-### 阶段 C：知识
+### 阶段 D：知识与解释
 
-- 六宫数据加载
-- 通用解释组合
-- 问事领域选择
-- 来源展示
+- 六宫知识加载
+- 领域与阶段解释
+- 片段选择
+- Candidate Claims
+- 来源追踪
 
-### 阶段 D：伦理
+### 阶段 E：伦理
 
-- 规则求值
-- 禁止结论过滤
-- 必需提示
-- 同性关系与第三方身份测试
+- 条件与 effect
+- severity 合并
+- claim 抑制
+- hard-stop
+- 受控安全文案
+- 红队案例
 
-### 阶段 E：界面
+### 阶段 F：界面
 
-- 日期与手动农历输入
-- 三阶段排盘展示
-- 原典、现代释义、领域解释和边界提示
-- 本地结果保存或导出
+- 输入和复核
+- trace
+- 现代解释
+- 原典和来源
+- 伦理提示
+- provenance
+- 六宫资料库基础页
 
-### 阶段 F：审计
+### 阶段 G：审计
 
 - 全部测试
-- 构建
-- 网络依赖扫描
-- 数据引用完整性
+- build
+- offline 与网络扫描
 - UI 截图
+- 验收清单
 
-## 7. 子代理报告格式
+## 9. 子代理报告格式
 
 每个子代理结束时必须提交：
 
 ```markdown
 ## Scope
+
+## Branch / Worktree
 
 ## Files changed
 
@@ -314,9 +240,11 @@ feature/testing
 
 ## Contracts consumed
 
+## Shared interface changes
+
 ## Tests actually run
 
-## Results
+## Results and exit codes
 
 ## Known limitations
 
@@ -325,29 +253,57 @@ feature/testing
 
 “测试通过”必须附实际命令。无法运行时写明原因。
 
-## 8. 合并门槛
+## 10. 合并门槛
 
 合并到整合分支前必须满足：
 
-- 核心算法向量全部通过
-- JSON 可解析并通过 Schema
+- 核心算法向量通过
+- 传统示例通过
+- 数学属性测试通过
+- JSON 通过 Schema
 - 所有引用 ID 存在
+- fixture 文件可校验
+- 黄金样例通过
+- 伦理红队样例通过
+- 规则冲突样例通过
 - 没有远程生成式 AI 调用
 - 身份字段未进入核心算法
-- 健康领域不能输出诊断和风险排除
-- 感情领域不能推断第三方性取向
-- 明确拒绝不能被任何吉宫覆盖
+- 健康不能输出诊断和风险排除
+- 感情不能推断第三方身份
+- 明确拒绝不能被吉宫覆盖
+- 失联危险场景触发 hard-stop
 - 空亡不能生成死亡或绝症断言
+- 伦理前后落宫一致
+- 结果通过输出 Schema
 
-## 9. 冲突升级
+最终 R1 合并还必须满足 `codex/batch-04-acceptance-criteria.md`。
+
+## 11. 冲突升级
 
 以下问题必须交给人工决定：
 
 - 原典版本冲突
 - 小吉五行等异文选择
 - 子时换日默认策略变更
+- 闰月默认策略变更
 - 新增流派算法
 - 删除传统原文
+- 改变冻结公式或宫序
 - 伦理规则与传统解释的边界争议
+- 引入远程服务或生成式模型
 
-总控代理应提供候选方案、来源、影响范围和测试差异，不得代替人工作最终裁决。
+总控代理应提供候选方案、来源、影响范围、fixture 差异和测试结果，不得代替人工作最终裁决。
+
+## 12. 完成定义
+
+完成不等于“页面能打开”。R1 完成必须同时具备：
+
+- 可运行应用
+- 可验证知识
+- 正确算法
+- 可追踪解释
+- 有效伦理守卫
+- 通过黄金和红队案例
+- 成功构建
+- 独立审计
+- README 与实际状态一致
