@@ -1,0 +1,213 @@
+{
+  "schemaVersion": "1.0.0",
+  "status": "provisional",
+  "description": "人工批准的正常解释路径样例。实现必须匹配结构化语义，不要求逐字匹配完整排版文本。",
+  "cases": [
+    {
+      "id": "golden-traditional-example-relationship-seeking",
+      "description": "传统示例农历三月初五辰时落小吉，用于寻找伴侣的一般问题。",
+      "request": {
+        "requestVersion": "1.0.0",
+        "inputMode": "manual_lunar",
+        "calendarPolicyId": "manual-lunar-input-v1",
+        "timeInput": {"kind": "manual_lunar", "lunarMonth": 3, "lunarDay": 5, "earthlyBranchIndex": 5, "isLeapMonth": false, "timezone": null},
+        "questionContext": {
+          "domainId": "relationship",
+          "stageId": "seeking",
+          "questionText": "近期是否有机会认识适合长期相处的人？",
+          "facts": {"explicitRefusalExists": false, "formalNoticeExists": false, "verifiedEvidenceExists": false, "immediateSafetyRisk": false},
+          "flags": [],
+          "privacy": {"storeQuestionText": false, "includeQuestionInExport": false}
+        },
+        "displayPreferences": {"language": "zh-CN", "showTraditionalText": true, "showSourceTrace": true, "showCalculationTrace": true, "reducedMotion": false}
+      },
+      "calculationFixture": {"monthPalaceId": "su_xi", "dayPalaceId": "da_an", "finalPalaceId": "xiao_ji"},
+      "expected": {
+        "mode": "allow_with_constraints",
+        "finalPalaceId": "xiao_ji",
+        "mustTriggerRuleIds": ["identity-neutral-calculation", "no-heteronormative-role-forcing", "reality-evidence-priority", "no-guaranteed-outcome"],
+        "mustIncludeFragmentIds": ["palace.xiao_ji.neutral", "action.xiao_ji.make-small-agreement", "relationship.stage.seeking", "reality.verified-evidence-priority"],
+        "mustNotIncludeFragmentIds": ["ethics.relationship.identity-private"],
+        "mustContainIdeas": ["渐进", "现实行动", "不虚构命定对象"],
+        "mustNotContainIdeas": ["一定遇到真爱", "命中注定", "必须异性婚育"]
+      }
+    },
+    {
+      "id": "golden-gay-man-relationship-seeking",
+      "description": "男同性恋求姻缘，身份只影响称谓，不影响落宫和基础象意。",
+      "request": {
+        "requestVersion": "1.0.0",
+        "inputMode": "manual_lunar",
+        "calendarPolicyId": "manual-lunar-input-v1",
+        "timeInput": {"kind": "manual_lunar", "lunarMonth": 3, "lunarDay": 5, "earthlyBranchIndex": 5, "isLeapMonth": false, "timezone": null},
+        "questionContext": {
+          "domainId": "relationship",
+          "stageId": "seeking",
+          "questionText": "我是男同性恋，近期姻缘如何？",
+          "facts": {"explicitRefusalExists": false, "formalNoticeExists": false, "verifiedEvidenceExists": false, "immediateSafetyRisk": false},
+          "flags": [],
+          "displayIdentity": {"preferredAddress": null, "pronouns": "他", "genderIdentity": "男性", "sexualOrientation": "男同性恋"},
+          "privacy": {"storeQuestionText": false, "includeQuestionInExport": false}
+        },
+        "displayPreferences": {"language": "zh-CN", "showTraditionalText": true, "showSourceTrace": true, "showCalculationTrace": true, "reducedMotion": false}
+      },
+      "calculationFixture": {"monthPalaceId": "su_xi", "dayPalaceId": "da_an", "finalPalaceId": "xiao_ji"},
+      "expected": {
+        "mode": "allow_with_constraints",
+        "finalPalaceId": "xiao_ji",
+        "mustTriggerRuleIds": ["identity-neutral-calculation", "no-heteronormative-role-forcing", "reality-evidence-priority", "no-guaranteed-outcome"],
+        "mustIncludeFragmentIds": ["palace.xiao_ji.neutral", "action.xiao_ji.make-small-agreement", "relationship.stage.seeking"],
+        "mustNotIncludeFragmentIds": ["ethics.relationship.identity-private"],
+        "mustContainIdeas": ["伴侣", "关系对象", "合作与渐进"],
+        "mustNotContainIdeas": ["妻位", "夫位", "攻为阳", "受为阴", "同性阴阳不全"]
+      }
+    },
+    {
+      "id": "golden-study-da-an",
+      "description": "学业问题落大安，强调基础与持续复习，不保证成绩。",
+      "request": {
+        "requestVersion": "1.0.0",
+        "inputMode": "manual_lunar",
+        "calendarPolicyId": "manual-lunar-input-v1",
+        "timeInput": {"kind": "manual_lunar", "lunarMonth": 1, "lunarDay": 1, "earthlyBranchIndex": 1, "isLeapMonth": false, "timezone": null},
+        "questionContext": {
+          "domainId": "study_exam",
+          "stageId": null,
+          "questionText": "这次考试准备情况如何？",
+          "facts": {"explicitRefusalExists": false, "formalNoticeExists": false, "verifiedEvidenceExists": false, "immediateSafetyRisk": false},
+          "flags": [],
+          "privacy": {"storeQuestionText": false, "includeQuestionInExport": false}
+        },
+        "displayPreferences": {"language": "zh-CN", "showTraditionalText": true, "showSourceTrace": true, "showCalculationTrace": true, "reducedMotion": false}
+      },
+      "calculationFixture": {"monthPalaceId": "da_an", "dayPalaceId": "da_an", "finalPalaceId": "da_an"},
+      "expected": {
+        "mode": "allow_with_constraints",
+        "finalPalaceId": "da_an",
+        "mustTriggerRuleIds": ["identity-neutral-calculation", "reality-evidence-priority", "no-guaranteed-outcome"],
+        "mustIncludeFragmentIds": ["palace.da_an.neutral", "action.da_an.verify-foundation", "reality.verified-evidence-priority"],
+        "mustNotIncludeFragmentIds": [],
+        "mustContainIdeas": ["基础稳定", "检查薄弱点", "按计划推进"],
+        "mustNotContainIdeas": ["必定高分", "一定录取"]
+      }
+    },
+    {
+      "id": "golden-career-liu-lian",
+      "description": "工作审批与项目问题落留连，强调阻塞与书面确认。",
+      "request": {
+        "requestVersion": "1.0.0",
+        "inputMode": "manual_lunar",
+        "calendarPolicyId": "manual-lunar-input-v1",
+        "timeInput": {"kind": "manual_lunar", "lunarMonth": 1, "lunarDay": 1, "earthlyBranchIndex": 2, "isLeapMonth": false, "timezone": null},
+        "questionContext": {
+          "domainId": "career_work",
+          "stageId": null,
+          "questionText": "项目审批何时能推进？",
+          "facts": {"explicitRefusalExists": false, "formalNoticeExists": false, "verifiedEvidenceExists": false, "immediateSafetyRisk": false},
+          "flags": [],
+          "privacy": {"storeQuestionText": false, "includeQuestionInExport": false}
+        },
+        "displayPreferences": {"language": "zh-CN", "showTraditionalText": true, "showSourceTrace": true, "showCalculationTrace": true, "reducedMotion": false}
+      },
+      "calculationFixture": {"monthPalaceId": "da_an", "dayPalaceId": "da_an", "finalPalaceId": "liu_lian"},
+      "expected": {
+        "mode": "allow_with_constraints",
+        "finalPalaceId": "liu_lian",
+        "mustTriggerRuleIds": ["identity-neutral-calculation", "reality-evidence-priority", "no-guaranteed-outcome"],
+        "mustIncludeFragmentIds": ["palace.liu_lian.neutral", "action.liu_lian.define-blocker", "reality.verified-evidence-priority"],
+        "mustNotIncludeFragmentIds": [],
+        "mustContainIdeas": ["流程延迟", "明确负责人", "书面确认"],
+        "mustNotContainIdeas": ["某日必定获批", "继续干等即可"]
+      }
+    },
+    {
+      "id": "golden-travel-su-xi",
+      "description": "普通出行问题落速喜，提示快速变化但仍须查实时信息。",
+      "request": {
+        "requestVersion": "1.0.0",
+        "inputMode": "manual_lunar",
+        "calendarPolicyId": "manual-lunar-input-v1",
+        "timeInput": {"kind": "manual_lunar", "lunarMonth": 1, "lunarDay": 1, "earthlyBranchIndex": 3, "isLeapMonth": false, "timezone": null},
+        "questionContext": {
+          "domainId": "travel_mobility",
+          "stageId": null,
+          "questionText": "明天的普通行程是否顺利？",
+          "facts": {"explicitRefusalExists": false, "formalNoticeExists": false, "verifiedEvidenceExists": false, "immediateSafetyRisk": false},
+          "flags": [],
+          "privacy": {"storeQuestionText": false, "includeQuestionInExport": false}
+        },
+        "displayPreferences": {"language": "zh-CN", "showTraditionalText": true, "showSourceTrace": true, "showCalculationTrace": true, "reducedMotion": false}
+      },
+      "calculationFixture": {"monthPalaceId": "da_an", "dayPalaceId": "da_an", "finalPalaceId": "su_xi"},
+      "expected": {
+        "mode": "allow_with_constraints",
+        "finalPalaceId": "su_xi",
+        "mustTriggerRuleIds": ["identity-neutral-calculation", "reality-evidence-priority", "no-guaranteed-outcome"],
+        "mustIncludeFragmentIds": ["palace.su_xi.neutral", "action.su_xi.verify-fast-news", "reality.verified-evidence-priority"],
+        "mustNotIncludeFragmentIds": [],
+        "mustContainIdeas": ["消息或变化较快", "核对票务", "查看实时交通与天气"],
+        "mustNotContainIdeas": ["绝对不会延误", "无需查现实信息"]
+      }
+    },
+    {
+      "id": "golden-health-chi-kou-nondiagnosis",
+      "description": "健康问题落赤口，保留压力象意但必须出现非诊断提示。",
+      "request": {
+        "requestVersion": "1.0.0",
+        "inputMode": "manual_lunar",
+        "calendarPolicyId": "manual-lunar-input-v1",
+        "timeInput": {"kind": "manual_lunar", "lunarMonth": 1, "lunarDay": 1, "earthlyBranchIndex": 4, "isLeapMonth": false, "timezone": null},
+        "questionContext": {
+          "domainId": "health",
+          "stageId": null,
+          "questionText": "最近身体不舒服意味着什么？",
+          "facts": {"explicitRefusalExists": false, "formalNoticeExists": false, "verifiedEvidenceExists": false, "immediateSafetyRisk": false, "professionalAssessmentAvailable": false},
+          "flags": ["medical_symptoms"],
+          "privacy": {"storeQuestionText": false, "includeQuestionInExport": false}
+        },
+        "displayPreferences": {"language": "zh-CN", "showTraditionalText": true, "showSourceTrace": true, "showCalculationTrace": true, "reducedMotion": false}
+      },
+      "calculationFixture": {"monthPalaceId": "da_an", "dayPalaceId": "da_an", "finalPalaceId": "chi_kou"},
+      "expected": {
+        "mode": "hard_block",
+        "finalPalaceId": "chi_kou",
+        "mustTriggerRuleIds": ["identity-neutral-calculation", "medical-non-diagnosis", "reality-evidence-priority", "no-guaranteed-outcome"],
+        "mustIncludeFragmentIds": ["palace.chi_kou.neutral", "action.chi_kou.reduce-escalation", "ethics.health.non-diagnosis", "reality.verified-evidence-priority"],
+        "mustNotIncludeFragmentIds": [],
+        "mustSuppressClaimTypes": ["medical_diagnosis", "medical_risk_exclusion"],
+        "mustRequireRealityActions": ["seek_medical_evaluation_based_on_symptoms"],
+        "mustContainIdeas": ["不能诊断", "依据实际症状行动"],
+        "mustNotContainIdeas": ["必有某种疾病", "一定没有问题"]
+      }
+    },
+    {
+      "id": "golden-lost-item-kong-wang",
+      "description": "寻物落空亡，强调信息与位置线索不足，不指控他人。",
+      "request": {
+        "requestVersion": "1.0.0",
+        "inputMode": "manual_lunar",
+        "calendarPolicyId": "manual-lunar-input-v1",
+        "timeInput": {"kind": "manual_lunar", "lunarMonth": 1, "lunarDay": 1, "earthlyBranchIndex": 6, "isLeapMonth": false, "timezone": null},
+        "questionContext": {
+          "domainId": "lost_item",
+          "stageId": null,
+          "questionText": "丢失的物品还能找到吗？",
+          "facts": {"explicitRefusalExists": false, "formalNoticeExists": false, "verifiedEvidenceExists": false, "immediateSafetyRisk": false},
+          "flags": [],
+          "privacy": {"storeQuestionText": false, "includeQuestionInExport": false}
+        },
+        "displayPreferences": {"language": "zh-CN", "showTraditionalText": true, "showSourceTrace": true, "showCalculationTrace": true, "reducedMotion": false}
+      },
+      "calculationFixture": {"monthPalaceId": "da_an", "dayPalaceId": "da_an", "finalPalaceId": "kong_wang"},
+      "expected": {
+        "mode": "allow_with_constraints",
+        "finalPalaceId": "kong_wang",
+        "mustTriggerRuleIds": ["identity-neutral-calculation", "reality-evidence-priority", "no-guaranteed-outcome"],
+        "mustIncludeFragmentIds": ["palace.kong_wang.neutral", "action.kong_wang.return-to-facts", "reality.verified-evidence-priority"],
+        "mustNotIncludeFragmentIds": [],
+        "mustContainIdeas": ["线索不足", "回忆最后确认位置", "核查记录"],
+        "mustNotContainIdeas": ["永远找不到", "某人偷走", "空亡代表死亡"]
+      }
+    }
+  ]
+}
