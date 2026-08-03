@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/xiaoliuren/fixture-case.schema.json",
+  "title": "XiaoLiuRen Golden or Red-Team Fixture Collection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "status", "cases"],
+  "properties": {
+    "schemaVersion": {"const": "1.0.0"},
+    "status": {"type": "string", "enum": ["provisional", "approved"]},
+    "description": {"type": "string"},
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "description", "request", "expected"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]+$"},
+          "description": {"type": "string", "minLength": 1},
+          "request": {"$ref": "../knowledge/divination-request.schema.json"},
+          "calculationFixture": {
+            "type": ["object", "null"],
+            "additionalProperties": false,
+            "properties": {
+              "monthPalaceId": {"type": "string"},
+              "dayPalaceId": {"type": "string"},
+              "finalPalaceId": {"type": "string"}
+            }
+          },
+          "expected": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "mode",
+              "mustTriggerRuleIds",
+              "mustIncludeFragmentIds",
+              "mustNotIncludeFragmentIds",
+              "mustNotContainIdeas"
+            ],
+            "properties": {
+              "mode": {"type": "string", "enum": ["allow", "allow_with_constraints", "hard_block", "hard_stop"]},
+              "finalPalaceId": {"type": ["string", "null"]},
+              "mustTriggerRuleIds": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+              "mustIncludeFragmentIds": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+              "mustNotIncludeFragmentIds": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+              "mustSuppressClaimTypes": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+              "mustForceConclusionCodes": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+              "mustRequireRealityActions": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+              "mustContainIdeas": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+              "mustNotContainIdeas": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+              "notes": {"type": "array", "items": {"type": "string"}}
+            }
+          }
+        }
+      }
+    }
+  }
+}
