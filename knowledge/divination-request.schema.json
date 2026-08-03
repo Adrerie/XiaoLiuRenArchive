@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/xiaoliuren/divination-request.schema.json",
+  "title": "XiaoLiuRen Divination Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "requestVersion",
+    "inputMode",
+    "calendarPolicyId",
+    "timeInput",
+    "questionContext",
+    "displayPreferences"
+  ],
+  "properties": {
+    "requestVersion": {"const": "1.0.0"},
+    "inputMode": {
+      "type": "string",
+      "enum": ["manual_lunar", "civil_datetime"]
+    },
+    "calendarPolicyId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "必须引用 knowledge/calendar-policies.v1.json 中存在的策略 ID。"
+    },
+    "timeInput": {
+      "oneOf": [
+        {
+          "title": "Manual lunar input",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "lunarMonth", "lunarDay", "earthlyBranchIndex", "isLeapMonth"],
+          "properties": {
+            "kind": {"const": "manual_lunar"},
+            "lunarMonth": {"type": "integer", "minimum": 1, "maximum": 12},
+            "lunarDay": {"type": "integer", "minimum": 1, "maximum": 30},
+            "earthlyBranchIndex": {"type": "integer", "minimum": 1, "maximum": 12},
+            "isLeapMonth": {"type": "boolean"},
+            "timezone": {"type": ["string", "null"], "description": "手动农历模式可不提供时区。"}
+          }
+        },
+        {
+          "title": "Civil date time input",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "localDateTime", "timezone"],
+          "properties": {
+            "kind": {"const": "civil_datetime"},
+            "localDateTime": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2})?$",
+              "description": "不含 UTC 偏移的本地民用时间，必须与 timezone 一起解释。"
+            },
+            "timezone": {
+              "type": "string",
+              "minLength": 1,
+              "description": "IANA 时区名称，例如 Asia/Shanghai。"
+            },
+            "fold": {
+              "type": ["integer", "null"],
+              "enum": [0, 1, null],
+              "description": "夏令时回拨导致同一本地时间出现两次时使用。"
+            }
+          }
+        }
+      ]
+    },
+    "questionContext": {
+      "$ref": "question-context.schema.json"
+    },
+    "displayPreferences": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["language", "showTraditionalText", "showSourceTrace", "showCalculationTrace"],
+      "properties": {
+        "language": {"type": "string", "enum": ["zh-CN", "zh-TW"]},
+        "showTraditionalText": {"type": "boolean", "default": true},
+        "showSourceTrace": {"type": "boolean", "default": true},
+        "showCalculationTrace": {"type": "boolean", "default": true},
+        "reducedMotion": {"type": "boolean", "default": false}
+      }
+    },
+    "clientMetadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "仅用于本地调试和兼容性诊断，不得改变结果。",
+      "properties": {
+        "appVersion": {"type": ["string", "null"]},
+        "platform": {"type": ["string", "null"]},
+        "locale": {"type": ["string", "null"]}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"inputMode": {"const": "manual_lunar"}}},
+      "then": {"properties": {"timeInput": {"properties": {"kind": {"const": "manual_lunar"}}}}}
+    },
+    {
+      "if": {"properties": {"inputMode": {"const": "civil_datetime"}}},
+      "then": {"properties": {"timeInput": {"properties": {"kind": {"const": "civil_datetime"}}}}}
+    }
+  ]
+}
