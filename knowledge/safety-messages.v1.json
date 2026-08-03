@@ -1,0 +1,109 @@
+{
+  "schemaVersion": "1.0.0",
+  "knowledgeVersion": "1.0.0-provisional.1",
+  "status": "provisional",
+  "conclusions": [
+    {
+      "id": "respect_explicit_refusal",
+      "text": "现实中已经表达的拒绝、撤回或边界优先于任何占断。本结果不能被解释为对方其实同意，也不能成为继续纠缠的理由。",
+      "severity": "hard-block",
+      "tags": ["consent", "explicit_refusal", "relationship"],
+      "status": "provisional"
+    },
+    {
+      "id": "cannot_confirm_third_party_identity",
+      "text": "本系统不能确认或推断第三方的性取向、性别身份、出柜状态或性行为角色。相关身份只能由当事人自行表达。",
+      "severity": "hard-block",
+      "tags": ["third_party_identity", "privacy"],
+      "status": "provisional"
+    },
+    {
+      "id": "cannot_predict_death_or_lifespan",
+      "text": "本系统不预测死亡时间、寿命或必然致命结果。",
+      "severity": "hard-block",
+      "tags": ["death", "lifespan"],
+      "status": "provisional"
+    },
+    {
+      "id": "traditional_result_not_primary_in_emergency",
+      "text": "存在现实危险时，占断不能作为主要行动依据。请先采取现实求助和安全措施。",
+      "severity": "hard-stop",
+      "tags": ["emergency", "missing_person", "safety"],
+      "status": "provisional"
+    }
+  ],
+  "realityActions": [
+    {
+      "id": "seek_medical_evaluation_based_on_symptoms",
+      "text": "请根据实际症状、持续时间和严重程度寻求合适的医疗评估。出现急重症迹象时应及时使用当地紧急医疗服务。",
+      "severity": "hard-block",
+      "tags": ["health", "medical"],
+      "status": "provisional"
+    },
+    {
+      "id": "verify_terms_risk_and_counterparty",
+      "text": "在进行财务或交易决定前，请独立核验条款、风险、对方身份和资金去向，并避免仅依据排盘转账、借款或加杠杆。",
+      "severity": "hard-block",
+      "tags": ["finance", "fraud_prevention"],
+      "status": "provisional"
+    },
+    {
+      "id": "check_deadlines_documents_and_qualified_advice",
+      "text": "请核对正式文件、程序期限和证据，并在需要时咨询具备资格的法律专业人士。",
+      "severity": "hard-block",
+      "tags": ["law", "documents", "deadline"],
+      "status": "provisional"
+    },
+    {
+      "id": "contact_emergency_services_and_relevant_people",
+      "text": "人员失联或存在现实危险时，请立即联系当地警方、紧急服务、同行者、家属或相关机构，并保存最后联系时间和可核验线索。",
+      "severity": "hard-stop",
+      "tags": ["missing_person", "emergency", "safety"],
+      "status": "provisional"
+    },
+    {
+      "id": "prioritize_safety_trusted_adult_and_law",
+      "text": "涉及未成年人时，请优先考虑安全、适用法律和可信成年人的现实支持，不要鼓励秘密、胁迫或不适当关系。",
+      "severity": "hard-block",
+      "tags": ["minor", "safeguarding"],
+      "status": "provisional"
+    },
+    {
+      "id": "verify_observable_interaction_and_ask_respectfully",
+      "text": "请以可观察的互动和当事人的明确表达为依据，用尊重且允许拒绝的方式沟通。",
+      "severity": "caution",
+      "tags": ["relationship", "consent", "communication"],
+      "status": "provisional"
+    },
+    {
+      "id": "preserve_evidence_and_use_appropriate_channels",
+      "text": "涉及财物、争议或可能违法行为时，请保存可核验记录并通过适当渠道处理，不要依据宫位公开指控具体人员。",
+      "severity": "hard-block",
+      "tags": ["evidence", "crime_accusation", "lost_item"],
+      "status": "provisional"
+    }
+  ],
+  "contexts": [
+    {
+      "id": "historical_language_not_causal_claim",
+      "text": "传统文本中的鬼神、咒诅、禳解、瘟黄等词语只作为历史语言展示，不代表现实问题由超自然力量造成。",
+      "severity": "information",
+      "tags": ["historical_language", "supernatural"],
+      "status": "provisional"
+    },
+    {
+      "id": "traditional_framework_not_scientific_validation",
+      "text": "本结果属于传统文化框架中的规则解释，不构成经过现代科学验证的未来预测。",
+      "severity": "information",
+      "tags": ["scope", "scientific_boundary"],
+      "status": "provisional"
+    },
+    {
+      "id": "verified_reality_has_priority",
+      "text": "当排盘解释与正式通知、检查结果、合同、明确表态或其他可核验事实冲突时，以现实证据为准。",
+      "severity": "caution",
+      "tags": ["evidence_priority"],
+      "status": "provisional"
+    }
+  ]
+}
