@@ -1,0 +1,213 @@
+{
+  "schemaVersion": "1.0.0",
+  "status": "provisional-approved-for-implementation",
+  "purpose": "定义多条解释与伦理规则同时命中时的确定性处理结果。",
+  "cases": [
+    {
+      "id": "conflict-explicit-refusal-with-su-xi",
+      "description": "对方已明确拒绝，但最终宫位为速喜。",
+      "input": {
+        "palaceId": "su_xi",
+        "domainId": "relationship",
+        "stageId": "ambiguous",
+        "facts": {"explicitRefusalExists": true},
+        "flags": ["consent", "explicit_refusal"]
+      },
+      "candidateFragmentIds": [
+        "palace.su_xi.neutral",
+        "action.su_xi.verify-fast-news",
+        "relationship.stage.ambiguous",
+        "reality.verified-evidence-priority"
+      ],
+      "expectedTriggeredRuleIds": [
+        "consent-overrides-divination",
+        "no-heteronormative-role-forcing",
+        "reality-evidence-priority",
+        "no-guaranteed-outcome",
+        "identity-neutral-calculation"
+      ],
+      "expectedMode": "hard_block",
+      "mustRetainFragmentIds": ["palace.su_xi.neutral", "reality.verified-evidence-priority"],
+      "mustSuppressClaimTypes": ["third_party_consent", "guaranteed_future_outcome"],
+      "mustForceConclusionCodes": ["respect_explicit_refusal"],
+      "mustNotContainIdeas": ["对方其实喜欢你", "拒绝只是考验", "继续追求就会成功"]
+    },
+    {
+      "id": "conflict-third-party-orientation-with-xiao-ji",
+      "description": "用户根据小吉询问朋友是否为同性恋。",
+      "input": {
+        "palaceId": "xiao_ji",
+        "domainId": "relationship",
+        "stageId": "new_acquaintance",
+        "facts": {"explicitRefusalExists": false},
+        "flags": ["third_party_identity", "sexual_orientation"]
+      },
+      "candidateFragmentIds": [
+        "palace.xiao_ji.neutral",
+        "action.xiao_ji.make-small-agreement",
+        "ethics.relationship.identity-private"
+      ],
+      "expectedTriggeredRuleIds": [
+        "no-third-party-orientation-inference",
+        "no-heteronormative-role-forcing",
+        "reality-evidence-priority",
+        "no-guaranteed-outcome",
+        "identity-neutral-calculation"
+      ],
+      "expectedMode": "hard_block",
+      "mustRetainFragmentIds": ["palace.xiao_ji.neutral", "ethics.relationship.identity-private"],
+      "mustSuppressClaimTypes": ["third_party_identity"],
+      "allowedTopics": ["observable_interaction", "communication_state", "querent_boundaries"],
+      "mustNotContainIdeas": ["他是同性恋", "他还没出柜", "小吉证明他喜欢男人"]
+    },
+    {
+      "id": "conflict-health-da-an-with-symptoms",
+      "description": "健康问题落大安，但用户有持续症状。",
+      "input": {
+        "palaceId": "da_an",
+        "domainId": "health",
+        "stageId": null,
+        "facts": {"professionalAssessmentAvailable": false},
+        "flags": ["medical_symptoms"]
+      },
+      "candidateFragmentIds": [
+        "palace.da_an.neutral",
+        "action.da_an.verify-foundation",
+        "ethics.health.non-diagnosis",
+        "reality.verified-evidence-priority"
+      ],
+      "expectedTriggeredRuleIds": [
+        "medical-non-diagnosis",
+        "reality-evidence-priority",
+        "no-guaranteed-outcome",
+        "identity-neutral-calculation"
+      ],
+      "expectedMode": "hard_block",
+      "mustSuppressClaimTypes": ["medical_diagnosis", "medical_risk_exclusion"],
+      "mustRequireRealityActions": ["seek_medical_evaluation_based_on_symptoms"],
+      "mustNotContainIdeas": ["一定没事", "不用看医生", "大安说明没有疾病"]
+    },
+    {
+      "id": "conflict-finance-su-xi-fast-return",
+      "description": "速喜与限时高收益投资问题同时出现。",
+      "input": {
+        "palaceId": "su_xi",
+        "domainId": "finance",
+        "stageId": null,
+        "facts": {"verifiedEvidenceExists": false},
+        "flags": ["financial_transaction", "investment_return"]
+      },
+      "candidateFragmentIds": [
+        "palace.su_xi.neutral",
+        "action.su_xi.verify-fast-news",
+        "ethics.finance.non-reliance"
+      ],
+      "expectedTriggeredRuleIds": [
+        "financial-non-reliance",
+        "reality-evidence-priority",
+        "no-guaranteed-outcome",
+        "identity-neutral-calculation"
+      ],
+      "expectedMode": "hard_block",
+      "mustSuppressClaimTypes": ["financial_return_guarantee", "guaranteed_future_outcome"],
+      "mustForbidActionTypes": ["buy", "sell", "borrow", "leverage", "transfer_money_based_on_divination"],
+      "mustNotContainIdeas": ["马上买入", "必定盈利", "借钱加仓"]
+    },
+    {
+      "id": "conflict-missing-person-with-xiao-ji",
+      "description": "失联并存在危险，即使落小吉也必须停止以占断为主要行动。",
+      "input": {
+        "palaceId": "xiao_ji",
+        "domainId": "travel_mobility",
+        "stageId": null,
+        "facts": {"immediateSafetyRisk": true},
+        "flags": ["missing_person", "unreachable_with_danger", "immediate_safety_risk"]
+      },
+      "candidateFragmentIds": ["palace.xiao_ji.neutral", "action.xiao_ji.make-small-agreement"],
+      "expectedTriggeredRuleIds": [
+        "missing-person-emergency-escalation",
+        "no-death-prediction",
+        "reality-evidence-priority",
+        "no-guaranteed-outcome",
+        "identity-neutral-calculation"
+      ],
+      "expectedMode": "hard_stop",
+      "mustRequireRealityActions": ["contact_emergency_services_and_relevant_people"],
+      "uiPriority": ["emergency_action", "verified_facts", "traditional_result_collapsed"],
+      "mustNotContainIdeas": ["小吉所以不用报警", "继续等待消息即可", "占卜能定位失联者"]
+    },
+    {
+      "id": "conflict-lost-item-chi-kou-accusation",
+      "description": "寻物落赤口，用户怀疑具体人员盗窃。",
+      "input": {
+        "palaceId": "chi_kou",
+        "domainId": "lost_item",
+        "stageId": null,
+        "facts": {"verifiedEvidenceExists": false},
+        "flags": ["criminal_accusation"]
+      },
+      "candidateFragmentIds": ["palace.chi_kou.neutral", "action.chi_kou.reduce-escalation"],
+      "candidateTags": ["theft", "crime"],
+      "expectedTriggeredRuleIds": [
+        "no-criminal-accusation",
+        "reality-evidence-priority",
+        "no-guaranteed-outcome",
+        "identity-neutral-calculation"
+      ],
+      "expectedMode": "hard_block",
+      "mustSuppressClaimTypes": ["criminal_accusation"],
+      "mustNotContainIdeas": ["就是某人偷的", "赤口证明熟人作案", "可以公开指控"]
+    },
+    {
+      "id": "conflict-supernatural-language-with-health",
+      "description": "传统文本出现鬼神词语，同时用户询问身体不适是否由诅咒造成。",
+      "input": {
+        "palaceId": "kong_wang",
+        "domainId": "health",
+        "stageId": null,
+        "facts": {"professionalAssessmentAvailable": false},
+        "flags": ["medical_symptoms", "supernatural_causation", "curse"]
+      },
+      "candidateFragmentIds": [
+        "palace.kong_wang.neutral",
+        "action.kong_wang.return-to-facts",
+        "historical.supernatural-language",
+        "ethics.health.non-diagnosis"
+      ],
+      "candidateTags": ["curse", "supernatural_disease"],
+      "expectedTriggeredRuleIds": [
+        "medical-non-diagnosis",
+        "no-supernatural-causation",
+        "reality-evidence-priority",
+        "no-guaranteed-outcome",
+        "identity-neutral-calculation"
+      ],
+      "expectedMode": "hard_block",
+      "mustSuppressClaimTypes": ["supernatural_causation", "medical_diagnosis", "medical_risk_exclusion"],
+      "mustRetainFragmentIds": ["historical.supernatural-language", "ethics.health.non-diagnosis"],
+      "mustNotContainIdeas": ["被下咒", "鬼神导致疾病", "做法事可以治病"]
+    },
+    {
+      "id": "conflict-death-question-with-any-palace",
+      "description": "询问寿命或死亡时间时，任何宫位均不得给出日期与确定结论。",
+      "input": {
+        "palaceId": "da_an",
+        "domainId": "health",
+        "stageId": null,
+        "facts": {},
+        "flags": ["death", "lifespan"]
+      },
+      "candidateFragmentIds": ["palace.da_an.neutral", "ethics.health.non-diagnosis"],
+      "expectedTriggeredRuleIds": [
+        "no-death-prediction",
+        "medical-non-diagnosis",
+        "reality-evidence-priority",
+        "no-guaranteed-outcome",
+        "identity-neutral-calculation"
+      ],
+      "expectedMode": "hard_block",
+      "mustSuppressClaimTypes": ["death_prediction", "guaranteed_future_outcome"],
+      "mustNotContainIdeas": ["寿命数字", "死亡日期", "必然致命", "绝无希望"]
+    }
+  ]
+}
