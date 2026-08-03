@@ -19,7 +19,7 @@
         "properties": {
           "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]+$"},
           "description": {"type": "string", "minLength": 1},
-          "request": {"$ref": "../knowledge/divination-request.schema.json"},
+          "request": {"$ref": "https://example.local/xiaoliuren/divination-request.schema.json"},
           "calculationFixture": {
             "type": ["object", "null"],
             "additionalProperties": false,
