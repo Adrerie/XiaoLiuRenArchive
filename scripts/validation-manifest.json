@@ -1,5 +1,5 @@
 {
-  "manifestVersion": "1.0.0",
+  "manifestVersion": "1.1.0",
   "schemaDraft": "2020-12",
   "strict": true,
   "coerceTypes": false,
@@ -34,10 +34,28 @@
       "data": "knowledge/interpretation-fragments.v1.json",
       "schema": "knowledge/interpretation-fragments.schema.json",
       "namespace": "interpretation-fragments"
+    },
+    {
+      "data": "knowledge/safety-messages.v1.json",
+      "schema": "knowledge/safety-messages.schema.json",
+      "namespace": "safety-messages"
+    },
+    {
+      "data": "fixtures/interpretation-golden-cases.v1.json",
+      "schema": "fixtures/case.schema.json",
+      "namespace": "golden-fixtures"
+    },
+    {
+      "data": "fixtures/ethics-red-team-cases.v1.json",
+      "schema": "fixtures/case.schema.json",
+      "namespace": "red-team-fixtures"
     }
   ],
   "contractSchemas": [
-    "knowledge/divination-result.schema.json"
+    "knowledge/divination-request.schema.json",
+    "knowledge/question-context.schema.json",
+    "knowledge/divination-result.schema.json",
+    "fixtures/case.schema.json"
   ],
   "referenceChecks": [
     "palace-source-ids-exist",
@@ -47,14 +65,34 @@
     "fragment-domain-ids-exist",
     "fragment-stage-ids-exist",
     "calendar-default-policy-exists",
+    "request-calendar-policy-ids-exist",
+    "request-domain-ids-exist",
+    "request-stage-ids-belong-to-domain",
+    "ethics-conclusion-codes-exist",
+    "ethics-reality-action-codes-exist",
+    "ethics-context-codes-exist",
+    "fixture-rule-ids-exist",
+    "fixture-fragment-ids-exist",
+    "fixture-palace-ids-exist",
+    "fixture-domain-ids-exist",
+    "fixture-stage-ids-exist",
     "all-ids-unique-within-namespace",
     "palace-order-matches-frozen-contract"
+  ],
+  "behavioralFixtureFiles": [
+    "algorithm/test-vectors.v1.json",
+    "algorithm/rule-conflict-examples.v1.json",
+    "fixtures/interpretation-golden-cases.v1.json",
+    "fixtures/ethics-red-team-cases.v1.json"
   ],
   "textAuditScopes": [
     "knowledge/palaces.v1.json#/palaces/*/modernNeutralSummary",
     "knowledge/question-domains.v1.json#/domains/*/palaceInterpretations",
     "knowledge/interpretation-fragments.v1.json#/fragments/*/text",
-    "knowledge/ethics-rules.v1.json#/rules/*/requiredNotice"
+    "knowledge/ethics-rules.v1.json#/rules/*/requiredNotice",
+    "knowledge/safety-messages.v1.json#/conclusions/*/text",
+    "knowledge/safety-messages.v1.json#/realityActions/*/text",
+    "knowledge/safety-messages.v1.json#/contexts/*/text"
   ],
   "excludedHistoricalTextScopes": [
     "knowledge/palaces.v1.json#/palaces/*/traditionalText"
