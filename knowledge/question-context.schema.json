@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/xiaoliuren/question-context.schema.json",
+  "title": "XiaoLiuRen Question Context",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["domainId", "stageId", "facts", "flags"],
+  "properties": {
+    "domainId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "必须引用 knowledge/question-domains.v1.json 中存在的领域 ID。"
+    },
+    "stageId": {
+      "type": ["string", "null"],
+      "description": "可选事件或关系阶段。若非空，必须属于所选领域允许的 stageIds。"
+    },
+    "questionText": {
+      "type": ["string", "null"],
+      "maxLength": 2000,
+      "description": "仅用于本地显示、分类和用户确认。不得发送到远程服务，也不得进入核心起课函数。"
+    },
+    "facts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "explicitRefusalExists",
+        "formalNoticeExists",
+        "verifiedEvidenceExists",
+        "immediateSafetyRisk"
+      ],
+      "properties": {
+        "explicitRefusalExists": {"type": "boolean"},
+        "formalNoticeExists": {"type": "boolean"},
+        "verifiedEvidenceExists": {"type": "boolean"},
+        "immediateSafetyRisk": {"type": "boolean"},
+        "thirdPartyStatementAvailable": {"type": "boolean", "default": false},
+        "professionalAssessmentAvailable": {"type": "boolean", "default": false},
+        "contractOrOfficialDocumentAvailable": {"type": "boolean", "default": false}
+      }
+    },
+    "flags": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "third_party_identity",
+          "sexual_orientation",
+          "gender_identity",
+          "consent",
+          "explicit_refusal",
+          "medical_symptoms",
+          "medical_emergency",
+          "pregnancy",
+          "death",
+          "lifespan",
+          "suicide",
+          "terminal_illness",
+          "financial_transaction",
+          "investment_return",
+          "legal_deadline",
+          "criminal_accusation",
+          "missing_person",
+          "unreachable_with_danger",
+          "abduction",
+          "immediate_safety_risk",
+          "minor",
+          "adult_minor_relationship",
+          "child_safety",
+          "supernatural_causation",
+          "curse",
+          "ghost",
+          "violence"
+        ]
+      }
+    },
+    "displayIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "仅供称谓和语言适配。整个对象必须在进入核心算法前被剥离。",
+      "properties": {
+        "preferredAddress": {"type": ["string", "null"], "maxLength": 40},
+        "pronouns": {"type": ["string", "null"], "maxLength": 40},
+        "genderIdentity": {"type": ["string", "null"], "maxLength": 80},
+        "sexualOrientation": {"type": ["string", "null"], "maxLength": 80}
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["storeQuestionText", "includeQuestionInExport"],
+      "properties": {
+        "storeQuestionText": {"type": "boolean", "default": false},
+        "includeQuestionInExport": {"type": "boolean", "default": false}
+      }
+    }
+  }
+}
