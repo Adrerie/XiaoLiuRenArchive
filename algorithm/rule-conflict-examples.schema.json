@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/xiaoliuren/rule-conflict-examples.schema.json",
+  "title": "XiaoLiuRen Rule Conflict Examples",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "status", "purpose", "cases"],
+  "properties": {
+    "schemaVersion": {"const": "1.0.0"},
+    "status": {"type": "string", "minLength": 1},
+    "purpose": {"type": "string", "minLength": 1},
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "description",
+          "input",
+          "candidateFragmentIds",
+          "expectedTriggeredRuleIds",
+          "expectedMode",
+          "mustNotContainIdeas"
+        ],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]+$"},
+          "description": {"type": "string", "minLength": 1},
+          "input": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["palaceId", "domainId", "stageId", "facts", "flags"],
+            "properties": {
+              "palaceId": {"type": "string"},
+              "domainId": {"type": "string"},
+              "stageId": {"type": ["string", "null"]},
+              "facts": {"type": "object", "additionalProperties": true},
+              "flags": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+            }
+          },
+          "candidateFragmentIds": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+          "candidateTags": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+          "expectedTriggeredRuleIds": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+          "expectedMode": {"type": "string", "enum": ["allow", "allow_with_constraints", "hard_block", "hard_stop"]},
+          "mustRetainFragmentIds": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+          "mustSuppressClaimTypes": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+          "mustForceConclusionCodes": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+          "mustRequireRealityActions": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+          "mustForbidActionTypes": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+          "allowedTopics": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+          "uiPriority": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+          "mustNotContainIdeas": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}
+        }
+      }
+    }
+  }
+}
