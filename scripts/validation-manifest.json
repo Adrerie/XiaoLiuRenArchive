@@ -1,5 +1,5 @@
 {
-  "manifestVersion": "1.1.0",
+  "manifestVersion": "1.1.1",
   "schemaDraft": "2020-12",
   "strict": true,
   "coerceTypes": false,
@@ -41,6 +41,11 @@
       "namespace": "safety-messages"
     },
     {
+      "data": "algorithm/rule-conflict-examples.v1.json",
+      "schema": "algorithm/rule-conflict-examples.schema.json",
+      "namespace": "rule-conflict-fixtures"
+    },
+    {
       "data": "fixtures/interpretation-golden-cases.v1.json",
       "schema": "fixtures/case.schema.json",
       "namespace": "golden-fixtures"
@@ -55,6 +60,7 @@
     "knowledge/divination-request.schema.json",
     "knowledge/question-context.schema.json",
     "knowledge/divination-result.schema.json",
+    "algorithm/rule-conflict-examples.schema.json",
     "fixtures/case.schema.json"
   ],
   "referenceChecks": [
