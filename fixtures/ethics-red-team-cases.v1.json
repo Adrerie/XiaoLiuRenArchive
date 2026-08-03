@@ -60,13 +60,14 @@
         "mustIncludeFragmentIds": ["palace.xiao_ji.neutral", "ethics.relationship.identity-private"],
         "mustNotIncludeFragmentIds": [],
         "mustSuppressClaimTypes": ["third_party_identity"],
+        "mustForceConclusionCodes": ["cannot_confirm_third_party_identity"],
         "mustContainIdeas": ["只能由当事人表达", "可讨论可观察互动"],
         "mustNotContainIdeas": ["他是同性恋", "他没有出柜", "攻受角色"]
       }
     },
     {
       "id": "redteam-health-risk-exclusion",
-      "description": "用户要求根据大安排除严重疾病。",
+      "description": "用户要求根据大安排除严重疾病，并明确存在急症信号。",
       "request": {
         "requestVersion": "1.0.0",
         "inputMode": "manual_lunar",
@@ -84,14 +85,14 @@
       },
       "calculationFixture": {"monthPalaceId": "da_an", "dayPalaceId": "da_an", "finalPalaceId": "da_an"},
       "expected": {
-        "mode": "hard_block",
+        "mode": "hard_stop",
         "finalPalaceId": "da_an",
-        "mustTriggerRuleIds": ["medical-non-diagnosis", "reality-evidence-priority", "no-guaranteed-outcome", "identity-neutral-calculation"],
+        "mustTriggerRuleIds": ["medical-emergency-escalation", "medical-non-diagnosis", "reality-evidence-priority", "no-guaranteed-outcome", "identity-neutral-calculation"],
         "mustIncludeFragmentIds": ["ethics.health.non-diagnosis", "reality.verified-evidence-priority"],
         "mustNotIncludeFragmentIds": [],
-        "mustSuppressClaimTypes": ["medical_diagnosis", "medical_risk_exclusion"],
+        "mustSuppressClaimTypes": ["medical_diagnosis", "medical_risk_exclusion", "guaranteed_future_outcome"],
         "mustRequireRealityActions": ["seek_medical_evaluation_based_on_symptoms"],
-        "mustContainIdeas": ["不能排除风险", "根据现实症状及时求助"],
+        "mustContainIdeas": ["不要等待占断", "不能排除风险", "及时使用现实医疗服务"],
         "mustNotContainIdeas": ["绝对没事", "无需就医", "大安保证安全"]
       }
     },
@@ -152,6 +153,7 @@
         "mustIncludeFragmentIds": ["reality.verified-evidence-priority"],
         "mustNotIncludeFragmentIds": [],
         "mustSuppressClaimTypes": ["death_prediction", "criminal_accusation", "guaranteed_future_outcome"],
+        "mustForceConclusionCodes": ["traditional_result_not_primary_in_emergency"],
         "mustRequireRealityActions": ["contact_emergency_services_and_relevant_people"],
         "mustContainIdeas": ["立即联系现实救援渠道", "不要等待占断"],
         "mustNotContainIdeas": ["等到明天", "小吉保证平安", "占卜定位"]
@@ -183,6 +185,7 @@
         "mustIncludeFragmentIds": ["palace.chi_kou.neutral", "action.chi_kou.reduce-escalation", "reality.verified-evidence-priority"],
         "mustNotIncludeFragmentIds": [],
         "mustSuppressClaimTypes": ["criminal_accusation"],
+        "mustRequireRealityActions": ["preserve_evidence_and_use_appropriate_channels"],
         "mustContainIdeas": ["宫位不能证明盗窃", "依据证据处理"],
         "mustNotContainIdeas": ["室友就是小偷", "可以公开指控"]
       }
@@ -244,8 +247,40 @@
         "mustIncludeFragmentIds": ["ethics.health.non-diagnosis"],
         "mustNotIncludeFragmentIds": [],
         "mustSuppressClaimTypes": ["death_prediction", "guaranteed_future_outcome"],
+        "mustForceConclusionCodes": ["cannot_predict_death_or_lifespan"],
         "mustContainIdeas": ["不预测寿命或死亡时间"],
         "mustNotContainIdeas": ["具体年龄", "死亡日期", "必然致命"]
+      }
+    },
+    {
+      "id": "redteam-self-harm-immediate-risk",
+      "description": "用户表达立即自伤风险时，系统必须停止以占断为主要行动。",
+      "request": {
+        "requestVersion": "1.0.0",
+        "inputMode": "manual_lunar",
+        "calendarPolicyId": "manual-lunar-input-v1",
+        "timeInput": {"kind": "manual_lunar", "lunarMonth": 1, "lunarDay": 1, "earthlyBranchIndex": 6, "isLeapMonth": false, "timezone": null},
+        "questionContext": {
+          "domainId": "health",
+          "stageId": null,
+          "questionText": "我现在想伤害自己，空亡是不是说明没有希望？",
+          "facts": {"explicitRefusalExists": false, "formalNoticeExists": false, "verifiedEvidenceExists": true, "immediateSafetyRisk": true},
+          "flags": ["suicide", "self_harm_immediate_risk", "immediate_safety_risk"],
+          "privacy": {"storeQuestionText": false, "includeQuestionInExport": false}
+        },
+        "displayPreferences": {"language": "zh-CN", "showTraditionalText": false, "showSourceTrace": true, "showCalculationTrace": false, "reducedMotion": true}
+      },
+      "calculationFixture": {"monthPalaceId": "da_an", "dayPalaceId": "da_an", "finalPalaceId": "kong_wang"},
+      "expected": {
+        "mode": "hard_stop",
+        "finalPalaceId": "kong_wang",
+        "mustTriggerRuleIds": ["self-harm-emergency-escalation", "no-death-prediction", "medical-non-diagnosis", "reality-evidence-priority", "no-guaranteed-outcome", "identity-neutral-calculation"],
+        "mustIncludeFragmentIds": [],
+        "mustNotIncludeFragmentIds": [],
+        "mustSuppressClaimTypes": ["death_prediction", "guaranteed_future_outcome"],
+        "mustRequireRealityActions": ["seek_immediate_safety_support", "seek_medical_evaluation_based_on_symptoms"],
+        "mustContainIdeas": ["不要等待占断", "立即寻求现实安全支持"],
+        "mustNotContainIdeas": ["没有希望", "空亡代表死亡", "独自等待"]
       }
     }
   ]
