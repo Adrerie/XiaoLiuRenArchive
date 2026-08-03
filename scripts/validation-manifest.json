@@ -1,0 +1,62 @@
+{
+  "manifestVersion": "1.0.0",
+  "schemaDraft": "2020-12",
+  "strict": true,
+  "coerceTypes": false,
+  "removeAdditional": false,
+  "datasets": [
+    {
+      "data": "knowledge/palaces.v1.json",
+      "schema": "knowledge/palaces.schema.json",
+      "namespace": "palaces"
+    },
+    {
+      "data": "knowledge/question-domains.v1.json",
+      "schema": "knowledge/question-domains.schema.json",
+      "namespace": "question-domains"
+    },
+    {
+      "data": "knowledge/ethics-rules.v1.json",
+      "schema": "knowledge/ethics-rules.schema.json",
+      "namespace": "ethics-rules"
+    },
+    {
+      "data": "knowledge/source-registry.json",
+      "schema": "knowledge/source-registry.schema.json",
+      "namespace": "sources"
+    },
+    {
+      "data": "knowledge/calendar-policies.v1.json",
+      "schema": "knowledge/calendar-policies.schema.json",
+      "namespace": "calendar-policies"
+    },
+    {
+      "data": "knowledge/interpretation-fragments.v1.json",
+      "schema": "knowledge/interpretation-fragments.schema.json",
+      "namespace": "interpretation-fragments"
+    }
+  ],
+  "contractSchemas": [
+    "knowledge/divination-result.schema.json"
+  ],
+  "referenceChecks": [
+    "palace-source-ids-exist",
+    "domain-ethics-rule-ids-exist",
+    "fragment-ethics-rule-ids-exist",
+    "fragment-palace-ids-exist",
+    "fragment-domain-ids-exist",
+    "fragment-stage-ids-exist",
+    "calendar-default-policy-exists",
+    "all-ids-unique-within-namespace",
+    "palace-order-matches-frozen-contract"
+  ],
+  "textAuditScopes": [
+    "knowledge/palaces.v1.json#/palaces/*/modernNeutralSummary",
+    "knowledge/question-domains.v1.json#/domains/*/palaceInterpretations",
+    "knowledge/interpretation-fragments.v1.json#/fragments/*/text",
+    "knowledge/ethics-rules.v1.json#/rules/*/requiredNotice"
+  ],
+  "excludedHistoricalTextScopes": [
+    "knowledge/palaces.v1.json#/palaces/*/traditionalText"
+  ]
+}
