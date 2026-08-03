@@ -1,0 +1,91 @@
+{
+  "schemaVersion": "1.0.0",
+  "policyVersion": "1.0.0-provisional.1",
+  "defaultPolicyId": "civil-midnight-reuse-leap-month",
+  "policies": [
+    {
+      "id": "civil-midnight-reuse-leap-month",
+      "name": "民用午夜换日与闰月沿用月数",
+      "status": "default",
+      "dayBoundary": {
+        "mode": "civil_midnight",
+        "description": "以用户所在地民用时间 00:00 作为日期边界。23:00 至 23:59 仍属于当日，00:00 至 00:59 属于次日。"
+      },
+      "ziHour": {
+        "branchIndex": 1,
+        "intervals": [
+          {"start": "23:00", "end": "23:59", "dayOffset": 0},
+          {"start": "00:00", "end": "00:59", "dayOffset": 0}
+        ]
+      },
+      "leapMonth": {
+        "mode": "reuse_month_number",
+        "description": "闰月沿用其对应农历月数字参与六宫计算，同时在输入与结果中保留 isLeapMonth=true。该选择属于暂定历法适配策略，不宣称解决所有流派争议。"
+      },
+      "timezone": {
+        "input": "iana_preferred_with_local_fallback",
+        "conversionOrder": "instant-to-local-time-before-calendar-conversion"
+      },
+      "dst": {"mode": "use-timezone-database"},
+      "manualInput": {"requiresLeapFlag": true, "requiresBranch": true},
+      "disclosure": "本结果采用民用午夜换日。小六壬流传中存在子初换日与早晚子时等不同做法，切换策略可能改变农历日并进而改变落宫。",
+      "sourceIds": []
+    },
+    {
+      "id": "zi-hour-23-reuse-leap-month",
+      "name": "子初二十三时换日与闰月沿用月数",
+      "status": "alternative",
+      "dayBoundary": {
+        "mode": "zi_hour_23",
+        "description": "以本地时间 23:00 作为术数日期边界，23:00 至次日 22:59 视为同一术数日。"
+      },
+      "ziHour": {
+        "branchIndex": 1,
+        "intervals": [
+          {"start": "23:00", "end": "23:59", "dayOffset": 1},
+          {"start": "00:00", "end": "00:59", "dayOffset": 0}
+        ]
+      },
+      "leapMonth": {
+        "mode": "reuse_month_number",
+        "description": "闰月沿用其对应农历月数字，保留闰月标识。"
+      },
+      "timezone": {
+        "input": "iana_preferred_with_local_fallback",
+        "conversionOrder": "instant-to-local-time-before-calendar-conversion"
+      },
+      "dst": {"mode": "use-timezone-database"},
+      "manualInput": {"requiresLeapFlag": true, "requiresBranch": true},
+      "disclosure": "本结果采用 23:00 子初换日。该策略属于可选传统适配方案，不是项目唯一历史定论。",
+      "sourceIds": []
+    },
+    {
+      "id": "manual-lunar-no-conversion",
+      "name": "手动农历输入直算",
+      "status": "alternative",
+      "dayBoundary": {
+        "mode": "civil_midnight",
+        "description": "不执行公历换算。用户直接提供农历月、日、是否闰月与十二时辰。日期边界仅用于解释输入来源，不再修改用户给定农历日。"
+      },
+      "ziHour": {
+        "branchIndex": 1,
+        "intervals": [
+          {"start": "23:00", "end": "23:59", "dayOffset": 0},
+          {"start": "00:00", "end": "00:59", "dayOffset": 0}
+        ]
+      },
+      "leapMonth": {
+        "mode": "reuse_month_number",
+        "description": "用户必须明确标注闰月。核心算法仍只使用月数字，闰月标识进入 trace 与来源说明。"
+      },
+      "timezone": {
+        "input": "iana_preferred_with_local_fallback",
+        "conversionOrder": "instant-to-local-time-before-calendar-conversion"
+      },
+      "dst": {"mode": "use-timezone-database"},
+      "manualInput": {"requiresLeapFlag": true, "requiresBranch": true},
+      "disclosure": "本结果直接使用用户输入的农历信息，系统未验证其与公历时间是否一致。",
+      "sourceIds": []
+    }
+  ]
+}

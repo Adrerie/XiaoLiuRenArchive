@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://xiaoliurenarchive.local/schemas/interpretation-fragments.schema.json",
+  "title": "XiaoLiuRen Interpretation Fragments",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "knowledgeVersion", "status", "assemblyPolicy", "fragments"],
+  "properties": {
+    "schemaVersion": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+    "knowledgeVersion": {"type": "string", "minLength": 1},
+    "status": {"enum": ["provisional", "reviewed", "canonical"]},
+    "assemblyPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maxFragmentsPerSection", "deduplicateById", "preserveSourceTrace", "forbiddenBehavior"],
+      "properties": {
+        "maxFragmentsPerSection": {"type": "integer", "minimum": 1, "maximum": 20},
+        "deduplicateById": {"const": true},
+        "preserveSourceTrace": {"const": true},
+        "forbiddenBehavior": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+      }
+    },
+    "fragments": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/fragment"}}
+  },
+  "$defs": {
+    "fragment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "text", "palaceIds", "domainIds", "stageIds", "tags", "claimTypes", "sourceIds", "status"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"},
+        "kind": {"enum": ["neutral_summary", "supportive", "caution", "action_prompt", "reality_check", "historical_context", "ethics_notice", "stage_modifier"]},
+        "text": {"type": "string", "minLength": 1},
+        "palaceIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"enum": ["da_an", "liu_lian", "su_xi", "chi_kou", "xiao_ji", "kong_wang", "all"]}
+        },
+        "domainIds": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}},
+        "stageIds": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}},
+        "tags": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"}},
+        "claimTypes": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}},
+        "sourceIds": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"}},
+        "status": {"enum": ["provisional", "reviewed", "canonical", "blocked"]},
+        "priority": {"type": "integer", "minimum": 0, "maximum": 1000},
+        "requiresEthicsRuleIds": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "incompatibleTags": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+      }
+    }
+  }
+}

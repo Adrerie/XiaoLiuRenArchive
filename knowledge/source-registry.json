@@ -1,0 +1,121 @@
+{
+  "schemaVersion": "1.0.0",
+  "updatedAt": "2026-08-03",
+  "sources": [
+    {
+      "id": "moe-revised-dictionary-xiaoliuren",
+      "title": "教育部《重編國語辭典修訂本》：小六壬",
+      "type": "reference_definition",
+      "language": "zh-TW",
+      "url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=106732&la=0&powerMode=0",
+      "publisher": "中華民國教育部",
+      "authorityLevel": "institutional_reference",
+      "supports": [
+        "六位名称",
+        "月日时轮指",
+        "报时起课法名称",
+        "传统吉凶三分法的存在"
+      ],
+      "doesNotSupport": [
+        "详细六宫断辞",
+        "五行与六神属性",
+        "现代问事解释"
+      ],
+      "licenseNote": "外部参考链接。复制与再利用须遵循网站版权与授权说明。",
+      "ingestionPolicy": "metadata-and-short-citation-only",
+      "verificationStatus": "verified-url"
+    },
+    {
+      "id": "yuxiaji-liuren-shike-web-transcription-8s8s",
+      "title": "《玉匣记》杂占篇：李淳风六壬时课网络录文",
+      "type": "secondary_web_transcription",
+      "language": "zh-CN",
+      "url": "https://x.8s8s.com/shengxiao/23/15179.html",
+      "publisher": "十二生肖网",
+      "authorityLevel": "unverified-transcription",
+      "supports": [
+        "起课原文线索",
+        "三月初五辰时案例",
+        "六宫断辞候选文本",
+        "五行与六神候选属性"
+      ],
+      "doesNotSupport": [
+        "作者归属的历史真实性",
+        "唯一校定文本",
+        "所有现代流派规则"
+      ],
+      "licenseNote": "仅作为检索与校勘线索，不将整页内容自动复制为仓库正式文本。",
+      "ingestionPolicy": "manual-collation-required",
+      "verificationStatus": "provisional"
+    },
+    {
+      "id": "yuxiaji-commercial-edition-catalog-ncc",
+      "title": "《重编选择通书（玉匣记）》目录记录",
+      "type": "edition-catalog",
+      "language": "zh-TW",
+      "url": "https://www.ncc.com.tw/books/goods.php?id=6334&to_cn=1",
+      "publisher": "进源书局",
+      "authorityLevel": "edition-existence-evidence",
+      "supports": [
+        "现行版本目录中收录李淳风六壬时课"
+      ],
+      "doesNotSupport": [
+        "正文逐字校定",
+        "历史作者归属"
+      ],
+      "licenseNote": "书目与版本线索。正式校勘应基于合法取得的实体或数字影印本。",
+      "ingestionPolicy": "catalog-metadata-only",
+      "verificationStatus": "verified-url"
+    },
+    {
+      "id": "yuxiaji-commercial-edition-catalog-books",
+      "title": "《玉匣记》商品目录记录",
+      "type": "edition-catalog",
+      "language": "zh-TW",
+      "url": "https://www.books.com.tw/products/0010088693",
+      "publisher": "博客来",
+      "authorityLevel": "edition-existence-evidence",
+      "supports": [
+        "目录中收录李淳风六壬时课"
+      ],
+      "doesNotSupport": [
+        "正文逐字校定",
+        "算法细节完整性"
+      ],
+      "licenseNote": "仅登记书目信息。",
+      "ingestionPolicy": "catalog-metadata-only",
+      "verificationStatus": "verified-url"
+    },
+    {
+      "id": "modern-explanatory-source-sanyuandaoshi",
+      "title": "李淳风六壬时课现代说明页",
+      "type": "modern-explanatory-source",
+      "language": "zh-TW",
+      "url": "https://sanyuandaoshi.com/%E5%85%AD%E5%A3%AC%E6%99%82%E8%AA%B2/",
+      "publisher": "叁园道士",
+      "authorityLevel": "modern-practitioner-source",
+      "supports": [
+        "现代流传的轮指说明",
+        "版本线索与图示参考"
+      ],
+      "doesNotSupport": [
+        "唯一传统标准",
+        "未经校勘的扩展规则"
+      ],
+      "licenseNote": "不得自动吸收其现代解释为基准知识。",
+      "ingestionPolicy": "comparison-only",
+      "verificationStatus": "provisional"
+    }
+  ],
+  "sourcePolicy": {
+    "formalTraditionalTextRequires": [
+      "至少一个可识别版本的影印本或正式出版物",
+      "逐字校勘记录",
+      "异文登记",
+      "人工批准"
+    ],
+    "webTranscriptionRule": "网络录文可作为候选文本和检索线索，不得仅凭单一网页升级为 canonical。",
+    "attributionRule": "李淳风等作者归属按文本题署记录，不将题署自动等同于历史事实。",
+    "remoteDownloadRule": "Codex 可下载允许访问的公开资料用于校勘，但不得绕过付费、访问控制或版权限制。"
+  }
+}

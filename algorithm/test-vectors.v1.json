@@ -1,0 +1,135 @@
+{
+  "schemaVersion": "1.0.0",
+  "algorithmVersion": "1.0.0",
+  "palaceOrder": ["da_an", "liu_lian", "su_xi", "chi_kou", "xiao_ji", "kong_wang"],
+  "validCases": [
+    {
+      "id": "classical-example-third-month-fifth-day-chen",
+      "description": "传统示例：农历三月初五辰时",
+      "input": {"lunarMonth": 3, "lunarDay": 5, "earthlyBranchIndex": 5},
+      "expected": {
+        "monthIndex": 2,
+        "monthPalaceId": "su_xi",
+        "dayIndex": 0,
+        "dayPalaceId": "da_an",
+        "hourIndex": 4,
+        "hourPalaceId": "xiao_ji",
+        "finalPalaceId": "xiao_ji"
+      },
+      "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"]
+    },
+    {
+      "id": "minimum-input-all-da-an",
+      "description": "正月初一子时，三个阶段均落大安",
+      "input": {"lunarMonth": 1, "lunarDay": 1, "earthlyBranchIndex": 1},
+      "expected": {"monthIndex": 0, "monthPalaceId": "da_an", "dayIndex": 0, "dayPalaceId": "da_an", "hourIndex": 0, "hourPalaceId": "da_an", "finalPalaceId": "da_an"}
+    },
+    {
+      "id": "second-month-first-day-zi",
+      "description": "月宫起点包含计数",
+      "input": {"lunarMonth": 2, "lunarDay": 1, "earthlyBranchIndex": 1},
+      "expected": {"monthIndex": 1, "monthPalaceId": "liu_lian", "dayIndex": 1, "dayPalaceId": "liu_lian", "hourIndex": 1, "hourPalaceId": "liu_lian", "finalPalaceId": "liu_lian"}
+    },
+    {
+      "id": "first-month-second-day-zi",
+      "description": "初二从大安顺数至留连",
+      "input": {"lunarMonth": 1, "lunarDay": 2, "earthlyBranchIndex": 1},
+      "expected": {"monthIndex": 0, "monthPalaceId": "da_an", "dayIndex": 1, "dayPalaceId": "liu_lian", "hourIndex": 1, "hourPalaceId": "liu_lian", "finalPalaceId": "liu_lian"}
+    },
+    {
+      "id": "first-month-first-day-chou",
+      "description": "丑时为第二个计数位置",
+      "input": {"lunarMonth": 1, "lunarDay": 1, "earthlyBranchIndex": 2},
+      "expected": {"monthIndex": 0, "monthPalaceId": "da_an", "dayIndex": 0, "dayPalaceId": "da_an", "hourIndex": 1, "hourPalaceId": "liu_lian", "finalPalaceId": "liu_lian"}
+    },
+    {
+      "id": "sixth-month-sixth-day-sixtheth-branch",
+      "description": "多层跨周期计数",
+      "input": {"lunarMonth": 6, "lunarDay": 6, "earthlyBranchIndex": 6},
+      "expected": {"monthIndex": 5, "monthPalaceId": "kong_wang", "dayIndex": 4, "dayPalaceId": "xiao_ji", "hourIndex": 3, "hourPalaceId": "chi_kou", "finalPalaceId": "chi_kou"}
+    },
+    {
+      "id": "maximum-contract-values",
+      "description": "合同允许范围内的最大数值",
+      "input": {"lunarMonth": 12, "lunarDay": 30, "earthlyBranchIndex": 12},
+      "expected": {"monthIndex": 5, "monthPalaceId": "kong_wang", "dayIndex": 4, "dayPalaceId": "xiao_ji", "hourIndex": 3, "hourPalaceId": "chi_kou", "finalPalaceId": "chi_kou"}
+    },
+    {
+      "id": "month-cycle-seven-equals-one",
+      "description": "月份相差六，月宫周期一致",
+      "input": {"lunarMonth": 7, "lunarDay": 1, "earthlyBranchIndex": 1},
+      "expected": {"monthIndex": 0, "monthPalaceId": "da_an", "dayIndex": 0, "dayPalaceId": "da_an", "hourIndex": 0, "hourPalaceId": "da_an", "finalPalaceId": "da_an"}
+    },
+    {
+      "id": "day-cycle-seven-equals-one",
+      "description": "日期相差六，日宫周期一致",
+      "input": {"lunarMonth": 1, "lunarDay": 7, "earthlyBranchIndex": 1},
+      "expected": {"monthIndex": 0, "monthPalaceId": "da_an", "dayIndex": 0, "dayPalaceId": "da_an", "hourIndex": 0, "hourPalaceId": "da_an", "finalPalaceId": "da_an"}
+    },
+    {
+      "id": "first-month-first-day-shen",
+      "description": "申时序号九跨过完整周期",
+      "input": {"lunarMonth": 1, "lunarDay": 1, "earthlyBranchIndex": 9},
+      "expected": {"monthIndex": 0, "monthPalaceId": "da_an", "dayIndex": 0, "dayPalaceId": "da_an", "hourIndex": 2, "hourPalaceId": "su_xi", "finalPalaceId": "su_xi"}
+    },
+    {
+      "id": "fifth-month-fifteenth-day-you",
+      "description": "一般中间值案例",
+      "input": {"lunarMonth": 5, "lunarDay": 15, "earthlyBranchIndex": 10},
+      "expected": {"monthIndex": 4, "monthPalaceId": "xiao_ji", "dayIndex": 0, "dayPalaceId": "da_an", "hourIndex": 3, "hourPalaceId": "chi_kou", "finalPalaceId": "chi_kou"}
+    },
+    {
+      "id": "eighth-month-twenty-third-day-xu",
+      "description": "日宫落空亡后继续起时",
+      "input": {"lunarMonth": 8, "lunarDay": 23, "earthlyBranchIndex": 11},
+      "expected": {"monthIndex": 1, "monthPalaceId": "liu_lian", "dayIndex": 5, "dayPalaceId": "kong_wang", "hourIndex": 3, "hourPalaceId": "chi_kou", "finalPalaceId": "chi_kou"}
+    },
+    {
+      "id": "tenth-month-tenth-day-wu",
+      "description": "月宫赤口，日宫回大安，时宫仍大安",
+      "input": {"lunarMonth": 10, "lunarDay": 10, "earthlyBranchIndex": 7},
+      "expected": {"monthIndex": 3, "monthPalaceId": "chi_kou", "dayIndex": 0, "dayPalaceId": "da_an", "hourIndex": 0, "hourPalaceId": "da_an", "finalPalaceId": "da_an"}
+    },
+    {
+      "id": "eleventh-month-twenty-ninth-day-mao",
+      "description": "一般跨周期案例，最终落空亡",
+      "input": {"lunarMonth": 11, "lunarDay": 29, "earthlyBranchIndex": 4},
+      "expected": {"monthIndex": 4, "monthPalaceId": "xiao_ji", "dayIndex": 2, "dayPalaceId": "su_xi", "hourIndex": 5, "hourPalaceId": "kong_wang", "finalPalaceId": "kong_wang"}
+    }
+  ],
+  "invalidCases": [
+    {"id": "month-zero", "input": {"lunarMonth": 0, "lunarDay": 1, "earthlyBranchIndex": 1}, "expectedErrorCode": "INVALID_LUNAR_MONTH"},
+    {"id": "month-thirteen", "input": {"lunarMonth": 13, "lunarDay": 1, "earthlyBranchIndex": 1}, "expectedErrorCode": "INVALID_LUNAR_MONTH"},
+    {"id": "day-zero", "input": {"lunarMonth": 1, "lunarDay": 0, "earthlyBranchIndex": 1}, "expectedErrorCode": "INVALID_LUNAR_DAY"},
+    {"id": "day-thirty-one", "input": {"lunarMonth": 1, "lunarDay": 31, "earthlyBranchIndex": 1}, "expectedErrorCode": "INVALID_LUNAR_DAY"},
+    {"id": "branch-zero", "input": {"lunarMonth": 1, "lunarDay": 1, "earthlyBranchIndex": 0}, "expectedErrorCode": "INVALID_EARTHLY_BRANCH_INDEX"},
+    {"id": "branch-thirteen", "input": {"lunarMonth": 1, "lunarDay": 1, "earthlyBranchIndex": 13}, "expectedErrorCode": "INVALID_EARTHLY_BRANCH_INDEX"},
+    {"id": "non-integer-day", "input": {"lunarMonth": 1, "lunarDay": 1.5, "earthlyBranchIndex": 1}, "expectedErrorCode": "NON_INTEGER_INPUT"},
+    {"id": "missing-field", "input": {"lunarMonth": 1, "lunarDay": 1}, "expectedErrorCode": "MISSING_INPUT_FIELD"}
+  ],
+  "propertyTests": [
+    {
+      "id": "all-valid-indices-in-range",
+      "range": {"lunarMonth": [1, 12], "lunarDay": [1, 30], "earthlyBranchIndex": [1, 12]},
+      "assertion": "monthIndex, dayIndex and hourIndex are integers in 0..5"
+    },
+    {
+      "id": "stepwise-equals-compressed",
+      "range": {"lunarMonth": [1, 12], "lunarDay": [1, 30], "earthlyBranchIndex": [1, 12]},
+      "assertion": "hourIndex === positiveMod(lunarMonth + lunarDay + earthlyBranchIndex - 3, 6)"
+    },
+    {
+      "id": "trace-lengths-equal-count-values",
+      "range": {"lunarMonth": [1, 12], "lunarDay": [1, 30], "earthlyBranchIndex": [1, 12]},
+      "assertion": "month.visitedPalaceIds.length === lunarMonth and day.visitedPalaceIds.length === lunarDay and hour.visitedPalaceIds.length === earthlyBranchIndex"
+    },
+    {
+      "id": "identity-invariance",
+      "assertion": "adding or changing non-core identity metadata cannot alter any palace result"
+    },
+    {
+      "id": "palace-order-is-frozen",
+      "assertion": "runtime palace order exactly equals the palaceOrder array in this file"
+    }
+  ]
+}

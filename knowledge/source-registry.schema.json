@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://xiaoliurenarchive.local/schemas/source-registry.schema.json",
+  "title": "XiaoLiuRen Source Registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "updatedAt", "sources", "sourcePolicy"],
+  "properties": {
+    "schemaVersion": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+    "updatedAt": {"type": "string", "format": "date"},
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/source"}
+    },
+    "sourcePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["formalTraditionalTextRequires", "webTranscriptionRule", "attributionRule", "remoteDownloadRule"],
+      "properties": {
+        "formalTraditionalTextRequires": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "webTranscriptionRule": {"type": "string", "minLength": 1},
+        "attributionRule": {"type": "string", "minLength": 1},
+        "remoteDownloadRule": {"type": "string", "minLength": 1}
+      }
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "type", "language", "url", "publisher", "authorityLevel", "supports", "doesNotSupport", "licenseNote", "ingestionPolicy", "verificationStatus"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+        "title": {"type": "string", "minLength": 1},
+        "type": {"type": "string", "pattern": "^[a-z][a-z0-9_-]*$"},
+        "language": {"type": "string", "pattern": "^[a-z]{2,3}(-[A-Z]{2})?$"},
+        "url": {"type": "string", "format": "uri", "pattern": "^https://"},
+        "publisher": {"type": "string", "minLength": 1},
+        "authorityLevel": {"type": "string", "pattern": "^[a-z][a-z0-9_-]*$"},
+        "supports": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "doesNotSupport": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "licenseNote": {"type": "string", "minLength": 1},
+        "ingestionPolicy": {"enum": ["metadata-and-short-citation-only", "manual-collation-required", "catalog-metadata-only", "comparison-only", "local-fulltext-permitted"]},
+        "verificationStatus": {"enum": ["unverified", "provisional", "verified-url", "reviewed", "canonical"]},
+        "accessedAt": {"type": "string", "format": "date"},
+        "localTarget": {"type": "string", "pattern": "^[^/].*"},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "notes": {"type": "string"}
+      }
+    }
+  }
+}

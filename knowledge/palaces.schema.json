@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Adrerie/XiaoLiuRenArchive/knowledge/palaces.schema.json",
+  "title": "Xiao Liu Ren Palace Knowledge",
+  "type": "object",
+  "required": ["schemaVersion", "knowledgeVersion", "palaces"],
+  "properties": {
+    "schemaVersion": { "type": "string" },
+    "knowledgeVersion": { "type": "string" },
+    "status": {
+      "enum": ["draft", "provisional", "approved", "deprecated"]
+    },
+    "palaces": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "items": { "$ref": "#/$defs/palace" }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "sourcedValue": {
+      "type": "object",
+      "required": ["value", "status", "sourceIds"],
+      "properties": {
+        "value": {},
+        "status": {
+          "enum": ["provisional-canonical", "approved", "disputed", "unknown"]
+        },
+        "sourceIds": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "variants": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["value", "sourceIds", "status"],
+            "properties": {
+              "value": {},
+              "sourceIds": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "status": {
+                "enum": ["attested", "reported", "unverified", "rejected"]
+              },
+              "note": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "note": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "classicalText": {
+      "type": "object",
+      "required": ["text", "status", "sourceIds"],
+      "properties": {
+        "text": { "type": "string" },
+        "lines": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "status": {
+          "enum": ["provisional-transcription", "collated", "approved"]
+        },
+        "sourceIds": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "notes": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "palace": {
+      "type": "object",
+      "required": [
+        "id",
+        "order",
+        "name",
+        "classical",
+        "semanticCore",
+        "modernGeneral",
+        "sourceIds"
+      ],
+      "properties": {
+        "id": {
+          "enum": ["da_an", "liu_lian", "su_xi", "chi_kou", "xiao_ji", "kong_wang"]
+        },
+        "order": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "name": { "type": "string" },
+        "aliases": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "traditionalPolarity": {
+          "enum": ["auspicious", "inauspicious", "mixed", "context-dependent"]
+        },
+        "classical": {
+          "type": "object",
+          "required": ["statePhrase", "element", "spirit", "numbers", "verse"],
+          "properties": {
+            "statePhrase": { "$ref": "#/$defs/sourcedValue" },
+            "element": { "$ref": "#/$defs/sourcedValue" },
+            "spirit": { "$ref": "#/$defs/sourcedValue" },
+            "numbers": { "$ref": "#/$defs/sourcedValue" },
+            "verse": { "$ref": "#/$defs/classicalText" }
+          },
+          "additionalProperties": false
+        },
+        "semanticCore": {
+          "type": "object",
+          "required": ["tempo", "motion", "certainty", "primaryTags", "riskTags", "neutralSummary"],
+          "properties": {
+            "tempo": {
+              "enum": ["slow", "delayed", "fast", "volatile", "gradual", "suspended"]
+            },
+            "motion": {
+              "enum": ["stable", "entangled", "approaching", "conflicting", "cooperative", "dissipating"]
+            },
+            "certainty": {
+              "enum": ["relatively-stable", "unclear", "rapidly-forming", "unstable", "incremental", "unrealized"]
+            },
+            "primaryTags": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "riskTags": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "neutralSummary": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "modernGeneral": {
+          "type": "object",
+          "required": ["summary", "supportiveReading", "cautionReading", "realityChecks"],
+          "properties": {
+            "summary": { "type": "string" },
+            "supportiveReading": { "type": "string" },
+            "cautionReading": { "type": "string" },
+            "realityChecks": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          },
+          "additionalProperties": false
+        },
+        "sourceIds": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "reviewNotes": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,410 @@
+{
+  "schemaVersion": "1.0.0",
+  "knowledgeVersion": "1.0.0-provisional.1",
+  "status": "provisional",
+  "palaces": [
+    {
+      "id": "da_an",
+      "order": 0,
+      "name": "大安",
+      "aliases": [],
+      "traditionalPolarity": "auspicious",
+      "classical": {
+        "statePhrase": {
+          "value": "身不动时",
+          "status": "provisional-canonical",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"]
+        },
+        "element": {
+          "value": "木",
+          "status": "provisional-canonical",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"]
+        },
+        "spirit": {
+          "value": "青龙",
+          "status": "provisional-canonical",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"]
+        },
+        "numbers": {
+          "value": [1, 5, 7],
+          "status": "provisional-canonical",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"]
+        },
+        "verse": {
+          "text": "大安事事昌，求谋在神方，失物去不远，宅舍保安康，行人身未动，病者主无妨，将军回田野，仔细与推详。",
+          "lines": [
+            "大安事事昌，求谋在神方",
+            "失物去不远，宅舍保安康",
+            "行人身未动，病者主无妨",
+            "将军回田野，仔细与推详"
+          ],
+          "status": "provisional-transcription",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"],
+          "notes": ["待与影印本逐字校勘", "健康相关句不得作为医学判断"]
+        }
+      },
+      "semanticCore": {
+        "tempo": "slow",
+        "motion": "stable",
+        "certainty": "relatively-stable",
+        "primaryTags": ["稳定", "守成", "秩序", "安全感", "延续", "原地观察"],
+        "riskTags": ["停滞", "保守过度", "行动不足", "把稳定误当必然成功"],
+        "neutralSummary": "事态处于相对稳定和低变化状态，适合维持、确认基础与耐心推进，但未必意味着立即发生。"
+      },
+      "modernGeneral": {
+        "summary": "大安强调稳定、持续和低波动。它更接近一个可以维持的结构，而不是快速兑现的承诺。",
+        "supportiveReading": "已有基础较稳，适合按原计划推进、维护信任、检查长期条件。",
+        "cautionReading": "结果可能停留在原状。若问题要求迅速变化，大安反而提示速度不足。",
+        "realityChecks": [
+          "确认现实条件是否真的稳定，而不是仅凭熟悉感判断",
+          "需要时间节点的问题应另行核对实际进度",
+          "健康、法律与财务问题仍以专业信息为准"
+        ]
+      },
+      "sourceIds": [
+        "moe-revised-dictionary-xiaoliuren",
+        "yuxiaji-liuren-shike-web-transcription-8s8s"
+      ],
+      "reviewNotes": ["现代语义为知识工程解释，不宣称属于原典逐字含义"]
+    },
+    {
+      "id": "liu_lian",
+      "order": 1,
+      "name": "留连",
+      "aliases": ["流连"],
+      "traditionalPolarity": "inauspicious",
+      "classical": {
+        "statePhrase": {
+          "value": "卒未妆时",
+          "status": "disputed",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"],
+          "variants": [
+            {
+              "value": "卒未装时",
+              "sourceIds": ["modern-explanatory-source-sanyuandaoshi"],
+              "status": "reported",
+              "note": "待影印本校勘妆、装等字"
+            }
+          ],
+          "note": "当前网络录文存在字形不稳定"
+        },
+        "element": {
+          "value": "水",
+          "status": "provisional-canonical",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"]
+        },
+        "spirit": {
+          "value": "玄武",
+          "status": "provisional-canonical",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"]
+        },
+        "numbers": {
+          "value": [2, 8, 10],
+          "status": "provisional-canonical",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"]
+        },
+        "verse": {
+          "text": "留连事难成，求谋日未明，官事只宜缓，去者未回程，失物南方见，急讨方称心，更须防口舌，人口且平平。",
+          "lines": [
+            "留连事难成，求谋日未明",
+            "官事只宜缓，去者未回程",
+            "失物南方见，急讨方称心",
+            "更须防口舌，人口且平平"
+          ],
+          "status": "provisional-transcription",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"],
+          "notes": ["部分网络录文作日示明，暂按语义保留日未明候选，待校勘"]
+        }
+      },
+      "semanticCore": {
+        "tempo": "delayed",
+        "motion": "entangled",
+        "certainty": "unclear",
+        "primaryTags": ["拖延", "反复", "暧昧", "未决", "纠缠", "等待"],
+        "riskTags": ["沉没成本", "信息不透明", "过度揣测", "反复确认", "边界模糊"],
+        "neutralSummary": "事态尚未定型，推进受到等待、反复或关系纠缠影响，宜先厘清信息与边界。"
+      },
+      "modernGeneral": {
+        "summary": "留连表示过程被拉长，信息尚未完整，事情可能反复回到同一问题。",
+        "supportiveReading": "延迟可以提供补充信息和重新协商的时间，暂缓并不等于永久失败。",
+        "cautionReading": "不要把持续投入本身当成会有结果的证据，也不要用占断替代对方明确表态。",
+        "realityChecks": [
+          "列出尚未确认的关键事实",
+          "为等待设置现实期限",
+          "区分暂时延迟与长期回避"
+        ]
+      },
+      "sourceIds": [
+        "moe-revised-dictionary-xiaoliuren",
+        "yuxiaji-liuren-shike-web-transcription-8s8s"
+      ],
+      "reviewNotes": ["原文异字待版本校勘"]
+    },
+    {
+      "id": "su_xi",
+      "order": 2,
+      "name": "速喜",
+      "aliases": [],
+      "traditionalPolarity": "auspicious",
+      "classical": {
+        "statePhrase": {
+          "value": "人便至时",
+          "status": "provisional-canonical",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"]
+        },
+        "element": {
+          "value": "火",
+          "status": "provisional-canonical",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"]
+        },
+        "spirit": {
+          "value": "朱雀",
+          "status": "provisional-canonical",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"]
+        },
+        "numbers": {
+          "value": [3, 6, 9],
+          "status": "provisional-canonical",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"]
+        },
+        "verse": {
+          "text": "速喜喜来临，求财向南行，失物申未午，逢人路上寻，官事有福德，病者无祸侵，田定六畜吉，行人有信音。",
+          "lines": [
+            "速喜喜来临，求财向南行",
+            "失物申未午，逢人路上寻",
+            "官事有福德，病者无祸侵",
+            "田定六畜吉，行人有信音"
+          ],
+          "status": "provisional-transcription",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"],
+          "notes": ["田定一词待校勘", "健康相关句不得作为风险排除"]
+        }
+      },
+      "semanticCore": {
+        "tempo": "fast",
+        "motion": "approaching",
+        "certainty": "rapidly-forming",
+        "primaryTags": ["消息", "推进", "回应", "转机", "快速形成", "公开表达"],
+        "riskTags": ["过快承诺", "情绪高涨", "把消息当结果", "忽略后续稳定性"],
+        "neutralSummary": "事态有较快形成、收到消息或出现转机的倾向，但速度本身不保证长期质量。"
+      },
+      "modernGeneral": {
+        "summary": "速喜突出消息与速度，常用于描述回应、机会或局势迅速明朗。",
+        "supportiveReading": "适合及时行动、接收反馈并抓住短窗口，但仍需核查条件。",
+        "cautionReading": "快速进展可能尚未经过充分验证，不能从一次积极信号直接推出长期成功。",
+        "realityChecks": [
+          "确认消息来源与具体条件",
+          "区分口头积极回应和已经落实的安排",
+          "保留后续复核节点"
+        ]
+      },
+      "sourceIds": [
+        "moe-revised-dictionary-xiaoliuren",
+        "yuxiaji-liuren-shike-web-transcription-8s8s"
+      ],
+      "reviewNotes": []
+    },
+    {
+      "id": "chi_kou",
+      "order": 3,
+      "name": "赤口",
+      "aliases": [],
+      "traditionalPolarity": "inauspicious",
+      "classical": {
+        "statePhrase": {
+          "value": "官事凶时",
+          "status": "provisional-canonical",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"]
+        },
+        "element": {
+          "value": "金",
+          "status": "provisional-canonical",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"]
+        },
+        "spirit": {
+          "value": "白虎",
+          "status": "provisional-canonical",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"]
+        },
+        "numbers": {
+          "value": [4, 7, 10],
+          "status": "provisional-canonical",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"]
+        },
+        "verse": {
+          "text": "赤口主口舌，官非切要防，失物急去寻，行人有惊慌，鸡犬多作怪，病者出西方，更须防咒诅，恐怕染瘟黄。",
+          "lines": [
+            "赤口主口舌，官非切要防",
+            "失物急去寻，行人有惊慌",
+            "鸡犬多作怪，病者出西方",
+            "更须防咒诅，恐怕染瘟黄"
+          ],
+          "status": "provisional-transcription",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"],
+          "notes": ["网络录文有赤日、赤口异字，暂按宫名修正为赤口", "咒诅、瘟黄仅作历史文本，不用于超自然或医学判断"]
+        }
+      },
+      "semanticCore": {
+        "tempo": "volatile",
+        "motion": "conflicting",
+        "certainty": "unstable",
+        "primaryTags": ["口舌", "争议", "公开冲突", "竞争", "急迫", "边界碰撞"],
+        "riskTags": ["升级冲突", "冲动表达", "名誉风险", "程序争议", "恐惧放大"],
+        "neutralSummary": "事态容易通过言语、竞争或程序冲突显现，重点是降低升级风险并保存事实依据。"
+      },
+      "modernGeneral": {
+        "summary": "赤口表示摩擦、争执或强烈表达。它未必意味着事情不会发生，但往往意味着成本和冲突上升。",
+        "supportiveReading": "在辩论、谈判、维权或需要明确边界的情境中，它可提示问题将被公开处理。",
+        "cautionReading": "不要把冲突象意解释为他人恶意或超自然迫害，也不要据此采取报复行为。",
+        "realityChecks": [
+          "重要沟通尽量保留书面记录",
+          "区分事实、推测与情绪",
+          "涉及安全、法律或暴力风险时寻求现实支持"
+        ]
+      },
+      "sourceIds": [
+        "moe-revised-dictionary-xiaoliuren",
+        "yuxiaji-liuren-shike-web-transcription-8s8s"
+      ],
+      "reviewNotes": ["必须屏蔽以咒诅解释现实伤害的输出"]
+    },
+    {
+      "id": "xiao_ji",
+      "order": 4,
+      "name": "小吉",
+      "aliases": [],
+      "traditionalPolarity": "auspicious",
+      "classical": {
+        "statePhrase": {
+          "value": "人来喜时",
+          "status": "provisional-canonical",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"]
+        },
+        "element": {
+          "value": "木",
+          "status": "disputed",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"],
+          "variants": [
+            {
+              "value": "水",
+              "sourceIds": ["modern-explanatory-source-sanyuandaoshi"],
+              "status": "reported",
+              "note": "现代流传体系常见异说，须进一步登记具体版本"
+            }
+          ],
+          "note": "第一版展示基准录文值，同时明确异文"
+        },
+        "spirit": {
+          "value": "六合",
+          "status": "provisional-canonical",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"]
+        },
+        "numbers": {
+          "value": [1, 5, 7],
+          "status": "provisional-canonical",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"]
+        },
+        "verse": {
+          "text": "小吉最吉昌，路上好商量，阴人来报喜，失物在坤方，行人立便至，交关甚是强，凡事皆和合，病者祷上苍。",
+          "lines": [
+            "小吉最吉昌，路上好商量",
+            "阴人来报喜，失物在坤方",
+            "行人立便至，交关甚是强",
+            "凡事皆和合，病者祷上苍"
+          ],
+          "status": "provisional-transcription",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"],
+          "notes": ["阴人为历史性别用语，现代解释不得据此赋予性别吉凶", "祷上苍不得替代医疗"]
+        }
+      },
+      "semanticCore": {
+        "tempo": "gradual",
+        "motion": "cooperative",
+        "certainty": "incremental",
+        "primaryTags": ["合作", "和合", "协商", "帮助", "渐进改善", "关系连接"],
+        "riskTags": ["过度乐观", "依赖他人", "把小进展夸大为最终结果", "忽略条件交换"],
+        "neutralSummary": "事态通过合作、协商或他人支持逐步改善，收益通常是渐进的而非一次完成。"
+      },
+      "modernGeneral": {
+        "summary": "小吉强调可合作、可商量和逐步向好的关系结构。",
+        "supportiveReading": "适合寻求介绍、协调、共同完成任务或通过实际互动积累信任。",
+        "cautionReading": "小吉描述的是可改善性，不是无条件成功，也不能覆盖他人的拒绝或现实限制。",
+        "realityChecks": [
+          "确认各方是否真正愿意合作",
+          "把积极信号落实为下一步行动",
+          "不要根据传统性别词推断人物身份"
+        ]
+      },
+      "sourceIds": [
+        "moe-revised-dictionary-xiaoliuren",
+        "yuxiaji-liuren-shike-web-transcription-8s8s",
+        "modern-explanatory-source-sanyuandaoshi"
+      ],
+      "reviewNotes": ["五行字段为重点异文审查项"]
+    },
+    {
+      "id": "kong_wang",
+      "order": 5,
+      "name": "空亡",
+      "aliases": [],
+      "traditionalPolarity": "inauspicious",
+      "classical": {
+        "statePhrase": {
+          "value": "信音稀时",
+          "status": "provisional-canonical",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"]
+        },
+        "element": {
+          "value": "土",
+          "status": "provisional-canonical",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"]
+        },
+        "spirit": {
+          "value": "勾陈",
+          "status": "provisional-canonical",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"]
+        },
+        "numbers": {
+          "value": [1, 5, 7],
+          "status": "provisional-canonical",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"]
+        },
+        "verse": {
+          "text": "空亡事不长，阴人小乖张，求财无利益，行人有灾殃，失物寻不见，官事有刑场，病人逢暗鬼，禳解保安康。",
+          "lines": [
+            "空亡事不长，阴人小乖张",
+            "求财无利益，行人有灾殃",
+            "失物寻不见，官事有刑场",
+            "病人逢暗鬼，禳解保安康"
+          ],
+          "status": "provisional-transcription",
+          "sourceIds": ["yuxiaji-liuren-shike-web-transcription-8s8s"],
+          "notes": ["暗鬼、灾殃、刑场与禳解仅作为历史文本展示", "不得据此判断死亡、疾病、犯罪或要求付费化解"]
+        }
+      },
+      "semanticCore": {
+        "tempo": "suspended",
+        "motion": "dissipating",
+        "certainty": "unrealized",
+        "primaryTags": ["未落实", "缺失", "落空", "信息不足", "暂时无形", "结束或释放"],
+        "riskTags": ["灾难化想象", "绝对化结论", "诈骗式化解", "忽略现实调查", "自我否定"],
+        "neutralSummary": "当前条件不足以形成可确认结果，事情可能暂时落空、失去支撑或需要重新定义目标。"
+      },
+      "modernGeneral": {
+        "summary": "空亡强调缺失和未落实。它描述当前结构中缺少有效支点，不等于永久失败或命定灾祸。",
+        "supportiveReading": "某些不合适的计划或关系可能因此停止，空出来的位置也可用于重新评估。",
+        "cautionReading": "不得从空亡推出死亡、绝症、犯罪、终身无缘或超自然侵害。",
+        "realityChecks": [
+          "先确认是否缺少信息、资源或明确承诺",
+          "失踪、健康、法律与安全问题应立即采用现实渠道处理",
+          "拒绝任何以恐吓为基础的付费化解"
+        ]
+      },
+      "sourceIds": [
+        "moe-revised-dictionary-xiaoliuren",
+        "yuxiaji-liuren-shike-web-transcription-8s8s"
+      ],
+      "reviewNotes": ["高风险输出必须触发强制伦理规则"]
+    }
+  ]
+}
