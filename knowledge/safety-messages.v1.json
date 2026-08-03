@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "knowledgeVersion": "1.0.0-provisional.1",
+  "knowledgeVersion": "1.0.0-provisional.2",
   "status": "provisional",
   "conclusions": [
     {
@@ -38,6 +38,13 @@
       "text": "请根据实际症状、持续时间和严重程度寻求合适的医疗评估。出现急重症迹象时应及时使用当地紧急医疗服务。",
       "severity": "hard-block",
       "tags": ["health", "medical"],
+      "status": "provisional"
+    },
+    {
+      "id": "seek_immediate_safety_support",
+      "text": "如果你或他人可能立即伤害自己，请先联系当地紧急服务、危机支持，或可信任且能够到场陪伴的人。不要独自等待占断结果。",
+      "severity": "hard-stop",
+      "tags": ["self_harm", "suicide", "emergency", "safety"],
       "status": "provisional"
     },
     {
