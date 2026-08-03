@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://xiaoliurenarchive.local/schemas/question-domains.schema.json",
+  "title": "XiaoLiuRen Question Domains",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "knowledgeVersion", "status", "compositionPolicy", "domains"],
+  "properties": {
+    "schemaVersion": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+    "knowledgeVersion": {"type": "string", "minLength": 1},
+    "status": {"enum": ["provisional", "reviewed", "canonical"]},
+    "compositionPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["order", "rules"],
+      "properties": {
+        "order": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "rules": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "domains": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/domain"}
+    }
+  },
+  "$defs": {
+    "palaceId": {
+      "enum": ["da_an", "liu_lian", "su_xi", "chi_kou", "xiao_ji", "kong_wang"]
+    },
+    "interpretation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summary", "supportive", "caution", "actionPrompts"],
+      "properties": {
+        "summary": {"type": "string", "minLength": 1},
+        "supportive": {"type": "string", "minLength": 1},
+        "caution": {"type": "string", "minLength": 1},
+        "actionPrompts": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 6,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "fragmentIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"}
+        },
+        "tags": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"}
+        }
+      }
+    },
+    "domain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "description", "palaceInterpretations", "mandatoryEthicsRuleIds"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+        "name": {"type": "string", "minLength": 1},
+        "description": {"type": "string", "minLength": 1},
+        "roleTerms": {
+          "type": "object",
+          "additionalProperties": {"type": "string", "minLength": 1}
+        },
+        "stages": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}
+        },
+        "palaceInterpretations": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["da_an", "liu_lian", "su_xi", "chi_kou", "xiao_ji", "kong_wang"],
+          "properties": {
+            "da_an": {"$ref": "#/$defs/interpretation"},
+            "liu_lian": {"$ref": "#/$defs/interpretation"},
+            "su_xi": {"$ref": "#/$defs/interpretation"},
+            "chi_kou": {"$ref": "#/$defs/interpretation"},
+            "xiao_ji": {"$ref": "#/$defs/interpretation"},
+            "kong_wang": {"$ref": "#/$defs/interpretation"}
+          }
+        },
+        "mandatoryEthicsRuleIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"}
+        }
+      }
+    }
+  }
+}
