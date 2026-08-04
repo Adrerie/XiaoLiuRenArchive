@@ -1,13 +1,17 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://xiaoliurenarchive.local/schemas/divination-result.schema.json",
+  "$id": "https://example.local/xiaoliuren/divination-result.schema.json",
   "title": "XiaoLiuRen Divination Result",
   "type": "object",
   "additionalProperties": false,
-  "required": ["resultVersion", "createdAt", "input", "calendar", "calculation", "interpretation", "ethics", "provenance"],
+  "required": ["resultVersion", "input", "calendar", "calculation", "interpretation", "ethics", "provenance"],
   "properties": {
-    "resultVersion": {"type": "string", "minLength": 1},
-    "createdAt": {"type": "string", "format": "date-time"},
+    "resultVersion": {"const": "1.1.0"},
+    "createdAt": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "可选展示元数据，不参与结果确定性比较。"
+    },
     "input": {"$ref": "#/$defs/input"},
     "calendar": {"$ref": "#/$defs/calendar"},
     "calculation": {"$ref": "#/$defs/calculation"},
@@ -18,52 +22,83 @@
   "$defs": {
     "palaceId": {"enum": ["da_an", "liu_lian", "su_xi", "chi_kou", "xiao_ji", "kong_wang"]},
     "branch": {"enum": ["zi", "chou", "yin", "mao", "chen", "si", "wu", "wei", "shen", "you", "xu", "hai"]},
+    "stringArray": {"type": "array", "items": {"type": "string"}},
+    "uniqueStringArray": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
     "input": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["inputMode", "timezone", "lunarMonth", "lunarDay", "isLeapMonth", "earthlyBranch", "earthlyBranchIndex", "domainId", "questionFlags"],
+      "required": [
+        "inputMode",
+        "timezone",
+        "lunarMonth",
+        "lunarDay",
+        "isLeapMonth",
+        "earthlyBranch",
+        "earthlyBranchIndex",
+        "domainId",
+        "stageId",
+        "questionFlags",
+        "privacy"
+      ],
       "properties": {
-        "inputMode": {"enum": ["solar_datetime", "manual_lunar"]},
-        "timezone": {"type": "string", "minLength": 1},
-        "solarDateTime": {"type": "string", "format": "date-time"},
+        "inputMode": {"enum": ["civil_datetime", "manual_lunar"]},
+        "timezone": {"type": ["string", "null"]},
+        "localDateTime": {
+          "type": ["string", "null"],
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2})?$"
+        },
         "lunarMonth": {"type": "integer", "minimum": 1, "maximum": 12},
         "lunarDay": {"type": "integer", "minimum": 1, "maximum": 30},
         "isLeapMonth": {"type": "boolean"},
         "earthlyBranch": {"$ref": "#/$defs/branch"},
         "earthlyBranchIndex": {"type": "integer", "minimum": 1, "maximum": 12},
         "domainId": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
-        "stageId": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
-        "questionFlags": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+        "stageId": {"type": ["string", "null"]},
+        "questionFlags": {"$ref": "#/$defs/uniqueStringArray"},
+        "privacy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["questionTextStored", "questionTextIncludedInExport"],
+          "properties": {
+            "questionTextStored": {"type": "boolean"},
+            "questionTextIncludedInExport": {"type": "boolean"}
+          }
+        }
       }
     },
     "calendar": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["calendarPolicyId", "resolvedLunarDate", "boundaryDecision", "warnings"],
+      "required": ["calendarPolicyId", "resolvedLunarDate", "earthlyBranch", "earthlyBranchIndex", "boundaryDecision", "trace", "warnings"],
       "properties": {
-        "calendarPolicyId": {"type": "string"},
-        "localDateTime": {"type": "string", "format": "date-time"},
+        "calendarPolicyId": {"type": "string", "minLength": 1},
+        "localDateTime": {"type": ["string", "null"]},
+        "timezone": {"type": ["string", "null"]},
         "resolvedLunarDate": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["month", "day", "isLeapMonth"],
+          "required": ["year", "month", "day", "isLeapMonth"],
           "properties": {
-            "year": {"type": "integer"},
+            "year": {"type": ["integer", "null"]},
             "month": {"type": "integer", "minimum": 1, "maximum": 12},
             "day": {"type": "integer", "minimum": 1, "maximum": 30},
             "isLeapMonth": {"type": "boolean"}
           }
         },
+        "earthlyBranch": {"$ref": "#/$defs/branch"},
+        "earthlyBranchIndex": {"type": "integer", "minimum": 1, "maximum": 12},
         "boundaryDecision": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["mode", "appliedDayOffset"],
+          "required": ["mode", "appliedDayOffset", "manualInputBypass"],
           "properties": {
             "mode": {"enum": ["civil_midnight", "zi_hour_23", "split_early_late_zi"]},
-            "appliedDayOffset": {"type": "integer", "minimum": -1, "maximum": 1}
+            "appliedDayOffset": {"type": "integer", "minimum": -1, "maximum": 1},
+            "manualInputBypass": {"type": "boolean"}
           }
         },
-        "warnings": {"type": "array", "items": {"type": "string"}}
+        "trace": {"type": "array", "items": {"type": "object"}},
+        "warnings": {"$ref": "#/$defs/stringArray"}
       }
     },
     "trace": {
@@ -90,8 +125,12 @@
         "palaceOrder": {
           "type": "array",
           "prefixItems": [
-            {"const": "da_an"}, {"const": "liu_lian"}, {"const": "su_xi"},
-            {"const": "chi_kou"}, {"const": "xiao_ji"}, {"const": "kong_wang"}
+            {"const": "da_an"},
+            {"const": "liu_lian"},
+            {"const": "su_xi"},
+            {"const": "chi_kou"},
+            {"const": "xiao_ji"},
+            {"const": "kong_wang"}
           ],
           "items": false
         },
@@ -101,57 +140,128 @@
         "monthPalaceId": {"$ref": "#/$defs/palaceId"},
         "dayPalaceId": {"$ref": "#/$defs/palaceId"},
         "finalPalaceId": {"$ref": "#/$defs/palaceId"},
-        "trace": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"$ref": "#/$defs/trace"}}
+        "trace": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "prefixItems": [
+            {"allOf": [{"$ref": "#/$defs/trace"}, {"properties": {"stage": {"const": "month"}}}]},
+            {"allOf": [{"$ref": "#/$defs/trace"}, {"properties": {"stage": {"const": "day"}}}]},
+            {"allOf": [{"$ref": "#/$defs/trace"}, {"properties": {"stage": {"const": "hour"}}}]}
+          ],
+          "items": false
+        }
+      }
+    },
+    "contentBlock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "text", "kind", "sourceIds", "status"],
+      "properties": {
+        "id": {"type": "string"},
+        "text": {"type": "string"},
+        "kind": {"type": "string"},
+        "sourceIds": {"$ref": "#/$defs/uniqueStringArray"},
+        "status": {"enum": ["provisional", "reviewed", "canonical", "disputed"]}
       }
     },
     "interpretation": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["domainId", "certaintyMode", "sections", "fragmentIds"],
+      "required": ["domainId", "stageId", "certaintyMode", "sections", "fragmentIds", "candidateClaimIds", "trace"],
       "properties": {
         "domainId": {"type": "string"},
-        "stageId": {"type": "string"},
+        "stageId": {"type": ["string", "null"]},
         "certaintyMode": {"const": "symbolic-non-deterministic"},
         "sections": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["neutralSummary", "traditionalText", "domainInterpretation", "actionPrompts", "realityChecks"],
+          "required": ["neutral", "domain", "stage", "actions", "traditionalText", "historicalContext", "realityChecks", "ethicsNotices"],
           "properties": {
-            "neutralSummary": {"type": "array", "items": {"type": "string"}},
-            "traditionalText": {"type": "array", "items": {"type": "object"}},
-            "domainInterpretation": {"type": "array", "items": {"type": "string"}},
-            "actionPrompts": {"type": "array", "items": {"type": "string"}},
-            "realityChecks": {"type": "array", "items": {"type": "string"}}
+            "neutral": {"type": "array", "items": {"$ref": "#/$defs/contentBlock"}},
+            "domain": {"type": "array", "items": {"$ref": "#/$defs/contentBlock"}},
+            "stage": {"type": "array", "items": {"$ref": "#/$defs/contentBlock"}},
+            "actions": {"type": "array", "items": {"$ref": "#/$defs/contentBlock"}},
+            "traditionalText": {"type": "array", "items": {"$ref": "#/$defs/contentBlock"}},
+            "historicalContext": {"type": "array", "items": {"$ref": "#/$defs/contentBlock"}},
+            "realityChecks": {"type": "array", "items": {"$ref": "#/$defs/contentBlock"}},
+            "ethicsNotices": {"type": "array", "items": {"$ref": "#/$defs/contentBlock"}}
           }
         },
-        "fragmentIds": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+        "fragmentIds": {"$ref": "#/$defs/uniqueStringArray"},
+        "candidateClaimIds": {"$ref": "#/$defs/uniqueStringArray"},
+        "trace": {"type": "array", "items": {"type": "object"}}
+      }
+    },
+    "suppressedClaim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claimId", "claimType", "ruleId", "fragmentIds", "reasonCode"],
+      "properties": {
+        "claimId": {"type": "string"},
+        "claimType": {"type": "string"},
+        "ruleId": {"type": "string"},
+        "fragmentIds": {"$ref": "#/$defs/uniqueStringArray"},
+        "reasonCode": {"type": "string"}
       }
     },
     "ethics": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["evaluatedRuleIds", "triggeredRuleIds", "blockedClaimTypes", "requiredNotices", "forcedConclusionCodes", "stopPrimaryDivination"],
+      "required": [
+        "mode",
+        "evaluatedRuleIds",
+        "triggeredRuleIds",
+        "retainedClaimIds",
+        "suppressedClaims",
+        "retainedFragmentIds",
+        "blockedFragmentIds",
+        "forcedConclusionCodes",
+        "requiredNotices",
+        "requiredRealityActionCodes",
+        "contextCodes",
+        "allowedTopics",
+        "forbiddenActionTypes",
+        "preferredTerms",
+        "forbiddenTerms",
+        "stopPrimaryDivination",
+        "trace"
+      ],
       "properties": {
-        "evaluatedRuleIds": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
-        "triggeredRuleIds": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
-        "blockedClaimTypes": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
-        "requiredNotices": {"type": "array", "items": {"type": "string"}},
-        "forcedConclusionCodes": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
-        "stopPrimaryDivination": {"type": "boolean"}
+        "mode": {"enum": ["allow", "allow_with_constraints", "hard_block", "hard_stop"]},
+        "evaluatedRuleIds": {"$ref": "#/$defs/uniqueStringArray"},
+        "triggeredRuleIds": {"$ref": "#/$defs/uniqueStringArray"},
+        "retainedClaimIds": {"$ref": "#/$defs/uniqueStringArray"},
+        "suppressedClaims": {"type": "array", "items": {"$ref": "#/$defs/suppressedClaim"}},
+        "retainedFragmentIds": {"$ref": "#/$defs/uniqueStringArray"},
+        "blockedFragmentIds": {"$ref": "#/$defs/uniqueStringArray"},
+        "forcedConclusionCodes": {"$ref": "#/$defs/uniqueStringArray"},
+        "requiredNotices": {"$ref": "#/$defs/stringArray"},
+        "requiredRealityActionCodes": {"$ref": "#/$defs/uniqueStringArray"},
+        "contextCodes": {"$ref": "#/$defs/uniqueStringArray"},
+        "allowedTopics": {"$ref": "#/$defs/uniqueStringArray"},
+        "forbiddenActionTypes": {"$ref": "#/$defs/uniqueStringArray"},
+        "preferredTerms": {"$ref": "#/$defs/uniqueStringArray"},
+        "forbiddenTerms": {"$ref": "#/$defs/uniqueStringArray"},
+        "stopPrimaryDivination": {"type": "boolean"},
+        "trace": {"type": "array", "items": {"type": "object"}}
       }
     },
     "provenance": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["knowledgeVersion", "schemaVersions", "sourceIds", "provisionalSourceIds", "disputedFieldIds", "calendarPolicyId", "algorithmId"],
+      "required": ["knowledgeVersion", "ruleVersion", "schemaVersions", "sourceIds", "provisionalSourceIds", "disputedFieldIds", "calendarPolicyId", "algorithmId", "fragmentIds", "ethicsRuleIds"],
       "properties": {
         "knowledgeVersion": {"type": "string"},
+        "ruleVersion": {"type": "string"},
         "schemaVersions": {"type": "object", "additionalProperties": {"type": "string"}},
-        "sourceIds": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
-        "provisionalSourceIds": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
-        "disputedFieldIds": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "sourceIds": {"$ref": "#/$defs/uniqueStringArray"},
+        "provisionalSourceIds": {"$ref": "#/$defs/uniqueStringArray"},
+        "disputedFieldIds": {"$ref": "#/$defs/uniqueStringArray"},
         "calendarPolicyId": {"type": "string"},
-        "algorithmId": {"const": "traditional-month-day-hour-v1"}
+        "algorithmId": {"const": "traditional-month-day-hour-v1"},
+        "fragmentIds": {"$ref": "#/$defs/uniqueStringArray"},
+        "ethicsRuleIds": {"$ref": "#/$defs/uniqueStringArray"}
       }
     }
   }

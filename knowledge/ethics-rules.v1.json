@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "knowledgeVersion": "1.0.0-provisional.1",
+  "knowledgeVersion": "1.0.0-provisional.2",
   "status": "provisional",
   "enginePolicy": {
     "evaluationOrder": "priority-descending-then-id-ascending",
@@ -9,7 +9,8 @@
       "伦理规则只约束解释，不修改历法与落宫",
       "现实中的明确事实优先于占断",
       "禁止的结论应被阻止，而不是换一种隐晦说法继续输出",
-      "所有触发规则必须进入 ethicsRuleIds"
+      "所有触发规则必须进入 ethicsRuleIds",
+      "受控结论与现实行动必须引用本地 safety message ID"
     ],
     "claimTypes": [
       "medical_diagnosis",
@@ -33,18 +34,29 @@
       "scope": ["all"],
       "when": {"always": true},
       "effects": [
-        {"type": "exclude_from_core_input", "fields": ["gender", "sexualOrientation", "genderIdentity", "relationshipRole", "name", "ethnicity", "religion"]},
+        {
+          "type": "exclude_from_core_input",
+          "fields": [
+            "questionText",
+            "domainId",
+            "stageId",
+            "displayIdentity.preferredAddress",
+            "displayIdentity.pronouns",
+            "displayIdentity.genderIdentity",
+            "displayIdentity.sexualOrientation"
+          ]
+        },
         {"type": "assert_invariant", "invariant": "identity_fields_do_not_change_palace"}
       ],
       "requiredNotice": null,
-      "rationale": "传统月日时算法不需要身份字段，身份不得成为不同计算结果的理由。"
+      "rationale": "传统月日时算法不需要身份或问题字段，这些字段不得成为不同计算结果的理由。"
     },
     {
       "id": "consent-overrides-divination",
       "priority": 1000,
       "severity": "hard-block",
       "scope": ["relationship"],
-      "when": {"factEquals": {"question.explicitRefusalExists": true}},
+      "when": {"factEquals": {"facts.explicitRefusalExists": true}},
       "effects": [
         {"type": "suppress_claim_types", "claimTypes": ["third_party_consent", "guaranteed_future_outcome"]},
         {"type": "force_conclusion", "conclusionCode": "respect_explicit_refusal"},
@@ -58,9 +70,10 @@
       "priority": 990,
       "severity": "hard-block",
       "scope": ["relationship"],
-      "when": {"factEquals": {"question.asksAboutThirdPartyIdentity": true}},
+      "when": {"questionHasAnyFlag": ["third_party_identity", "sexual_orientation", "gender_identity"]},
       "effects": [
         {"type": "suppress_claim_types", "claimTypes": ["third_party_identity"]},
+        {"type": "force_conclusion", "conclusionCode": "cannot_confirm_third_party_identity"},
         {"type": "allow_topics", "topics": ["observable_interaction", "communication_state", "querent_boundaries"]}
       ],
       "requiredNotice": "本课不能确认或推断第三方的性取向、性别身份、出柜状态或性行为角色。这些只能由当事人自行表达。",
@@ -81,6 +94,20 @@
       "rationale": "同性与多元性别关系不是异性婚姻模型的异常分支，阴阳运动也不能直接等同生理性别或性角色。"
     },
     {
+      "id": "medical-emergency-escalation",
+      "priority": 1000,
+      "severity": "hard-stop",
+      "scope": ["health"],
+      "when": {"questionHasAnyFlag": ["medical_emergency"]},
+      "effects": [
+        {"type": "stop_divination_as_primary_action", "value": true},
+        {"type": "require_reality_action", "actionCode": "seek_medical_evaluation_based_on_symptoms"},
+        {"type": "suppress_claim_types", "claimTypes": ["medical_diagnosis", "medical_risk_exclusion", "guaranteed_future_outcome"]}
+      ],
+      "requiredNotice": "出现急重症迹象时，不应等待占断结果。请及时使用当地紧急医疗服务或寻求专业评估。",
+      "rationale": "现实医疗紧急情况需要立即行动，占断不能成为延迟求助的理由。"
+    },
+    {
       "id": "medical-non-diagnosis",
       "priority": 970,
       "severity": "hard-block",
@@ -95,6 +122,21 @@
       "rationale": "传统断辞不是医学证据。"
     },
     {
+      "id": "self-harm-emergency-escalation",
+      "priority": 1000,
+      "severity": "hard-stop",
+      "scope": ["all"],
+      "when": {"questionHasAnyFlag": ["suicide", "self_harm_immediate_risk"]},
+      "effects": [
+        {"type": "stop_divination_as_primary_action", "value": true},
+        {"type": "require_reality_action", "actionCode": "seek_immediate_safety_support"},
+        {"type": "suppress_claim_types", "claimTypes": ["death_prediction", "guaranteed_future_outcome"]},
+        {"type": "block_fragments_with_tags", "tags": ["no_hope", "fatal_certainty", "isolation"]}
+      ],
+      "requiredNotice": "如果你或他人可能立即伤害自己，请不要等待占断结果，先联系当地紧急服务、危机支持或可信任且能到场的人。",
+      "rationale": "自伤风险需要现实安全支持和及时介入。"
+    },
+    {
       "id": "no-death-prediction",
       "priority": 1000,
       "severity": "hard-block",
@@ -102,6 +144,7 @@
       "when": {"questionHasAnyFlag": ["death", "lifespan", "fatal_outcome", "suicide", "terminal_illness"]},
       "effects": [
         {"type": "suppress_claim_types", "claimTypes": ["death_prediction", "guaranteed_future_outcome"]},
+        {"type": "force_conclusion", "conclusionCode": "cannot_predict_death_or_lifespan"},
         {"type": "block_fragments_with_tags", "tags": ["death_date", "lifespan_number", "fatal_certainty", "no_hope"]}
       ],
       "requiredNotice": "本系统不预测死亡时间、寿命或必然致命结果。涉及现实危险、严重症状或自伤风险时，应立即使用现实求助渠道。",
@@ -112,7 +155,7 @@
       "priority": 960,
       "severity": "hard-block",
       "scope": ["all"],
-      "when": {"outputContainsAnyTag": ["curse", "ghost", "spirit_attack", "supernatural_disease"]},
+      "when": {"questionHasAnyFlag": ["supernatural_causation", "curse", "ghost"]},
       "effects": [
         {"type": "suppress_claim_types", "claimTypes": ["supernatural_causation"]},
         {"type": "historical_text_only", "terms": ["暗鬼", "咒诅", "禳解", "瘟黄"]},
@@ -120,6 +163,20 @@
       ],
       "requiredNotice": "相关词语只作为历史文本展示，不代表现实问题由鬼神、诅咒或超自然力量造成。",
       "rationale": "不得强化妄想、恐惧或以超自然解释替代现实调查。"
+    },
+    {
+      "id": "no-supernatural-causation-output",
+      "priority": 959,
+      "severity": "hard-block",
+      "scope": ["all"],
+      "when": {"outputContainsAnyTag": ["curse", "ghost", "spirit_attack", "supernatural_disease"]},
+      "effects": [
+        {"type": "suppress_claim_types", "claimTypes": ["supernatural_causation"]},
+        {"type": "historical_text_only", "terms": ["暗鬼", "咒诅", "禳解", "瘟黄"]},
+        {"type": "append_context", "contextCode": "historical_language_not_causal_claim"}
+      ],
+      "requiredNotice": "传统鬼神与禳解词语只允许作为历史语境显示，不构成现实因果判断。",
+      "rationale": "即使相关词语来自传统文本，也不能被解释为现实超自然因果。"
     },
     {
       "id": "financial-non-reliance",
@@ -156,6 +213,7 @@
       "when": {"questionHasAnyFlag": ["missing_person", "unreachable_with_danger", "abduction", "immediate_safety_risk"]},
       "effects": [
         {"type": "stop_divination_as_primary_action", "value": true},
+        {"type": "force_conclusion", "conclusionCode": "traditional_result_not_primary_in_emergency"},
         {"type": "require_reality_action", "actionCode": "contact_emergency_services_and_relevant_people"},
         {"type": "suppress_claim_types", "claimTypes": ["death_prediction", "criminal_accusation", "guaranteed_future_outcome"]}
       ],
@@ -167,13 +225,41 @@
       "priority": 940,
       "severity": "hard-block",
       "scope": ["lost_item", "legal_dispute", "relationship", "all"],
-      "when": {"outputContainsAnyTag": ["theft", "fraud", "violence", "crime", "malice"]},
+      "when": {"questionHasAnyFlag": ["criminal_accusation"]},
       "effects": [
         {"type": "suppress_claim_types", "claimTypes": ["criminal_accusation"]},
-        {"type": "require_evidence_language", "value": true}
+        {"type": "require_evidence_language", "value": true},
+        {"type": "require_reality_action", "actionCode": "preserve_evidence_and_use_appropriate_channels"}
       ],
       "requiredNotice": "宫位不能证明某人实施了盗窃、诈骗、暴力或其他违法行为。相关判断必须依据可核验事实并通过适当渠道处理。",
       "rationale": "防止无证据指控和现实冲突升级。"
+    },
+    {
+      "id": "no-criminal-accusation-output",
+      "priority": 939,
+      "severity": "hard-block",
+      "scope": ["lost_item", "legal_dispute", "relationship", "all"],
+      "when": {"outputContainsAnyTag": ["theft", "fraud", "violence", "crime", "malice"]},
+      "effects": [
+        {"type": "suppress_claim_types", "claimTypes": ["criminal_accusation"]},
+        {"type": "require_evidence_language", "value": true},
+        {"type": "require_reality_action", "actionCode": "preserve_evidence_and_use_appropriate_channels"}
+      ],
+      "requiredNotice": "传统象意中的盗、欺、害等词语不能证明具体人员实施违法行为。",
+      "rationale": "传统文本标签也不能成为无证据指控。"
+    },
+    {
+      "id": "reality-evidence-priority",
+      "priority": 920,
+      "severity": "hard-constraint",
+      "scope": ["all"],
+      "when": {"always": true},
+      "effects": [
+        {"type": "assert_priority", "higher": "verified_reality", "lower": "divination_interpretation"},
+        {"type": "append_reality_check_when_conflict", "value": true}
+      ],
+      "requiredNotice": "当排盘解释与正式通知、检查结果、合同、明确表态或其他可核验事实冲突时，以现实证据为准。",
+      "rationale": "专家系统必须明确其知识与应用边界。"
     },
     {
       "id": "no-guaranteed-outcome",
@@ -188,19 +274,6 @@
       ],
       "requiredNotice": null,
       "rationale": "小六壬解释属于传统文化框架，不应包装为确定预测。"
-    },
-    {
-      "id": "reality-evidence-priority",
-      "priority": 920,
-      "severity": "hard-constraint",
-      "scope": ["all"],
-      "when": {"always": true},
-      "effects": [
-        {"type": "assert_priority", "higher": "verified_reality", "lower": "divination_interpretation"},
-        {"type": "append_reality_check_when_conflict", "value": true}
-      ],
-      "requiredNotice": "当排盘解释与正式通知、检查结果、合同、明确表态或其他可核验事实冲突时，以现实证据为准。",
-      "rationale": "专家系统必须明确其知识与应用边界。"
     },
     {
       "id": "minor-safeguarding",

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "policyVersion": "1.0.0-provisional.1",
+  "policyVersion": "1.0.0-provisional.2",
   "defaultPolicyId": "civil-midnight-reuse-leap-month",
   "policies": [
     {
@@ -60,7 +60,7 @@
       "sourceIds": []
     },
     {
-      "id": "manual-lunar-no-conversion",
+      "id": "manual-lunar-input-v1",
       "name": "手动农历输入直算",
       "status": "alternative",
       "dayBoundary": {

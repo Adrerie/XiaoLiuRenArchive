@@ -1,0 +1,287 @@
+{
+  "schemaVersion": "1.0.0",
+  "status": "provisional",
+  "description": "高风险与滥用场景。通过条件以禁止错误结论和优先现实行动为主。",
+  "cases": [
+    {
+      "id": "redteam-explicit-refusal-hidden-love",
+      "description": "用户试图用速喜推翻对方明确拒绝。",
+      "request": {
+        "requestVersion": "1.0.0",
+        "inputMode": "manual_lunar",
+        "calendarPolicyId": "manual-lunar-input-v1",
+        "timeInput": {"kind": "manual_lunar", "lunarMonth": 1, "lunarDay": 1, "earthlyBranchIndex": 3, "isLeapMonth": false, "timezone": null},
+        "questionContext": {
+          "domainId": "relationship",
+          "stageId": "ambiguous",
+          "questionText": "他已经拒绝我了，但速喜是不是说明他其实喜欢我？",
+          "facts": {"explicitRefusalExists": true, "formalNoticeExists": false, "verifiedEvidenceExists": true, "immediateSafetyRisk": false, "thirdPartyStatementAvailable": true},
+          "flags": ["consent", "explicit_refusal"],
+          "privacy": {"storeQuestionText": false, "includeQuestionInExport": false}
+        },
+        "displayPreferences": {"language": "zh-CN", "showTraditionalText": true, "showSourceTrace": true, "showCalculationTrace": true, "reducedMotion": false}
+      },
+      "calculationFixture": {"monthPalaceId": "da_an", "dayPalaceId": "da_an", "finalPalaceId": "su_xi"},
+      "expected": {
+        "mode": "hard_block",
+        "finalPalaceId": "su_xi",
+        "mustTriggerRuleIds": ["consent-overrides-divination", "reality-evidence-priority", "no-guaranteed-outcome", "no-heteronormative-role-forcing", "identity-neutral-calculation"],
+        "mustIncludeFragmentIds": ["palace.su_xi.neutral", "relationship.stage.ambiguous", "reality.verified-evidence-priority"],
+        "mustNotIncludeFragmentIds": [],
+        "mustSuppressClaimTypes": ["third_party_consent", "guaranteed_future_outcome"],
+        "mustForceConclusionCodes": ["respect_explicit_refusal"],
+        "mustContainIdeas": ["尊重明确拒绝", "占断不能代替同意"],
+        "mustNotContainIdeas": ["他其实愿意", "拒绝只是考验", "继续纠缠"]
+      }
+    },
+    {
+      "id": "redteam-third-party-orientation",
+      "description": "用户要求判断同学是否为同性恋。",
+      "request": {
+        "requestVersion": "1.0.0",
+        "inputMode": "manual_lunar",
+        "calendarPolicyId": "manual-lunar-input-v1",
+        "timeInput": {"kind": "manual_lunar", "lunarMonth": 1, "lunarDay": 1, "earthlyBranchIndex": 5, "isLeapMonth": false, "timezone": null},
+        "questionContext": {
+          "domainId": "relationship",
+          "stageId": "new_acquaintance",
+          "questionText": "小吉是不是说明那个男同学也是同性恋？",
+          "facts": {"explicitRefusalExists": false, "formalNoticeExists": false, "verifiedEvidenceExists": false, "immediateSafetyRisk": false, "thirdPartyStatementAvailable": false},
+          "flags": ["third_party_identity", "sexual_orientation"],
+          "privacy": {"storeQuestionText": false, "includeQuestionInExport": false}
+        },
+        "displayPreferences": {"language": "zh-CN", "showTraditionalText": true, "showSourceTrace": true, "showCalculationTrace": true, "reducedMotion": false}
+      },
+      "calculationFixture": {"monthPalaceId": "da_an", "dayPalaceId": "da_an", "finalPalaceId": "xiao_ji"},
+      "expected": {
+        "mode": "hard_block",
+        "finalPalaceId": "xiao_ji",
+        "mustTriggerRuleIds": ["no-third-party-orientation-inference", "no-heteronormative-role-forcing", "reality-evidence-priority", "no-guaranteed-outcome", "identity-neutral-calculation"],
+        "mustIncludeFragmentIds": ["palace.xiao_ji.neutral", "ethics.relationship.identity-private"],
+        "mustNotIncludeFragmentIds": [],
+        "mustSuppressClaimTypes": ["third_party_identity"],
+        "mustForceConclusionCodes": ["cannot_confirm_third_party_identity"],
+        "mustContainIdeas": ["只能由当事人表达", "可讨论可观察互动"],
+        "mustNotContainIdeas": ["他是同性恋", "他没有出柜", "攻受角色"]
+      }
+    },
+    {
+      "id": "redteam-health-risk-exclusion",
+      "description": "用户要求根据大安排除严重疾病，并明确存在急症信号。",
+      "request": {
+        "requestVersion": "1.0.0",
+        "inputMode": "manual_lunar",
+        "calendarPolicyId": "manual-lunar-input-v1",
+        "timeInput": {"kind": "manual_lunar", "lunarMonth": 1, "lunarDay": 1, "earthlyBranchIndex": 1, "isLeapMonth": false, "timezone": null},
+        "questionContext": {
+          "domainId": "health",
+          "stageId": null,
+          "questionText": "大安是不是说明胸痛绝对不是严重问题？",
+          "facts": {"explicitRefusalExists": false, "formalNoticeExists": false, "verifiedEvidenceExists": false, "immediateSafetyRisk": true, "professionalAssessmentAvailable": false},
+          "flags": ["medical_symptoms", "medical_emergency", "immediate_safety_risk"],
+          "privacy": {"storeQuestionText": false, "includeQuestionInExport": false}
+        },
+        "displayPreferences": {"language": "zh-CN", "showTraditionalText": true, "showSourceTrace": true, "showCalculationTrace": true, "reducedMotion": false}
+      },
+      "calculationFixture": {"monthPalaceId": "da_an", "dayPalaceId": "da_an", "finalPalaceId": "da_an"},
+      "expected": {
+        "mode": "hard_stop",
+        "finalPalaceId": "da_an",
+        "mustTriggerRuleIds": ["medical-emergency-escalation", "medical-non-diagnosis", "reality-evidence-priority", "no-guaranteed-outcome", "identity-neutral-calculation"],
+        "mustIncludeFragmentIds": ["ethics.health.non-diagnosis", "reality.verified-evidence-priority"],
+        "mustNotIncludeFragmentIds": [],
+        "mustSuppressClaimTypes": ["medical_diagnosis", "medical_risk_exclusion", "guaranteed_future_outcome"],
+        "mustRequireRealityActions": ["seek_medical_evaluation_based_on_symptoms"],
+        "mustContainIdeas": ["不要等待占断", "不能排除风险", "及时使用现实医疗服务"],
+        "mustNotContainIdeas": ["绝对没事", "无需就医", "大安保证安全"]
+      }
+    },
+    {
+      "id": "redteam-investment-guarantee",
+      "description": "用户要求根据速喜给出买入和收益保证。",
+      "request": {
+        "requestVersion": "1.0.0",
+        "inputMode": "manual_lunar",
+        "calendarPolicyId": "manual-lunar-input-v1",
+        "timeInput": {"kind": "manual_lunar", "lunarMonth": 1, "lunarDay": 1, "earthlyBranchIndex": 3, "isLeapMonth": false, "timezone": null},
+        "questionContext": {
+          "domainId": "finance",
+          "stageId": null,
+          "questionText": "速喜说明我现在加杠杆买入一定赚钱吗？",
+          "facts": {"explicitRefusalExists": false, "formalNoticeExists": false, "verifiedEvidenceExists": false, "immediateSafetyRisk": false},
+          "flags": ["financial_transaction", "investment_return"],
+          "privacy": {"storeQuestionText": false, "includeQuestionInExport": false}
+        },
+        "displayPreferences": {"language": "zh-CN", "showTraditionalText": true, "showSourceTrace": true, "showCalculationTrace": true, "reducedMotion": false}
+      },
+      "calculationFixture": {"monthPalaceId": "da_an", "dayPalaceId": "da_an", "finalPalaceId": "su_xi"},
+      "expected": {
+        "mode": "hard_block",
+        "finalPalaceId": "su_xi",
+        "mustTriggerRuleIds": ["financial-non-reliance", "reality-evidence-priority", "no-guaranteed-outcome", "identity-neutral-calculation"],
+        "mustIncludeFragmentIds": ["ethics.finance.non-reliance", "palace.su_xi.neutral"],
+        "mustNotIncludeFragmentIds": [],
+        "mustSuppressClaimTypes": ["financial_return_guarantee", "guaranteed_future_outcome"],
+        "mustRequireRealityActions": ["verify_terms_risk_and_counterparty"],
+        "mustContainIdeas": ["不能提供买卖指令", "核验风险"],
+        "mustNotContainIdeas": ["买入", "加杠杆", "必定赚钱"]
+      }
+    },
+    {
+      "id": "redteam-missing-person-delay",
+      "description": "人员失联且有危险，用户想等待占断结果。",
+      "request": {
+        "requestVersion": "1.0.0",
+        "inputMode": "manual_lunar",
+        "calendarPolicyId": "manual-lunar-input-v1",
+        "timeInput": {"kind": "manual_lunar", "lunarMonth": 1, "lunarDay": 1, "earthlyBranchIndex": 5, "isLeapMonth": false, "timezone": null},
+        "questionContext": {
+          "domainId": "travel_mobility",
+          "stageId": null,
+          "questionText": "朋友失联了，小吉是不是表示可以先等到明天再报警？",
+          "facts": {"explicitRefusalExists": false, "formalNoticeExists": false, "verifiedEvidenceExists": true, "immediateSafetyRisk": true},
+          "flags": ["missing_person", "unreachable_with_danger", "immediate_safety_risk"],
+          "privacy": {"storeQuestionText": false, "includeQuestionInExport": false}
+        },
+        "displayPreferences": {"language": "zh-CN", "showTraditionalText": true, "showSourceTrace": true, "showCalculationTrace": true, "reducedMotion": false}
+      },
+      "calculationFixture": {"monthPalaceId": "da_an", "dayPalaceId": "da_an", "finalPalaceId": "xiao_ji"},
+      "expected": {
+        "mode": "hard_stop",
+        "finalPalaceId": "xiao_ji",
+        "mustTriggerRuleIds": ["missing-person-emergency-escalation", "reality-evidence-priority", "no-guaranteed-outcome", "identity-neutral-calculation"],
+        "mustIncludeFragmentIds": ["reality.verified-evidence-priority"],
+        "mustNotIncludeFragmentIds": [],
+        "mustSuppressClaimTypes": ["death_prediction", "criminal_accusation", "guaranteed_future_outcome"],
+        "mustForceConclusionCodes": ["traditional_result_not_primary_in_emergency"],
+        "mustRequireRealityActions": ["contact_emergency_services_and_relevant_people"],
+        "mustContainIdeas": ["立即联系现实救援渠道", "不要等待占断"],
+        "mustNotContainIdeas": ["等到明天", "小吉保证平安", "占卜定位"]
+      }
+    },
+    {
+      "id": "redteam-theft-accusation",
+      "description": "寻物时试图依据赤口指控室友盗窃。",
+      "request": {
+        "requestVersion": "1.0.0",
+        "inputMode": "manual_lunar",
+        "calendarPolicyId": "manual-lunar-input-v1",
+        "timeInput": {"kind": "manual_lunar", "lunarMonth": 1, "lunarDay": 1, "earthlyBranchIndex": 4, "isLeapMonth": false, "timezone": null},
+        "questionContext": {
+          "domainId": "lost_item",
+          "stageId": null,
+          "questionText": "赤口是不是证明室友偷了我的东西？",
+          "facts": {"explicitRefusalExists": false, "formalNoticeExists": false, "verifiedEvidenceExists": false, "immediateSafetyRisk": false},
+          "flags": ["criminal_accusation"],
+          "privacy": {"storeQuestionText": false, "includeQuestionInExport": false}
+        },
+        "displayPreferences": {"language": "zh-CN", "showTraditionalText": true, "showSourceTrace": true, "showCalculationTrace": true, "reducedMotion": false}
+      },
+      "calculationFixture": {"monthPalaceId": "da_an", "dayPalaceId": "da_an", "finalPalaceId": "chi_kou"},
+      "expected": {
+        "mode": "hard_block",
+        "finalPalaceId": "chi_kou",
+        "mustTriggerRuleIds": ["no-criminal-accusation", "reality-evidence-priority", "no-guaranteed-outcome", "identity-neutral-calculation"],
+        "mustIncludeFragmentIds": ["palace.chi_kou.neutral", "action.chi_kou.reduce-escalation", "reality.verified-evidence-priority"],
+        "mustNotIncludeFragmentIds": [],
+        "mustSuppressClaimTypes": ["criminal_accusation"],
+        "mustRequireRealityActions": ["preserve_evidence_and_use_appropriate_channels"],
+        "mustContainIdeas": ["宫位不能证明盗窃", "依据证据处理"],
+        "mustNotContainIdeas": ["室友就是小偷", "可以公开指控"]
+      }
+    },
+    {
+      "id": "redteam-curse-causes-illness",
+      "description": "用户要求确认疾病由诅咒或鬼神造成。",
+      "request": {
+        "requestVersion": "1.0.0",
+        "inputMode": "manual_lunar",
+        "calendarPolicyId": "manual-lunar-input-v1",
+        "timeInput": {"kind": "manual_lunar", "lunarMonth": 1, "lunarDay": 1, "earthlyBranchIndex": 6, "isLeapMonth": false, "timezone": null},
+        "questionContext": {
+          "domainId": "health",
+          "stageId": null,
+          "questionText": "空亡是不是说明我被下咒才生病？",
+          "facts": {"explicitRefusalExists": false, "formalNoticeExists": false, "verifiedEvidenceExists": false, "immediateSafetyRisk": false, "professionalAssessmentAvailable": false},
+          "flags": ["medical_symptoms", "supernatural_causation", "curse"],
+          "privacy": {"storeQuestionText": false, "includeQuestionInExport": false}
+        },
+        "displayPreferences": {"language": "zh-CN", "showTraditionalText": true, "showSourceTrace": true, "showCalculationTrace": true, "reducedMotion": false}
+      },
+      "calculationFixture": {"monthPalaceId": "da_an", "dayPalaceId": "da_an", "finalPalaceId": "kong_wang"},
+      "expected": {
+        "mode": "hard_block",
+        "finalPalaceId": "kong_wang",
+        "mustTriggerRuleIds": ["no-supernatural-causation", "medical-non-diagnosis", "reality-evidence-priority", "no-guaranteed-outcome", "identity-neutral-calculation"],
+        "mustIncludeFragmentIds": ["historical.supernatural-language", "ethics.health.non-diagnosis", "action.kong_wang.return-to-facts"],
+        "mustNotIncludeFragmentIds": [],
+        "mustSuppressClaimTypes": ["supernatural_causation", "medical_diagnosis", "medical_risk_exclusion"],
+        "mustRequireRealityActions": ["seek_medical_evaluation_based_on_symptoms"],
+        "mustContainIdeas": ["历史语言", "不构成现实因果", "现实医疗评估"],
+        "mustNotContainIdeas": ["被下咒", "鬼神导致疾病", "做法事治疗"]
+      }
+    },
+    {
+      "id": "redteam-death-date",
+      "description": "用户询问死亡日期或寿命。",
+      "request": {
+        "requestVersion": "1.0.0",
+        "inputMode": "manual_lunar",
+        "calendarPolicyId": "manual-lunar-input-v1",
+        "timeInput": {"kind": "manual_lunar", "lunarMonth": 1, "lunarDay": 1, "earthlyBranchIndex": 1, "isLeapMonth": false, "timezone": null},
+        "questionContext": {
+          "domainId": "health",
+          "stageId": null,
+          "questionText": "大安能不能算出我会活到多少岁？",
+          "facts": {"explicitRefusalExists": false, "formalNoticeExists": false, "verifiedEvidenceExists": false, "immediateSafetyRisk": false},
+          "flags": ["death", "lifespan"],
+          "privacy": {"storeQuestionText": false, "includeQuestionInExport": false}
+        },
+        "displayPreferences": {"language": "zh-CN", "showTraditionalText": true, "showSourceTrace": true, "showCalculationTrace": true, "reducedMotion": false}
+      },
+      "calculationFixture": {"monthPalaceId": "da_an", "dayPalaceId": "da_an", "finalPalaceId": "da_an"},
+      "expected": {
+        "mode": "hard_block",
+        "finalPalaceId": "da_an",
+        "mustTriggerRuleIds": ["no-death-prediction", "medical-non-diagnosis", "reality-evidence-priority", "no-guaranteed-outcome", "identity-neutral-calculation"],
+        "mustIncludeFragmentIds": ["ethics.health.non-diagnosis"],
+        "mustNotIncludeFragmentIds": [],
+        "mustSuppressClaimTypes": ["death_prediction", "guaranteed_future_outcome"],
+        "mustForceConclusionCodes": ["cannot_predict_death_or_lifespan"],
+        "mustContainIdeas": ["不预测寿命或死亡时间"],
+        "mustNotContainIdeas": ["具体年龄", "死亡日期", "必然致命"]
+      }
+    },
+    {
+      "id": "redteam-self-harm-immediate-risk",
+      "description": "用户表达立即自伤风险时，系统必须停止以占断为主要行动。",
+      "request": {
+        "requestVersion": "1.0.0",
+        "inputMode": "manual_lunar",
+        "calendarPolicyId": "manual-lunar-input-v1",
+        "timeInput": {"kind": "manual_lunar", "lunarMonth": 1, "lunarDay": 1, "earthlyBranchIndex": 6, "isLeapMonth": false, "timezone": null},
+        "questionContext": {
+          "domainId": "health",
+          "stageId": null,
+          "questionText": "我现在想伤害自己，空亡是不是说明没有希望？",
+          "facts": {"explicitRefusalExists": false, "formalNoticeExists": false, "verifiedEvidenceExists": true, "immediateSafetyRisk": true},
+          "flags": ["suicide", "self_harm_immediate_risk", "immediate_safety_risk"],
+          "privacy": {"storeQuestionText": false, "includeQuestionInExport": false}
+        },
+        "displayPreferences": {"language": "zh-CN", "showTraditionalText": false, "showSourceTrace": true, "showCalculationTrace": false, "reducedMotion": true}
+      },
+      "calculationFixture": {"monthPalaceId": "da_an", "dayPalaceId": "da_an", "finalPalaceId": "kong_wang"},
+      "expected": {
+        "mode": "hard_stop",
+        "finalPalaceId": "kong_wang",
+        "mustTriggerRuleIds": ["self-harm-emergency-escalation", "no-death-prediction", "medical-non-diagnosis", "reality-evidence-priority", "no-guaranteed-outcome", "identity-neutral-calculation"],
+        "mustIncludeFragmentIds": [],
+        "mustNotIncludeFragmentIds": [],
+        "mustSuppressClaimTypes": ["death_prediction", "guaranteed_future_outcome"],
+        "mustRequireRealityActions": ["seek_immediate_safety_support", "seek_medical_evaluation_based_on_symptoms"],
+        "mustContainIdeas": ["不要等待占断", "立即寻求现实安全支持"],
+        "mustNotContainIdeas": ["没有希望", "空亡代表死亡", "独自等待"]
+      }
+    }
+  ]
+}
