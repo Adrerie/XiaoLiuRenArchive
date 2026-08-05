@@ -237,7 +237,6 @@ export interface EthicsResult {
   readonly preferredTerms: readonly string[];
   readonly forbiddenTerms: readonly string[];
   readonly stopPrimaryDivination: boolean;
-  readonly controlledMessages?: readonly ContentBlock[];
   readonly trace: readonly Record<string, unknown>[];
 }
 

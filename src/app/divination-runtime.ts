@@ -31,6 +31,7 @@ import {
   type DivinationResult,
   type EarthlyBranch,
   type EthicsResult,
+  type InterpretationSections,
   type InterpretationResult,
   type PalaceId,
   type Provenance,
@@ -121,7 +122,7 @@ function contextFor(request: DivinationRequest): RuntimeQuestionContext {
     }
     facts[key] = value;
   }
-  return { domainId, stageId, flags, facts };
+  return { domainId, stageId, flags: [...new Set(flags)], facts };
 }
 
 function branchName(value: ChineseEarthlyBranch): EarthlyBranch {
@@ -363,7 +364,10 @@ function ethicsResult(
     ...textMessageBlocks(rawSafetyMessages, "realityActions", raw.requiredRealityActionCodes),
     ...textMessageBlocks(rawSafetyMessages, "contexts", raw.contextCodes),
   ];
-  const uniqueControlledMessages = [...new Map(controlledMessages.map((message) => [message.text, message])).values()];
+  const requiredNotices = [...new Set([
+    ...raw.requiredNotices,
+    ...controlledMessages.map((message) => message.text),
+  ])];
   return {
     mode: raw.mode,
     evaluatedRuleIds: rules.flatMap((rule) => typeof rule.id === "string" ? [rule.id] : []),
@@ -373,7 +377,7 @@ function ethicsResult(
     retainedFragmentIds: raw.retainedFragmentIds,
     blockedFragmentIds: raw.blockedFragmentIds,
     forcedConclusionCodes: raw.forcedConclusionCodes,
-    requiredNotices: raw.requiredNotices,
+    requiredNotices,
     requiredRealityActionCodes: raw.requiredRealityActionCodes,
     contextCodes: raw.contextCodes,
     allowedTopics: raw.allowedTopics,
@@ -381,8 +385,80 @@ function ethicsResult(
     preferredTerms: raw.preferredTerms,
     forbiddenTerms: raw.forbiddenTerms,
     stopPrimaryDivination: raw.mode === "hard_stop",
-    controlledMessages: uniqueControlledMessages,
     trace: raw.trace,
+  };
+}
+
+const DISPLAY_SECTION_KEYS = [
+  "neutral",
+  "domain",
+  "stage",
+  "actions",
+  "traditionalText",
+  "historicalContext",
+  "realityChecks",
+] as const satisfies readonly (keyof InterpretationSections)[];
+
+function present(input: {
+  readonly request: DivinationRequest;
+  readonly resolvedInput: ResultInput;
+  readonly calendar: CalendarResult;
+  readonly calculation: CalculationResult;
+  readonly interpretation: InterpretationResult;
+  readonly ethics: EthicsResult;
+}): { readonly interpretation: InterpretationResult; readonly ethics: EthicsResult } {
+  const candidateClaims = input.interpretation.candidateClaims ?? [];
+  const suppressedClaimIds = new Set(input.ethics.suppressedClaims.map((claim) => claim.claimId));
+  const suppressedClaimTexts = new Set(
+    candidateClaims
+      .filter((claim) => suppressedClaimIds.has(claim.id))
+      .map((claim) => claim.text),
+  );
+  const hiddenFragmentIds = new Set([
+    ...input.ethics.blockedFragmentIds,
+    ...input.ethics.suppressedClaims.flatMap((claim) => claim.fragmentIds),
+  ]);
+  const hardStop = input.ethics.stopPrimaryDivination;
+  const filterBlocks = (blocks: readonly ContentBlock[]): readonly ContentBlock[] => hardStop
+    ? []
+    : blocks.filter((block) => !hiddenFragmentIds.has(block.id) && !suppressedClaimTexts.has(block.text));
+  const sections: InterpretationSections = {
+    neutral: filterBlocks(input.interpretation.sections.neutral),
+    domain: filterBlocks(input.interpretation.sections.domain),
+    stage: filterBlocks(input.interpretation.sections.stage),
+    actions: filterBlocks(input.interpretation.sections.actions),
+    traditionalText: filterBlocks(input.interpretation.sections.traditionalText),
+    historicalContext: filterBlocks(input.interpretation.sections.historicalContext),
+    realityChecks: filterBlocks(input.interpretation.sections.realityChecks),
+    ethicsNotices: [],
+  };
+  const displayedBlockIds = new Set(
+    DISPLAY_SECTION_KEYS.flatMap((key) => sections[key].map((block) => block.id)),
+  );
+  const retainedFragmentIds = input.ethics.retainedFragmentIds.filter((id) => displayedBlockIds.has(id));
+  const retainedFragmentSet = new Set(retainedFragmentIds);
+  const retainedClaimIds = input.ethics.retainedClaimIds.filter((claimId) => {
+    const claim = candidateClaims.find((candidate) => candidate.id === claimId);
+    return claim !== undefined
+      && !suppressedClaimIds.has(claim.id)
+      && !suppressedClaimTexts.has(claim.text)
+      && claim.fragmentIds.some((fragmentId) => retainedFragmentSet.has(fragmentId));
+  });
+  return {
+    interpretation: {
+      domainId: input.interpretation.domainId,
+      stageId: input.interpretation.stageId,
+      certaintyMode: input.interpretation.certaintyMode,
+      sections,
+      fragmentIds: retainedFragmentIds,
+      candidateClaimIds: retainedClaimIds,
+      trace: input.interpretation.trace,
+    },
+    ethics: {
+      ...input.ethics,
+      retainedClaimIds,
+      retainedFragmentIds,
+    },
   };
 }
 
@@ -434,6 +510,7 @@ function dependencies(): DivinationDependencies {
         return ethicsResult(contextFor(input.request), input.resolvedInput, input.calculation, input.interpretation);
       },
     },
+    presentation: { present },
     provenance: {
       create: provenance,
     },

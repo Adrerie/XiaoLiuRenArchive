@@ -40,6 +40,26 @@ describe("local divination runtime", () => {
     expect(result.input.privacy.questionTextStored).toBe(false);
   });
 
+  it("resolves the stable Gregorian/IANA smoke path", async () => {
+    const result = await runLocalDivination(request({
+      inputMode: "civil_datetime",
+      calendarPolicyId: "civil-midnight-reuse-leap-month",
+      timeInput: {
+        kind: "civil_datetime",
+        localDateTime: "2024-02-10T12:00",
+        timezone: "Asia/Shanghai",
+        fold: null,
+      },
+    }));
+
+    expect(result.input.inputMode).toBe("civil_datetime");
+    expect(result.calendar.localDateTime).toBe("2024-02-10T12:00:00");
+    expect(result.calendar.timezone).toBe("Asia/Shanghai");
+    expect(result.calendar.resolvedLunarDate).toMatchObject({ month: 1, day: 1, isLeapMonth: false });
+    expect(result.calendar.earthlyBranch).toBe("wu");
+    expect(result.calendar.calendarPolicyId).toBe("civil-midnight-reuse-leap-month");
+  });
+
   it("does not let identity flags alter the final palace", async () => {
     const plain = await runLocalDivination(request());
     const identity = await runLocalDivination(request({
@@ -66,6 +86,10 @@ describe("local divination runtime", () => {
     }));
     expect(result.ethics.mode).toBe(mode);
     expect(result.ethics.triggeredRuleIds.length).toBeGreaterThan(0);
+    expect(result.ethics.retainedFragmentIds).toEqual(result.interpretation.fragmentIds);
+    const displayedIds = Object.values(result.interpretation.sections).flat().map((block) => block.id);
+    expect(result.ethics.blockedFragmentIds.every((id) => !displayedIds.includes(id))).toBe(true);
+    expect(result.ethics.suppressedClaims.flatMap((claim) => claim.fragmentIds).every((id) => !displayedIds.includes(id))).toBe(true);
   });
 
   it("hard-stops when a missing person may be in danger", async () => {
@@ -80,5 +104,10 @@ describe("local divination runtime", () => {
     expect(result.ethics.mode).toBe("hard_stop");
     expect(result.ethics.stopPrimaryDivination).toBe(true);
     expect(result.calculation.finalPalaceId).toBe("xiao_ji");
+    expect(result.ethics.requiredNotices.length).toBeGreaterThan(0);
+    expect(result.ethics.requiredRealityActionCodes).toContain("contact_emergency_services_and_relevant_people");
+    expect(result.ethics.retainedFragmentIds).toEqual([]);
+    expect(result.interpretation.fragmentIds).toEqual([]);
+    expect(Object.values(result.interpretation.sections).every((section) => section.length === 0)).toBe(true);
   });
 });

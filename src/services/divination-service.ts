@@ -52,12 +52,29 @@ export interface ProvenancePort {
   }): Provenance;
 }
 
+export interface DivinationPresentation {
+  readonly interpretation: InterpretationResult;
+  readonly ethics: EthicsResult;
+}
+
+export interface PresentationPort {
+  present(input: {
+    readonly request: DivinationRequest;
+    readonly resolvedInput: ResultInput;
+    readonly calendar: CalendarResult;
+    readonly calculation: CalculationResult;
+    readonly interpretation: InterpretationResult;
+    readonly ethics: EthicsResult;
+  }): DivinationPresentation;
+}
+
 export interface DivinationDependencies {
   readonly calendar: CalendarPort;
   readonly calculation: CalculationPort;
   readonly interpretation: InterpretationPort;
   readonly ethics: EthicsPort;
   readonly provenance: ProvenancePort;
+  readonly presentation?: PresentationPort;
 }
 
 export interface DivinationService {
@@ -83,6 +100,14 @@ export function createDivinationService(
         calculation,
         interpretation,
       });
+      const presented = dependencies.presentation?.present({
+        request,
+        resolvedInput: resolved.input,
+        calendar: resolved.calendar,
+        calculation,
+        interpretation,
+        ethics,
+      }) ?? { interpretation, ethics };
 
       return {
         resultVersion: "1.1.0",
@@ -90,14 +115,14 @@ export function createDivinationService(
         input: resolved.input,
         calendar: resolved.calendar,
         calculation,
-        interpretation,
-        ethics,
+        interpretation: presented.interpretation,
+        ethics: presented.ethics,
         provenance: dependencies.provenance.create({
           request,
           resolvedInput: resolved.input,
           calculation,
-          interpretation,
-          ethics,
+          interpretation: presented.interpretation,
+          ethics: presented.ethics,
         }),
       };
     },
