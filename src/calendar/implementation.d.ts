@@ -72,6 +72,8 @@ export interface NormalizedDivinationTime {
   earthlyBranch: EarthlyBranch;
   earthlyBranchIndex: number;
   calendarPolicyId: CalendarPolicyId;
+  appliedDayOffset: -1 | 0 | 1;
+  lunarConversionLocalDateTime?: string;
   libraryId?: string;
   libraryVersion?: string;
   warnings: string[];

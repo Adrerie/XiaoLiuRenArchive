@@ -19,10 +19,15 @@ export default function KnowledgeLibraryPage(): ReactElement {
   const sourceIds = selectedPalace
     ? [...new Set([
         ...selectedPalace.sourceIds,
+        ...selectedPalace.neutralSourceIds,
+        ...selectedPalace.modernSourceIds,
         ...selectedPalace.traditionalSourceIds,
+        ...selectedPalace.statePhraseSourceIds,
         ...selectedPalace.elementSourceIds,
         ...selectedPalace.elementVariants.flatMap((variant) => variant.sourceIds),
+        ...selectedPalace.statePhraseVariants.flatMap((variant) => variant.sourceIds),
         ...selectedPalace.spiritSourceIds,
+        ...selectedPalace.spiritVariants.flatMap((variant) => variant.sourceIds),
       ])]
     : [];
   const sources = useMemo(() => getSources(sourceIds), [sourceIds.join("|")]);

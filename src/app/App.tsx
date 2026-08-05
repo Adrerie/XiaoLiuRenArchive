@@ -139,6 +139,10 @@ function BlockSection({
 
 function ResolvedCalendar({ result }: { readonly result: DivinationResult }): ReactElement {
   const lunar = result.calendar.resolvedLunarDate;
+  const boundaryTrace = result.calendar.trace.find((entry) => entry.stage === "calendar-boundary");
+  const lunarConversionLocalDateTime = typeof boundaryTrace?.lunarConversionLocalDateTime === "string"
+    ? boundaryTrace.lunarConversionLocalDateTime
+    : "manual input";
   return (
     <section className="result-section resolved-calendar">
       <div className="section-heading">
@@ -146,6 +150,10 @@ function ResolvedCalendar({ result }: { readonly result: DivinationResult }): Re
         <h3>转换后的历法输入</h3>
       </div>
       <dl className="provenance-grid">
+        <dt>appliedDayOffset</dt>
+        <dd>{result.calendar.boundaryDecision.appliedDayOffset}</dd>
+        <dt>lunarConversionLocalDateTime</dt>
+        <dd>{lunarConversionLocalDateTime}</dd>
         <dt>输入模式</dt>
         <dd>{result.input.inputMode === "civil_datetime" ? "公历时间" : "手动农历"}</dd>
         <dt>本地日期时间</dt>

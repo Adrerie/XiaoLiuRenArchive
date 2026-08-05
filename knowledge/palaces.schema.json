@@ -117,7 +117,7 @@
         },
         "semanticCore": {
           "type": "object",
-          "required": ["tempo", "motion", "certainty", "primaryTags", "riskTags", "neutralSummary"],
+          "required": ["tempo", "motion", "certainty", "primaryTags", "riskTags", "neutralSummary", "sourceIds"],
           "properties": {
             "tempo": {
               "enum": ["slow", "delayed", "fast", "volatile", "gradual", "suspended"]
@@ -136,13 +136,18 @@
               "type": "array",
               "items": { "type": "string" }
             },
-            "neutralSummary": { "type": "string" }
+            "neutralSummary": { "type": "string" },
+            "sourceIds": {
+              "type": "array",
+              "items": { "type": "string" },
+              "minItems": 1
+            }
           },
           "additionalProperties": false
         },
         "modernGeneral": {
           "type": "object",
-          "required": ["summary", "supportiveReading", "cautionReading", "realityChecks"],
+          "required": ["summary", "supportiveReading", "cautionReading", "realityChecks", "sourceIds"],
           "properties": {
             "summary": { "type": "string" },
             "supportiveReading": { "type": "string" },
@@ -150,6 +155,11 @@
             "realityChecks": {
               "type": "array",
               "items": { "type": "string" }
+            },
+            "sourceIds": {
+              "type": "array",
+              "items": { "type": "string" },
+              "minItems": 1
             }
           },
           "additionalProperties": false

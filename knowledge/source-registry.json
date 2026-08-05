@@ -1,6 +1,7 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-08-03",
+  "knowledgeVersion": "1.0.0-provisional.1",
+  "updatedAt": "2026-08-05",
   "sources": [
     {
       "id": "moe-revised-dictionary-xiaoliuren",
@@ -105,6 +106,31 @@
       "licenseNote": "不得自动吸收其现代解释为基准知识。",
       "ingestionPolicy": "comparison-only",
       "verificationStatus": "provisional"
+    },
+    {
+      "id": "xiaoliurenarchive-editorial-modern-knowledge-v1",
+      "title": "XiaoLiuRenArchive editorial modern knowledge",
+      "type": "project-editorial",
+      "language": "en",
+      "url": "https://github.com/Adrerie/XiaoLiuRenArchive",
+      "publisher": "XiaoLiuRenArchive project",
+      "authorityLevel": "project-editorial",
+      "supports": [
+        "project-authored modern neutral interpretations",
+        "question-domain templates and action prompts",
+        "reality boundaries and ethics-aware rewrites",
+        "historical context explanations"
+      ],
+      "doesNotSupport": [
+        "traditional author attribution",
+        "classical text collation or unique canon",
+        "scientific validity",
+        "guaranteed prediction"
+      ],
+      "licenseNote": "Project-authored and locally reviewed editorial content.",
+      "ingestionPolicy": "local-fulltext-permitted",
+      "verificationStatus": "reviewed",
+      "localTarget": "knowledge"
     }
   ],
   "sourcePolicy": {

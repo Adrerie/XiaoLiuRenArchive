@@ -9,6 +9,9 @@ export function createExportPayload(
   options: ExportOptions = {},
 ): DivinationResult {
   const includePreciseTime = options.includePreciseTime === true;
+  const calendarTrace = result.calendar.trace.map((entry) => entry.stage === "calendar-boundary" && !includePreciseTime
+    ? { ...entry, inputLocalDateTime: null, lunarConversionLocalDateTime: null }
+    : entry);
   return {
     ...result,
     input: {
@@ -23,6 +26,7 @@ export function createExportPayload(
     calendar: {
       ...result.calendar,
       localDateTime: includePreciseTime ? result.calendar.localDateTime ?? null : null,
+      trace: calendarTrace,
     },
   };
 }

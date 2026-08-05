@@ -189,6 +189,12 @@ function calculate(input: CalculationInput): CalculationResult {
 
 function resolveCalendar(request: DivinationRequest, context: RuntimeQuestionContext): CalendarResolution {
   try {
+    if (request.inputMode === "manual_lunar" && request.timeInput.kind !== "manual_lunar") {
+      throw new AppError("INVALID_REQUEST", "manual_lunar inputMode requires manual_lunar timeInput", { field: "timeInput.kind" });
+    }
+    if (request.inputMode === "civil_datetime" && request.timeInput.kind !== "civil_datetime") {
+      throw new AppError("INVALID_REQUEST", "civil_datetime inputMode requires civil_datetime timeInput", { field: "timeInput.kind" });
+    }
     const normalized = request.inputMode === "manual_lunar"
       ? fromManualLunar({
           kind: "manual_lunar",
@@ -222,12 +228,18 @@ function resolveCalendar(request: DivinationRequest, context: RuntimeQuestionCon
       earthlyBranchIndex: normalized.earthlyBranchIndex,
       boundaryDecision: {
         mode: normalized.calendarPolicyId === "zi-hour-23-reuse-leap-month" ? "zi_hour_23" : "civil_midnight",
-        appliedDayOffset: 0,
+        appliedDayOffset: normalized.appliedDayOffset,
         manualInputBypass: manual,
       },
       trace: [
         { stage: "calendar-policy", calendarPolicyId: normalized.calendarPolicyId },
         { stage: "input-mode", source: normalized.source, manualInputBypass: manual },
+        {
+          stage: "calendar-boundary",
+          appliedDayOffset: normalized.appliedDayOffset,
+          inputLocalDateTime: normalized.localDateTime ?? null,
+          lunarConversionLocalDateTime: normalized.lunarConversionLocalDateTime ?? normalized.localDateTime ?? null,
+        },
         { stage: "earthly-branch", earthlyBranch: branch, earthlyBranchIndex: normalized.earthlyBranchIndex },
       ],
       warnings: normalized.warnings,

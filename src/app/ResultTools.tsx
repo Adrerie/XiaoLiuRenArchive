@@ -7,6 +7,10 @@ function IdList({ values }: { readonly values: readonly string[] }): ReactElemen
 }
 
 export function StructuredDetails({ result }: { readonly result: DivinationResult }): ReactElement {
+  const boundaryTrace = result.calendar.trace.find((entry) => entry.stage === "calendar-boundary");
+  const lunarConversionLocalDateTime = typeof boundaryTrace?.lunarConversionLocalDateTime === "string"
+    ? boundaryTrace.lunarConversionLocalDateTime
+    : "manual input";
   return (
     <section className="result-section structured-details">
       <details>
@@ -14,6 +18,8 @@ export function StructuredDetails({ result }: { readonly result: DivinationResul
         <dl className="provenance-grid detail-grid">
           <dt>algorithmId</dt><dd><code>{result.calculation.algorithmId}</code></dd>
           <dt>calendarPolicyId</dt><dd><code>{result.calendar.calendarPolicyId}</code></dd>
+          <dt>appliedDayOffset</dt><dd><code>{result.calendar.boundaryDecision.appliedDayOffset}</code></dd>
+          <dt>lunarConversionLocalDateTime</dt><dd><code>{lunarConversionLocalDateTime}</code></dd>
           <dt>knowledgeVersion</dt><dd><code>{result.provenance.knowledgeVersion}</code></dd>
           <dt>ruleVersion</dt><dd><code>{result.provenance.ruleVersion}</code></dd>
           <dt>finalPalaceId</dt><dd><code>{result.calculation.finalPalaceId}</code></dd>

@@ -68,8 +68,10 @@ describe("local divination runtime", () => {
     expect(result.provenance.sourceIds).toEqual(expect.arrayContaining([
       "moe-revised-dictionary-xiaoliuren",
       "yuxiaji-liuren-shike-web-transcription-8s8s",
-      "modern-explanatory-source-sanyuandaoshi",
+      "xiaoliurenarchive-editorial-modern-knowledge-v1",
     ]));
+    expect(result.interpretation.sections.domain.every((block) => block.sourceIds.includes("xiaoliurenarchive-editorial-modern-knowledge-v1"))).toBe(true);
+    expect(result.interpretation.sections.traditionalText.every((block) => block.sourceIds.includes("yuxiaji-liuren-shike-web-transcription-8s8s"))).toBe(true);
     expect(result.provenance.disputedFieldIds).toContain("palace.xiao_ji.classical.element");
     expect(result.provenance.provisionalSourceIds.every((id) => result.provenance.sourceIds.includes(id))).toBe(true);
   });

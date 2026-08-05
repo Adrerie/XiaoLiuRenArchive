@@ -85,6 +85,19 @@ function assertPolicy(policyId) {
   return id;
 }
 
+function assertManualPolicy(policyId) {
+  const id = policyId || 'manual-lunar-input-v1';
+  if (id !== 'manual-lunar-input-v1') {
+    throw calendarError(
+      CALENDAR_ERROR_CODES.INVALID_POLICY,
+      `Manual lunar input requires calendar policy manual-lunar-input-v1, received: ${String(id)}`,
+      true,
+      'Use manual-lunar-input-v1 for manual lunar input.',
+    );
+  }
+  return id;
+}
+
 function isInteger(value) {
   return typeof value === 'number' && Number.isInteger(value);
 }
@@ -405,7 +418,7 @@ function validateLunarDateWithRuntime(year, month, day, isLeapMonth) {
 
 function validateManualLunar(input) {
   const value = input || {};
-  assertPolicy(value.calendarPolicyId);
+  assertManualPolicy(value.calendarPolicyId);
   assertLunarMonth(value.lunarMonth);
   assertLunarDay(value.lunarDay);
   assertLunarYear(value.lunarYear);
@@ -430,7 +443,7 @@ function validateManualLunar(input) {
 
 function fromManualLunar(input) {
   const value = input || {};
-  const policyId = assertPolicy(value.calendarPolicyId);
+  const policyId = assertManualPolicy(value.calendarPolicyId);
   const validation = validateManualLunar(value);
   return {
     source: 'manual_lunar',
@@ -442,6 +455,7 @@ function fromManualLunar(input) {
     earthlyBranch: validation.branch.earthlyBranch,
     earthlyBranchIndex: validation.branch.earthlyBranchIndex,
     calendarPolicyId: policyId,
+    appliedDayOffset: 0,
     warnings: validation.warnings,
   };
 }
@@ -449,6 +463,14 @@ function fromManualLunar(input) {
 function fromGregorian(input) {
   const value = input || {};
   const policyId = assertPolicy(value.calendarPolicyId);
+  if (policyId === 'manual-lunar-input-v1') {
+    throw calendarError(
+      CALENDAR_ERROR_CODES.INVALID_POLICY,
+      'Gregorian date-time input cannot use calendar policy manual-lunar-input-v1.',
+      true,
+      'Use civil-midnight-reuse-leap-month or zi-hour-23-reuse-leap-month for Gregorian input.',
+    );
+  }
   const localParts = parseLocalDateTime(value.localDateTime);
   const timeZone = assertIanaTimeZone(value.timezone);
   if (value.fold !== undefined && value.fold !== null && value.fold !== 0 && value.fold !== 1) {
@@ -466,9 +488,8 @@ function fromGregorian(input) {
 
   // The default policy uses civil midnight. The alternative policy is kept as
   // an explicit adapter option, never silently substituted.
-  const lunarDateParts = policyId === 'zi-hour-23-reuse-leap-month' && hour === 23
-    ? addDays(localParts, 1)
-    : localParts;
+  const appliedDayOffset = policyId === 'zi-hour-23-reuse-leap-month' && hour === 23 ? 1 : 0;
+  const lunarDateParts = appliedDayOffset === 1 ? addDays(localParts, appliedDayOffset) : localParts;
   const lunarInstant = resolveLocalDateTime(lunarDateParts, timeZone, value.fold);
   const lunar = chineseCalendarParts(lunarInstant, timeZone);
 
@@ -480,6 +501,8 @@ function fromGregorian(input) {
     earthlyBranch,
     earthlyBranchIndex,
     calendarPolicyId: policyId,
+    appliedDayOffset,
+    lunarConversionLocalDateTime: formatLocalDateTime(lunarDateParts),
     libraryId: 'ecma-402-intl-chinese-calendar',
     libraryVersion: 'runtime-provided',
     warnings: [],

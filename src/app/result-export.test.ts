@@ -49,6 +49,32 @@ describe("local JSON export", () => {
     expect(exported.input.privacy.questionTextIncludedInExport).toBe(false);
   });
 
+  it("preserves the adapter boundary offset and trace in local JSON", async () => {
+    const result = await runLocalDivination(request({
+      calendarPolicyId: "zi-hour-23-reuse-leap-month",
+      timeInput: {
+        kind: "civil_datetime",
+        localDateTime: "2024-02-09T23:00",
+        timezone: "Asia/Shanghai",
+        fold: null,
+      },
+    }));
+    const exported = createExportPayload(result);
+    const boundaryTrace = exported.calendar.trace.find((entry) => entry.stage === "calendar-boundary");
+
+    expect(exported.calendar.boundaryDecision.appliedDayOffset).toBe(1);
+    expect(boundaryTrace).toMatchObject({
+      appliedDayOffset: 1,
+      inputLocalDateTime: null,
+      lunarConversionLocalDateTime: null,
+    });
+    expect(exported.calendar.boundaryDecision).toEqual(result.calendar.boundaryDecision);
+    expect(exported.calendar.trace.map((entry) => entry.stage)).toEqual(result.calendar.trace.map((entry) => entry.stage));
+
+    const precise = createExportPayload(result, { includePreciseTime: true });
+    expect(precise.calendar.trace).toEqual(result.calendar.trace);
+  });
+
   it.each([
     ["hard-block", { domainId: "health", stageId: null, flags: [], facts: { explicitRefusalExists: false, immediateSafetyRisk: false } }],
     ["hard-stop", { domainId: "travel_mobility", stageId: null, flags: ["missing_person"], facts: { explicitRefusalExists: false, immediateSafetyRisk: true } }],

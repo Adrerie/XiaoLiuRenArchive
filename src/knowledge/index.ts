@@ -3,6 +3,8 @@ import domainsJson from "../../knowledge/question-domains.v1.json";
 import fragmentsJson from "../../knowledge/interpretation-fragments.v1.json";
 import sourcesJson from "../../knowledge/source-registry.json";
 import manifestJson from "../../knowledge/knowledge-manifest.v1.json";
+import ethicsRulesJson from "../../knowledge/ethics-rules.v1.json";
+import safetyMessagesJson from "../../knowledge/safety-messages.v1.json";
 import type {
   CandidateClaim,
   ContentBlock,
@@ -33,6 +35,7 @@ export interface KnowledgeDomain {
   readonly id: string;
   readonly name: string;
   readonly description: string;
+  readonly sourceIds: readonly string[];
   readonly stages: readonly string[];
   readonly palaceInterpretations: Readonly<Record<string, DomainPalaceInterpretation>>;
 }
@@ -82,7 +85,9 @@ export interface PalaceKnowledge {
   readonly spirit: string;
   readonly spiritStatus: ContentBlock["status"];
   readonly spiritSourceIds: readonly string[];
+  readonly spiritVariants: readonly KnowledgeVariant[];
   readonly neutralSummary: string;
+  readonly neutralSourceIds: readonly string[];
   readonly primaryTags: readonly string[];
   readonly riskTags: readonly string[];
   readonly traditionalText: string;
@@ -92,6 +97,7 @@ export interface PalaceKnowledge {
   readonly supportiveReading: string;
   readonly cautionReading: string;
   readonly realityChecks: readonly string[];
+  readonly modernSourceIds: readonly string[];
   readonly sourceIds: readonly string[];
   readonly reviewNotes: readonly string[];
   readonly disputedFieldIds: readonly string[];
@@ -240,11 +246,28 @@ function recordMap(input: unknown, label: string): RawRecord {
   return record(input, label);
 }
 
+function assertManifestVersion(
+  manifestVersion: string,
+  manifestField: string,
+  sourceRoot: RawRecord,
+  sourceLabel: string,
+): void {
+  const sourceVersion = stringValue(value(sourceRoot, "knowledgeVersion", sourceLabel), `${sourceLabel}.knowledgeVersion`);
+  if (manifestVersion !== sourceVersion) {
+    throw new KnowledgeError(
+      "KNOWLEDGE_INTEGRITY_ERROR",
+      `${manifestField} ${manifestVersion} does not match ${sourceLabel}.knowledgeVersion ${sourceVersion}`,
+    );
+  }
+}
+
 function parseRegistry(): KnowledgeRegistry {
   const palacesRoot = record(palacesJson, "palaces");
   const domainsRoot = record(domainsJson, "domains");
   const fragmentsRoot = record(fragmentsJson, "fragments");
   const sourcesRoot = record(sourcesJson, "sources");
+  const ethicsRoot = record(ethicsRulesJson, "ethicsRules");
+  const safetyRoot = record(safetyMessagesJson, "safetyMessages");
   const manifestRoot = record(manifestJson, "knowledgeManifest");
   const manifest: KnowledgeManifest = {
     bundleVersion: stringValue(value(manifestRoot, "bundleVersion", "knowledgeManifest"), "knowledgeManifest.bundleVersion"),
@@ -255,6 +278,12 @@ function parseRegistry(): KnowledgeRegistry {
     ethicsRulesVersion: stringValue(value(manifestRoot, "ethicsRulesVersion", "knowledgeManifest"), "knowledgeManifest.ethicsRulesVersion"),
     safetyMessagesVersion: stringValue(value(manifestRoot, "safetyMessagesVersion", "knowledgeManifest"), "knowledgeManifest.safetyMessagesVersion"),
   };
+  assertManifestVersion(manifest.palacesVersion, "palacesVersion", palacesRoot, "palaces");
+  assertManifestVersion(manifest.questionDomainsVersion, "questionDomainsVersion", domainsRoot, "domains");
+  assertManifestVersion(manifest.interpretationFragmentsVersion, "interpretationFragmentsVersion", fragmentsRoot, "fragments");
+  assertManifestVersion(manifest.sourceRegistryVersion, "sourceRegistryVersion", sourcesRoot, "sources");
+  assertManifestVersion(manifest.ethicsRulesVersion, "ethicsRulesVersion", ethicsRoot, "ethicsRules");
+  assertManifestVersion(manifest.safetyMessagesVersion, "safetyMessagesVersion", safetyRoot, "safetyMessages");
 
   const sourceRecords = arrayValue(value(sourcesRoot, "sources", "sources"), "sources.sources");
   const sourceMap = new Map<string, KnowledgeSource>();
@@ -291,6 +320,8 @@ function parseRegistry(): KnowledgeRegistry {
     const spirit = sourcedText(value(classical, "spirit", `palace ${id}.classical`), `palace ${id}.classical.spirit`);
     const semanticCore = recordMap(value(palace, "semanticCore", `palace ${id}`), `palace ${id}.semanticCore`);
     const modernGeneral = recordMap(value(palace, "modernGeneral", `palace ${id}`), `palace ${id}.modernGeneral`);
+    const neutralSourceIds = stringArray(value(semanticCore, "sourceIds", `palace ${id}.semanticCore`), `palace ${id}.semanticCore.sourceIds`);
+    const modernSourceIds = stringArray(value(modernGeneral, "sourceIds", `palace ${id}.modernGeneral`), `palace ${id}.modernGeneral.sourceIds`);
     const traditionalSourceIds = stringArray(
       value(verse, "sourceIds", `palace ${id}.classical.verse`),
       `palace ${id}.classical.verse.sourceIds`,
@@ -303,7 +334,7 @@ function parseRegistry(): KnowledgeRegistry {
       ...spirit.sourceIds,
       ...spirit.variants.flatMap((variant) => variant.sourceIds),
     ];
-    for (const sourceId of [...sourceIds, ...traditionalSourceIds, ...fieldSourceIds]) {
+    for (const sourceId of [...sourceIds, ...traditionalSourceIds, ...fieldSourceIds, ...neutralSourceIds, ...modernSourceIds]) {
       if (!sourceMap.has(sourceId)) {
         throw new KnowledgeError("KNOWLEDGE_MISSING_REFERENCE", `Unknown source reference: ${sourceId}`);
       }
@@ -331,11 +362,13 @@ function parseRegistry(): KnowledgeRegistry {
       spirit: spirit.value,
       spiritStatus: spirit.status,
       spiritSourceIds: spirit.sourceIds,
+      spiritVariants: spirit.variants,
       sourceIds,
       neutralSummary: stringValue(
         value(semanticCore, "neutralSummary", `palace ${id}.semanticCore`),
         `palace ${id}.neutralSummary`,
       ),
+      neutralSourceIds,
       primaryTags: stringArray(value(semanticCore, "primaryTags", `palace ${id}.semanticCore`), `palace ${id}.primaryTags`),
       riskTags: stringArray(value(semanticCore, "riskTags", `palace ${id}.semanticCore`), `palace ${id}.riskTags`),
       traditionalText: stringValue(value(verse, "text", `palace ${id}.classical.verse`), `palace ${id}.verse.text`),
@@ -345,6 +378,7 @@ function parseRegistry(): KnowledgeRegistry {
       supportiveReading: stringValue(value(modernGeneral, "supportiveReading", `palace ${id}.modernGeneral`), `palace ${id}.modernGeneral.supportiveReading`),
       cautionReading: stringValue(value(modernGeneral, "cautionReading", `palace ${id}.modernGeneral`), `palace ${id}.modernGeneral.cautionReading`),
       realityChecks: checks === undefined ? [] : stringArray(checks, `palace ${id}.modernGeneral.realityChecks`),
+      modernSourceIds,
       reviewNotes: palace.reviewNotes === undefined ? [] : stringArray(palace.reviewNotes, `palace ${id}.reviewNotes`),
       disputedFieldIds,
     });
@@ -358,6 +392,12 @@ function parseRegistry(): KnowledgeRegistry {
   for (const [index, domainValue] of domainRecords.entries()) {
     const domain = record(domainValue, `domains.domains[${index}]`);
     const id = stringValue(value(domain, "id", `domain ${index}`), `domain ${index}.id`);
+    const sourceIds = stringArray(value(domain, "sourceIds", `domain ${id}`), `domain ${id}.sourceIds`);
+    for (const sourceId of sourceIds) {
+      if (!sourceMap.has(sourceId)) {
+        throw new KnowledgeError("KNOWLEDGE_MISSING_REFERENCE", `Unknown source reference: ${sourceId}`);
+      }
+    }
     const interpretations = recordMap(
       value(domain, "palaceInterpretations", `domain ${id}`),
       `domain ${id}.palaceInterpretations`,
@@ -377,6 +417,7 @@ function parseRegistry(): KnowledgeRegistry {
       id,
       name: stringValue(value(domain, "name", `domain ${id}`), `domain ${id}.name`),
       description: stringValue(value(domain, "description", `domain ${id}`), `domain ${id}.description`),
+      sourceIds,
       stages: domain.stages === undefined ? [] : stringArray(domain.stages, `domain ${id}.stages`),
       palaceInterpretations: parsedInterpretations,
     });
@@ -512,6 +553,8 @@ export function getContextSourceIds(input: {
   readonly stageId: string | null;
 }): readonly string[] {
   const palace = getPalace(input.finalPalaceId);
+  const domain = registry.domains.get(input.domainId);
+  if (!domain) throw new KnowledgeError("KNOWLEDGE_INTEGRITY_ERROR", `Unknown domain: ${input.domainId}`);
   getDomainInterpretation(input.domainId, input.finalPalaceId);
   const fragments = [
     ...matchingFragments("neutral_summary", input.finalPalaceId, input.domainId, input.stageId),
@@ -522,6 +565,9 @@ export function getContextSourceIds(input: {
     ...matchingFragments("ethics_notice", input.finalPalaceId, input.domainId, input.stageId),
   ];
   return [...new Set([
+    ...domain.sourceIds,
+    ...palace.neutralSourceIds,
+    ...palace.modernSourceIds,
     ...palace.sourceIds,
     ...palace.traditionalSourceIds,
     ...fragments.flatMap((fragment) => fragment.sourceIds),
@@ -589,21 +635,21 @@ export function selectInterpretation(input: {
     domainReading.summary,
     "domain_summary",
     "provisional",
-    palace.sourceIds,
+    domain.sourceIds,
   );
   const domainSupportive = block(
     `${input.domainId}.${input.finalPalaceId}.supportive`,
     domainReading.supportive,
     "domain_supportive",
     "provisional",
-    palace.sourceIds,
+    domain.sourceIds,
   );
   const domainCaution = block(
     `${input.domainId}.${input.finalPalaceId}.caution`,
     domainReading.caution,
     "domain_caution",
     "provisional",
-    palace.sourceIds,
+    domain.sourceIds,
   );
   const domainBlocks = [domainSummary, domainSupportive, domainCaution];
   const stageFragments = matchingFragments("stage_modifier", input.finalPalaceId, input.domainId, input.stageId);
@@ -620,14 +666,14 @@ export function selectInterpretation(input: {
     text,
     "domain_action",
     "provisional",
-    palace.sourceIds,
+    domain.sourceIds,
   ));
   const actions = [
     ...actionFragments.map((fragment) => block(fragment.id, fragment.text, fragment.kind, fragment.status, fragment.sourceIds)),
     ...domainActionBlocks,
   ];
   const sections: InterpretationSections = {
-    neutral: [block(neutral.id, neutral.text, neutral.kind, neutral.status, [...neutral.sourceIds, ...palace.sourceIds])],
+    neutral: [block(neutral.id, neutral.text, neutral.kind, neutral.status, [...neutral.sourceIds, ...palace.neutralSourceIds])],
     domain: domainBlocks,
     stage: stageFragments.map((fragment) => block(fragment.id, fragment.text, fragment.kind, fragment.status, fragment.sourceIds)),
     actions,
@@ -635,7 +681,7 @@ export function selectInterpretation(input: {
     historicalContext: historicalFragments.map((fragment) => block(fragment.id, fragment.text, fragment.kind, fragment.status, fragment.sourceIds)),
     realityChecks: [
       ...realityFragments.map((fragment) => block(fragment.id, fragment.text, fragment.kind, fragment.status, fragment.sourceIds)),
-      ...palace.realityChecks.map((text, index) => block(`palace.${palace.id}.reality.${index + 1}`, text, "reality_check", "provisional", palace.sourceIds)),
+      ...palace.realityChecks.map((text, index) => block(`palace.${palace.id}.reality.${index + 1}`, text, "reality_check", "provisional", palace.modernSourceIds)),
     ],
     ethicsNotices: ethicsFragments.map((fragment) => block(fragment.id, fragment.text, fragment.kind, fragment.status, fragment.sourceIds)),
   };
@@ -674,6 +720,9 @@ export function selectInterpretation(input: {
     ...domainClaimSpecs.map(({ block: domainBlock, tags }) => ({ id: domainBlock.id, tags })),
   ];
   const sourceIds = [
+    ...domain.sourceIds,
+    ...palace.neutralSourceIds,
+    ...palace.modernSourceIds,
     ...palace.sourceIds,
     ...palace.traditionalSourceIds,
     ...selected.flatMap((fragment) => fragment.sourceIds),

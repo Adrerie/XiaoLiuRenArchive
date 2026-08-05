@@ -94,6 +94,8 @@ hourIndex = (dayIndex + earthlyBranchIndex - 1) mod 6
 
 ## R2 Calendar and Knowledge Expansion
 
+PR #9 review fixes keep the frozen palace calculation unchanged while adding adapter-reported calendar day offsets, calendar-boundary trace details, strict input-mode/policy checks, project-editorial provenance for modern knowledge, and fail-closed manifest validation through `npm run validate:knowledge`.
+
 本轮实现：
 
 1. 知识包版本与迁移记录

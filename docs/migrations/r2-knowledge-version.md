@@ -1,5 +1,12 @@
-# R2 知识包版本迁移
+# R2 knowledge package migration
 
-R2 将本地知识包统一标记为 `bundleVersion: 2.0.0`。领域解释的结构化标签版本提升为 `1.0.0-provisional.2`，伦理规则语义版本提升为 `1.0.0-provisional.3`；六宫、解释片段、来源登记和安全文案版本在本轮保持不变，并由 `knowledge/knowledge-manifest.v1.json` 集中登记。
+This review fix advances the bundle to `2.1.0` and records the source-binding correction for PR #9:
 
-本次版本变化不改变冻结月、日、时算法。新增的历法策略选择、六宫详情、来源聚合和隐私优先导出只改变展示与元数据边界；在明确拒绝等伦理场景下，已有过滤规则继续优先于领域解释。
+- `palacesVersion`: `1.0.0-provisional.2`
+- `questionDomainsVersion`: `1.0.0-provisional.3`
+- `interpretationFragmentsVersion`: `1.0.0-provisional.2`
+- `sourceRegistryVersion`: `1.0.0-provisional.1`
+- `ethicsRulesVersion`: unchanged at `1.0.0-provisional.3`
+- `safetyMessagesVersion`: unchanged at `1.0.0-provisional.2`
+
+Project-authored modern interpretations now use the registered XiaoLiuRenArchive editorial source. Traditional references remain attached only to palace identity, calendar-method clues, traditional attributes, variants, and original verse text. The frozen palace calculation and the modern text itself are unchanged; this release corrects provenance and makes manifest-to-file version mismatches fail closed.

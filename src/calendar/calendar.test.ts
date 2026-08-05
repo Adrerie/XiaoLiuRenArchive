@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   CALENDAR_POLICIES,
   fromGregorian,
+  fromManualLunar,
   isCalendarNormalizationError,
 } from "./adapter";
 
@@ -18,6 +19,7 @@ describe("calendar policy boundary", () => {
     expect(result.lunarDay).toBe(1);
     expect(result.earthlyBranch).toBe("午");
     expect(result.calendarPolicyId).toBe("civil-midnight-reuse-leap-month");
+    expect(result.appliedDayOffset).toBe(0);
   });
 
   it("exposes both policies and differentiates the 23:00 boundary", () => {
@@ -41,6 +43,26 @@ describe("calendar policy boundary", () => {
 
     expect({ civilMonth: civil.lunarMonth, civilDay: civil.lunarDay, civilLeap: civil.isLeapMonth })
       .not.toEqual({ civilMonth: ziHour.lunarMonth, civilDay: ziHour.lunarDay, civilLeap: ziHour.isLeapMonth });
+    expect(civil.appliedDayOffset).toBe(0);
+    expect(ziHour.appliedDayOffset).toBe(1);
+    expect(ziHour.lunarConversionLocalDateTime).toBe("2024-02-10T23:00:00");
+  });
+
+  it("rejects input mode and policy mismatches", () => {
+    expect(() => fromGregorian({
+      localDateTime: "2024-02-10T12:00",
+      timezone: "Asia/Shanghai",
+      fold: null,
+      calendarPolicyId: "manual-lunar-input-v1",
+    })).toThrow(/cannot use calendar policy/);
+
+    expect(() => fromManualLunar({
+      lunarMonth: 1,
+      lunarDay: 1,
+      earthlyBranchIndex: 1,
+      isLeapMonth: false,
+      calendarPolicyId: "civil-midnight-reuse-leap-month",
+    })).toThrow(/requires calendar policy/);
   });
 
   it("accepts both folds for a repeated local time", () => {
