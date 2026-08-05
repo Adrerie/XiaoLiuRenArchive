@@ -1,5 +1,6 @@
 export type {
   BoundaryDecision,
+  CandidateClaim,
   CalculationInput,
   CalculationResult,
   CalculationTrace,
@@ -23,6 +24,10 @@ export type {
   QuestionContext,
   ResolvedLunarDate,
   ResultInput,
+  SelectedFragment,
   SuppressedClaim,
   TimeInput,
 } from "./types/divination";
+
+export { AppError } from "./errors";
+export type { AppErrorCode } from "./errors";

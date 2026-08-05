@@ -59,8 +59,21 @@ export interface DisplayPreferences {
   readonly reducedMotion?: boolean;
 }
 
-/** Kept opaque until the question-context contract is owned by its module. */
-export type QuestionContext = Readonly<Record<string, unknown>>;
+export type QuestionFactValue = boolean | number | string | null;
+
+export interface QuestionContext {
+  readonly domainId?: string;
+  readonly stageId?: string | null;
+  readonly flags?: readonly string[];
+  readonly facts?: Readonly<Record<string, QuestionFactValue>>;
+  readonly questionText?: string;
+  readonly identityFieldsChanged?: boolean;
+  readonly privacy?: {
+    readonly questionTextStored?: boolean;
+    readonly questionTextIncludedInExport?: boolean;
+  };
+  readonly [key: string]: unknown;
+}
 
 export interface DivinationRequest {
   readonly requestVersion: "1.0.0";
@@ -179,7 +192,24 @@ export interface InterpretationResult {
   readonly sections: InterpretationSections;
   readonly fragmentIds: readonly string[];
   readonly candidateClaimIds: readonly string[];
+  readonly candidateClaims?: readonly CandidateClaim[];
+  readonly selectedFragments?: readonly SelectedFragment[];
   readonly trace: readonly Record<string, unknown>[];
+}
+
+export interface CandidateClaim {
+  readonly id: string;
+  readonly claimType: string;
+  readonly sourceKind: "palace" | "domain" | "stage" | "user_fact" | "historical_text";
+  readonly fragmentIds: readonly string[];
+  readonly text: string;
+  readonly certainty: "descriptive" | "tentative" | "strong";
+  readonly tags: readonly string[];
+}
+
+export interface SelectedFragment {
+  readonly id: string;
+  readonly tags: readonly string[];
 }
 
 export interface SuppressedClaim {
@@ -207,6 +237,7 @@ export interface EthicsResult {
   readonly preferredTerms: readonly string[];
   readonly forbiddenTerms: readonly string[];
   readonly stopPrimaryDivination: boolean;
+  readonly controlledMessages?: readonly ContentBlock[];
   readonly trace: readonly Record<string, unknown>[];
 }
 
