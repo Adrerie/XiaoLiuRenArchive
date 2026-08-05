@@ -1,105 +1,46 @@
 # Task: knowledge-agent
 
-## Mission
+遵循 `codex/execution-first-policy.md`。
 
-实现本地知识包验证、加载、索引和解释片段选择。你负责知识工程，不负责改写传统规则或自由生成断语。
+## 任务
 
-## Required Reading
+让现有本地知识能够被应用加载并形成当前 MVP 所需的解释。
 
-- `AGENTS.md`
-- `docs/04-knowledge-model.md`
-- `docs/07-source-collation.md`
+## 只读这些文件
+
+- 本任务书
 - `algorithm/interpretation-engine-contract.md`
-- all `knowledge/*.schema.json`
-- all versioned knowledge JSON files
-- `fixtures/case.schema.json`
-- `scripts/validation-manifest.json`
+- 当前使用的 palace、domain、fragment 与 source 数据
+- 与这些数据直接对应的 Schema
 
-## Allowed Areas
+不重新扫描和校勘全部来源。
 
-- `src/knowledge/**`
-- `scripts/**`
-- `tests/knowledge/**`
-- knowledge JSON only when fixing a verified schema or reference defect
+## 完成项
 
-Any traditional text or variant change requires controller review and source explanation.
+- 本地知识加载
+- palace、domain、stage 和 fragment 索引
+- 六宫中性解释
+- 领域与阶段片段选择
+- 排序、去重和来源引用
+- 缺失引用的 typed error
 
-## Forbidden Areas
+## 边界
 
-- Do not upgrade a web transcription to canonical.
-- Do not remove provisional or disputed status to make UI cleaner.
-- Do not silently fill missing fields at load time.
-- Do not write freeform predictions.
-- Do not change the frozen calculation.
-- Do not resolve a textual variant without human approval.
+- 不修改冻结算法
+- 不自由生成断语
+- 不把 provisional 升级为 canonical
+- 不为 UI 美化删除异文或来源状态
+- 只修复阻塞当前实现的真实数据错误
 
-## Deliverables
+## 必要验证
 
-1. Draft 2020-12 Schema validator.
-2. dataset validation command.
-3. cross-reference validation command.
-4. unique ID checks.
-5. immutable knowledge bundle loader.
-6. indexes by palace, domain, stage, fragment, rule and source ID.
-7. deterministic fragment selector.
-8. domain and stage validation.
-9. source trace resolver.
-10. modern text audit for forbidden certainty and identity stereotypes.
-11. fixture file validation.
-12. knowledge validation report.
+- 六宫基础数据可加载
+- 当前 MVP 使用的领域和片段引用有效
+- 片段排序稳定
+- 缺失引用会失败
 
-## Interpretation Responsibilities
+不默认运行全库来源审计和全量文本扫描。
 
-Implement the pre-ethics stages defined in `algorithm/interpretation-engine-contract.md`:
+## 回报
 
-- palace neutral layer
-- domain layer
-- stage modifiers
-- action prompts
-- historical context
-- candidate claim extraction
-
-The ethics-agent owns rule effects. Coordinate on the CandidateClaim interface.
-
-## Fail-Closed Rules
-
-Return typed errors when:
-
-- required dataset is missing
-- Schema fails
-- a referenced ID is missing
-- there are duplicate IDs
-- there is not exactly one neutral fragment for a palace
-- domain lacks a palace interpretation
-- stage does not belong to domain
-- source trace cannot be resolved
-
-Do not continue with partial knowledge in production mode.
-
-## Required Tests
-
-- all datasets validate
-- all fixture collections validate
-- all reference checks in validation manifest pass
-- all six palaces have one neutral fragment and one action fragment
-- all domains cover all six palaces
-- fragment ordering is stable
-- deduplication by ID
-- invalid stage fails
-- missing ethics rule reference fails
-- missing source reference fails
-- modern text audit excludes historical text scopes
-- knowledge bundle is immutable
-
-## Completion Report
-
-Include:
-
-- validation commands
-- files checked
-- error counts
-- indexes created
-- interpretation stages implemented
-- tests actually run and results
-- unresolved textual variants
-- confirmation that no traditional text was silently changed
+只写完成项、未完成项、已知问题、运行命令和提交信息。

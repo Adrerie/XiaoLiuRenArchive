@@ -1,173 +1,99 @@
 # Batch 04 Acceptance Criteria
 
-This file defines the implementation gate for the first local Web MVP. A controller may not claim the milestone is complete unless every mandatory item is either passed or explicitly marked blocked with evidence.
+Status: `EXECUTION-FIRST`
 
-## 1. Repository and Tooling
+本文件定义 R1 Local Web MVP 的必要验收，不要求为了形式完成全量审计。完整原则见 `codex/execution-first-policy.md`。
 
-- [ ] `npm install` completes without requiring private registries.
-- [ ] `npm run build` completes successfully.
-- [ ] TypeScript strict mode is enabled.
-- [ ] No production dependency provides remote generative AI or remote divination.
-- [ ] No API key is required for core operation.
-- [ ] Core tests run in Node without browser DOM.
-- [ ] GitHub Actions or equivalent CI runs validation, tests and build.
+## 1. 可运行
 
-## 2. Request Contract
+- [ ] `npm install` 成功
+- [ ] `npm run build` 成功
+- [ ] TypeScript strict 开启
+- [ ] 核心功能不需要 API key
+- [ ] 没有远程生成式断语依赖
 
-- [ ] `knowledge/divination-request.schema.json` compiles under JSON Schema Draft 2020-12.
-- [ ] `knowledge/question-context.schema.json` compiles.
-- [ ] Manual lunar requests validate.
-- [ ] Civil datetime requests validate.
-- [ ] Mismatched `inputMode` and `timeInput.kind` fail.
-- [ ] Invalid lunar month, day and earthly branch fail.
-- [ ] Unknown `calendarPolicyId` fails reference validation.
-- [ ] Unknown `domainId` fails reference validation.
-- [ ] Invalid `stageId` for a domain fails.
-- [ ] Identity display fields are absent from the normalized core input.
+## 2. 核心算法
 
-## 3. Knowledge Integrity
+- [ ] 六宫顺序保持冻结合同
+- [ ] 农历三月初五辰时得到 `xiao_ji`
+- [ ] 返回月宫、日宫、时宫 trace
+- [ ] 相同输入重复计算结果一致
+- [ ] 身份、问题文本和领域不进入核心函数
+- [ ] 无效月、日、时辰返回 typed error
 
-- [ ] Every knowledge JSON file passes its Schema.
-- [ ] Every ID is unique within its namespace.
-- [ ] Every referenced palace ID exists.
-- [ ] Every referenced domain ID exists.
-- [ ] Every referenced stage ID exists in the correct domain.
-- [ ] Every ethics rule reference exists.
-- [ ] Every source ID exists.
-- [ ] Every calendar policy reference exists.
-- [ ] Palace order matches the frozen contract.
-- [ ] Exactly one default calendar policy exists.
-- [ ] Fixture files pass `fixtures/case.schema.json`.
-- [ ] Modern text audit reports no prohibited certainty phrasing outside approved contexts.
+## 3. 主流程
 
-## 4. Traditional Core Algorithm
+- [ ] 手动农历输入可以完成
+- [ ] 领域选择可以完成
+- [ ] 结果页显示最终宫位和 trace
+- [ ] 现代解释与传统文本分开显示
+- [ ] 来源或 provisional 状态可见
+- [ ] 一条公历与时区转换路径可以使用，或明确标记为当前未完成项
 
-- [ ] Palace order is exactly `da_an`, `liu_lian`, `su_xi`, `chi_kou`, `xiao_ji`, `kong_wang`.
-- [ ] The core accepts only normalized lunar month, lunar day and earthly branch index plus algorithm metadata.
-- [ ] The core does not accept question text, domain, gender, sexuality or identity.
-- [ ] The traditional example lunar month 3, day 5, Chen hour returns `xiao_ji`.
-- [ ] Month palace, day palace and hour palace trace are returned.
-- [ ] Stepwise calculation equals the compressed formula for all mathematical inputs in the agreed enumeration.
-- [ ] Palace periodicity holds under increments of 6.
-- [ ] Invalid input returns typed errors.
-- [ ] No random number, system clock or network call appears in the core.
+## 4. 关键伦理守卫
 
-## 5. Calendar Adapter
+至少通过以下场景：
 
-- [ ] Manual lunar input works without the civil calendar library.
-- [ ] Civil datetime conversion is driven by `calendarPolicyId`.
-- [ ] IANA timezone is explicit.
-- [ ] DST ambiguous local time is handled or rejected with a typed error.
-- [ ] Leap month information is preserved.
-- [ ] The selected midnight policy is returned in the result.
-- [ ] Unsupported calendar dates return a typed range error.
-- [ ] Switching a disputed calendar policy is visible to the user.
+- [ ] 明确拒绝不能被吉宫覆盖
+- [ ] 不推断第三方性取向或性别身份
+- [ ] 健康问题不诊断也不排除风险
+- [ ] 财务问题不给买卖指令或收益保证
+- [ ] 人员失联并有危险时触发现实行动优先
+- [ ] 伦理处理前后 `finalPalaceId` 不变
 
-## 6. Interpretation Engine
+## 5. 隐私与网络
 
-- [ ] The engine follows `algorithm/interpretation-engine-contract.md`.
-- [ ] Exactly one neutral palace fragment is selected.
-- [ ] Domain interpretation matches the final palace.
-- [ ] Stage modifiers are selected only for valid domain-stage combinations.
-- [ ] Fragment ordering is deterministic.
-- [ ] Duplicate fragment IDs are removed.
-- [ ] Candidate claims are structured before ethics evaluation.
-- [ ] Missing references fail closed.
-- [ ] No freeform generated prediction is introduced.
-- [ ] The final result preserves fragment IDs and source trace.
+- [ ] 问题文本不发送到远程服务
+- [ ] 没有默认分析或追踪
+- [ ] 核心计算离线可用
+- [ ] UI 不包含第二套落宫算法
 
-## 7. Ethics Engine
+## 6. 关键交互实测
 
-- [ ] The engine follows `algorithm/ethics-engine-contract.md`.
-- [ ] Rules sort by priority descending and ID ascending.
-- [ ] Unknown conditions and effects fail closed.
-- [ ] Severity merge is monotonic and cannot be downgraded.
-- [ ] Suppressed claims never appear in user-visible output.
-- [ ] Blocked fragments remain visible only in internal trace.
-- [ ] `hard_stop` makes reality action the first UI section.
-- [ ] The palace before and after ethics evaluation is identical.
-- [ ] Explicit refusal cannot be overridden by any palace.
-- [ ] Third-party sexual orientation or gender identity is never inferred.
-- [ ] Same-sex relationships are not forced into husband-wife roles.
-- [ ] Health output cannot diagnose or exclude risk.
-- [ ] Finance output cannot issue buy, sell, transfer or return guarantees.
-- [ ] Legal output cannot guarantee judgments or penalties.
-- [ ] Missing-person danger triggers reality escalation.
-- [ ] Crime cannot be attributed without evidence.
-- [ ] Death and lifespan dates are blocked.
-- [ ] Supernatural historical terms do not become causal claims.
-- [ ] Minor safeguarding rules are enforced.
+- [ ] 手动农历主流程实测一次
+- [ ] 一个普通解释场景实测一次
+- [ ] 一个 hard-block 或 hard-stop 场景实测一次
+- [ ] 360px 左右移动端布局可用
+- [ ] 桌面端布局可用
+- [ ] 保留移动端和桌面端各一张代表性截图
 
-## 8. Golden and Red-Team Fixtures
+## 7. 必要测试
 
-- [ ] All cases in `fixtures/interpretation-golden-cases.v1.json` pass.
-- [ ] All cases in `fixtures/ethics-red-team-cases.v1.json` pass.
-- [ ] All cases in `algorithm/rule-conflict-examples.v1.json` pass.
-- [ ] Tests verify required IDs, suppressed claim types and forbidden ideas.
-- [ ] Tests do not rely only on broad snapshots.
-- [ ] Fixture failures cannot be fixed by silently changing expected files without review.
+默认运行：
 
-## 9. Application Service
+```text
+npm run build
+npm run test:core
+npm run test:ethics
+主要流程 smoke test
+```
 
-- [ ] One documented high-level service accepts a validated request.
-- [ ] It returns a result conforming to `divination-result.schema.json`.
-- [ ] It returns typed errors for request, calendar, knowledge and rule failures.
-- [ ] It records algorithm, calendar policy, knowledge and rule versions.
-- [ ] It does not persist question text unless the request explicitly allows it.
-- [ ] It is deterministic for identical input and versions.
+若项目只提供统一 `npm test`，可以使用统一命令。已经通过的阶段不重复运行。
 
-## 10. User Interface
+## 8. 可延期项目
 
-- [ ] Manual lunar flow is complete.
-- [ ] Domain selection is complete.
-- [ ] Relevant stage selection is complete.
-- [ ] Reality fact confirmation is available.
-- [ ] Privacy defaults are visible.
-- [ ] Request review appears before calculation.
-- [ ] Result header shows palace, domain, algorithm and calendar policy.
-- [ ] Calculation trace is visible and understandable.
-- [ ] Modern interpretation and traditional text are separated.
-- [ ] Source and variant status are visible.
-- [ ] Ethics notices are placed near affected content.
-- [ ] Hard-stop scenarios prioritize reality action.
-- [ ] Provenance can be inspected.
-- [ ] Palace library basic view exists.
-- [ ] Mobile layout works at 360px width.
-- [ ] Keyboard and screen-reader basics are implemented.
-- [ ] Reduced motion is respected.
-- [ ] No “calculate again until favorable” interaction exists.
+以下内容不阻止首个可操作 MVP，但必须写入未完成项或已知问题：
 
-## 11. Privacy and Network Audit
+- 全量 Schema 文件逐一验证
+- 全量跨文件引用扫描
+- 全部黄金和红队 fixture
+- 所有历法策略和 DST 边界
+- 全仓网络依赖清单
+- 完整无障碍审计
+- Android、导出、CI 和正式发布流程
+- 复杂视觉与动画
 
-- [ ] Core use works offline after assets are installed.
-- [ ] Question text is not sent over the network.
-- [ ] There is no analytics or tracking by default.
-- [ ] There are no hidden remote fonts required for core rendering, or a documented local fallback exists.
-- [ ] Production logs do not include full question text or sensitive identity by default.
-- [ ] Export defaults exclude full question text and exact time.
-- [ ] `npm run audit:network` or equivalent reports all network-capable dependencies and endpoints.
+当相关数据结构、安全规则或发布目标发生变化时，再运行对应完整验证。
 
-## 12. Documentation and Reporting
+## 9. 合并决定
 
-- [ ] README reflects actual implementation status.
-- [ ] Commands in README exist and were tested.
-- [ ] Each subagent submits the required report.
-- [ ] The controller lists actual commands run and results.
-- [ ] Known limitations are explicit.
-- [ ] Traditional variants remain marked provisional or disputed where unresolved.
-- [ ] UI changes include screenshots.
-- [ ] The implementation PR states whether the frozen algorithm changed.
+R1 可以进入实现 PR，当且仅当：
 
-## 13. Release Decision
+1. 应用能够构建并打开
+2. 手动农历主流程可操作
+3. 核心基准案例正确
+4. 五个关键伦理守卫生效
+5. 没有远程断语或问题上传
+6. 已知问题如实记录
 
-The R1 MVP may be marked complete only if:
-
-1. all core algorithm items pass
-2. all knowledge validation items pass
-3. all ethics hard-block and hard-stop tests pass
-4. all golden and red-team fixtures pass
-5. build succeeds
-6. no remote AI dependency exists
-7. an independent `test-audit-agent` has reviewed the integrated branch
-
-Non-critical visual polish may remain open. Any failure in algorithm, ethics, knowledge integrity or privacy blocks release.
+最终报告只写完成项、未完成项、已知问题、必要命令结果和提交信息。

@@ -1,259 +1,156 @@
 # Batch 04 Implementation Plan
 
-Status: final planning batch before code implementation.
+Status: `EXECUTION-FIRST`
 
-Batch 04 closes the remaining ambiguity between the foundation knowledge files and the first local Web MVP. After this batch is approved, planning must stop and implementation must begin.
+本计划是 R1 Local Web MVP 的直接执行计划。详细默认规则见 `codex/execution-first-policy.md`。
 
-## 1. Objective
+## 1. 目标
 
-Create a deterministic, offline-capable minimum vertical slice that validates the full path:
+尽快形成可操作闭环：
 
 ```text
-validated request
-→ calendar normalization
-→ frozen traditional calculation
-→ local knowledge lookup
-→ interpretation assembly
-→ ethics evaluation
-→ structured result
-→ accessible UI
-→ audit tests
+输入
+→ 历法规范化
+→ 冻结算法
+→ 本地知识解释
+→ 伦理规则
+→ 结构化结果
+→ Web 界面
 ```
 
-## 2. Required Reading Order
+## 2. 主代理启动
 
-The controller and every relevant subagent must read, in order:
+主代理快速阅读：
 
-1. `README.md`
-2. `AGENTS.md`
-3. `CODEX_MASTER_PROMPT.md`
-4. `docs/10-product-requirements.md`
-5. `docs/11-ui-information-architecture.md`
-6. `algorithm/contract.md`
-7. `algorithm/interpretation-engine-contract.md`
-8. `algorithm/ethics-engine-contract.md`
-9. `algorithm/rule-conflict-examples.v1.json`
-10. `knowledge/divination-request.schema.json`
-11. `knowledge/question-context.schema.json`
-12. `knowledge/divination-result.schema.json`
-13. `fixtures/interpretation-golden-cases.v1.json`
-14. `fixtures/ethics-red-team-cases.v1.json`
-15. `codex/orchestration.md`
-16. The relevant `codex/tasks/*.md` file for each subagent
-17. `codex/batch-04-acceptance-criteria.md`
+- `README.md`
+- `AGENTS.md`
+- `CODEX_MASTER_PROMPT.md`
+- `codex/execution-first-policy.md`
+- 本计划
+- `codex/batch-04-acceptance-criteria.md`
 
-Existing Batch 02 and Batch 03 files remain binding unless Batch 04 explicitly narrows or clarifies them.
+随后立即分配任务。子代理不重复阅读以上全部文件，只读取自己的任务书和直接依赖。
 
-## 3. Workstreams
+## 3. 工作包
 
-### Workstream A: Architecture and Tooling
+### A. 工程骨架
 
-Owner: `architecture-agent`
+负责人：`architecture-agent`
 
-Deliver:
+完成：
 
-- React + TypeScript strict + Vite
+- React、TypeScript strict、Vite
 - Vitest
-- JSON Schema validator using Draft 2020-12
-- ESLint or equivalent static analysis
-- local-only dependency policy
-- application service boundary
-- module aliases only if clearly documented
-- basic CI workflow
+- 最小共享类型
+- `runDivination` 服务边界
+- 必要构建脚本
 
-Do not add Capacitor in the first pass unless the Web MVP is complete and tests are green.
+### B. 核心算法
 
-### Workstream B: Knowledge Validation
+负责人：`core-algorithm-agent`
 
-Owner: `knowledge-agent`, reviewed by `data-validation-agent` or `test-audit-agent`
+完成：
 
-Deliver:
+- 六宫常量
+- 月、日、时纯函数
+- 完整 trace
+- 基准案例和必要核心测试
 
-- schema validation command
-- reference integrity command
-- unique ID checks
-- palace order check
-- default calendar policy check
-- fixture schema validation
-- text audit command for prohibited certainty language in modern fields
+### C. 历法
 
-The validation commands must run in Node without browser APIs.
+负责人：`calendar-agent`
 
-### Workstream C: Calendar Adapter
+完成：
 
-Owner: `calendar-agent`
+- 手动农历适配
+- 十二时辰映射
+- 一条公历与 IANA 时区转换路径
+- 当前默认策略和 typed errors
 
-Deliver:
+### D. 知识与解释
 
-- manual lunar input adapter first
-- civil datetime adapter second
-- IANA timezone handling
-- earthly branch mapping
-- policy-driven midnight behavior
-- leap month handling
-- structured calendar errors
+负责人：`knowledge-agent`
 
-The manual lunar path must not depend on the civil date conversion library.
+完成：
 
-### Workstream D: Frozen Core
+- 加载现有知识数据
+- 六宫中性解释
+- 领域和阶段解释
+- 片段排序、去重与来源引用
 
-Owner: `core-algorithm-agent`
+只处理当前 MVP 使用的数据，不做全库重新校勘。
 
-Deliver:
+### E. 伦理规则
 
-- palace constants
-- positive modulo
-- month, day and hour calculation
-- full trace
-- normalized input validation
-- vector tests
-- exhaustive mathematical property tests
+负责人：`ethics-agent`
 
-No identity, question or domain field may appear in the core API.
+完成关键场景：
 
-### Workstream E: Interpretation Engine
+- 明确拒绝
+- 第三方身份
+- 健康非诊断
+- 财务非依赖
+- 失联危险 hard-stop
+- 落宫不变
 
-Owner: `knowledge-agent` or dedicated `interpretation-agent` if the controller creates one
+### F. 前端
 
-Deliver:
+负责人：`frontend-agent`
 
-- immutable knowledge bundle loader
-- palace neutral selection
-- domain block selection
-- stage modifier selection
-- fragment sorting and deduplication
-- candidate claim extraction
-- source trace
-- fail-closed behavior
+完成：
 
-No freeform text generation is permitted.
+- 手动农历输入
+- 领域和阶段选择
+- 结果总览
+- trace
+- 现代解释
+- 原典和来源
+- hard-stop 展示
+- 移动端布局
 
-### Workstream F: Ethics Engine
+### G. 必要整合验证
 
-Owner: `ethics-agent`
+负责人：`test-audit-agent`
 
-Deliver:
+只确认：
 
-- condition evaluator
-- effect executor
-- stable rule ordering
-- severity merge
-- claim suppression
-- fragment blocking
-- forced conclusion codes
-- reality action codes
-- hard-stop output mode
-- invariant that palace is unchanged
+- build 或 typecheck
+- 三月初五辰时小吉
+- 身份不影响落宫
+- 五个关键伦理场景
+- 手动农历主流程
+- 移动端和桌面端代表性截图
 
-### Workstream G: Application Service
+不进行全仓回溯和长篇独立审计。
 
-Owner: `architecture-agent` with integration support
-
-Deliver one high-level service:
-
-```ts
-runDivination(request: DivinationRequest): DivinationResult
-```
-
-Internally it may be async if civil calendar conversion requires lazy loading, but the manual lunar path should remain deterministic and locally testable.
-
-### Workstream H: Frontend
-
-Owner: `frontend-agent`
-
-Deliver:
-
-- request form
-- manual lunar path
-- one civil datetime path if calendar adapter is ready
-- domain and stage selection
-- reality fact confirmation
-- privacy defaults
-- review step
-- result overview
-- calculation trace
-- modern interpretation
-- traditional text and source display
-- hard-stop banner
-- provenance drawer
-- palace library basic page
-
-UI must consume application service output only. It must not recalculate palaces.
-
-### Workstream I: Independent Audit
-
-Owner: `test-audit-agent`
-
-Deliver independent test and review report covering:
-
-- all commands actually run
-- algorithm vectors
-- exhaustive properties
-- request and result schemas
-- fixture validation
-- golden cases
-- red-team cases
-- identity invariance
-- offline and network dependency scan
-- source and rule trace
-- UI does not contain duplicate algorithm
-
-## 4. Suggested Integration Order
+## 4. 整合顺序
 
 ```text
-1. project shell
-2. schemas and validation
-3. core algorithm
-4. manual lunar adapter
-5. knowledge loader
-6. interpretation engine
-7. ethics engine
-8. application service
-9. golden and red-team tests
-10. frontend
-11. civil datetime adapter
-12. full audit
+脚手架
+→ 核心算法与手动农历
+→ 知识和伦理
+→ 应用服务
+→ UI
+→ 公历转换
+→ 必要验证
+→ 修正
+→ PR
 ```
 
-The frontend may build static layout in parallel after shared result types are frozen, but may not invent placeholder calculation logic.
+已完成阶段不为验证完整性重新执行。失败时只修对应模块。
 
-## 5. Shared Type Freeze
+## 5. 默认不做
 
-The architecture agent must first define shared interfaces for:
+- 全仓重复调研
+- 重新论证已确认架构
+- 大篇幅审计和证据链
+- 每个代理单独生成总结文件
+- 全量测试矩阵
+- 复杂动画、账号、云同步、社区、付费、Android 发布和完整 PDF 导出
 
-- `DivinationRequest`
-- `QuestionContext`
-- `NormalizedLunarInput`
-- `CalculationResult`
-- `CandidateClaim`
-- `InterpretationDraft`
-- `EthicsEvaluationResult`
-- `DivinationResult`
-- error union types
+## 6. 必要命令
 
-Any later breaking change requires controller approval and notification to all dependent agents.
-
-## 6. Branch and Worktree Plan
-
-Recommended branches:
-
-```text
-feature/project-shell
-feature/knowledge-validation
-feature/calendar-engine
-feature/core-divination
-feature/interpretation-engine
-feature/ethics-engine
-feature/frontend
-feature/testing-audit
-integration/r1-mvp
-```
-
-Each agent should use its own worktree. The controller integrates into `integration/r1-mvp` and opens one reviewable PR to `main` after audit.
-
-## 7. Mandatory Commands
-
-The final implementation should expose at least:
+项目至少提供：
 
 ```bash
 npm run dev
@@ -261,61 +158,28 @@ npm run build
 npm test
 npm run test:core
 npm run test:ethics
-npm run test:fixtures
-npm run validate:knowledge
-npm run validate:references
-npm run audit:text
-npm run audit:network
 ```
 
-Names may vary only if README and completion report are updated consistently.
+其他校验命令可在对应结构实际变更时补充，不阻塞第一版可操作界面。
 
-## 8. First Milestone Deliverable
+## 7. 第一里程碑
 
-The first milestone is complete when a user can:
+用户能够：
 
-1. open the local Web app
-2. choose manual lunar input
-3. enter month, day and hour
-4. select a question domain
-5. confirm relevant reality facts
-6. submit the request
-7. see the correct palace and trace
-8. see local structured interpretation
-9. see mandatory ethics notices
-10. inspect sources and provenance
+1. 打开本地 Web 应用
+2. 输入农历月、日、时辰
+3. 选择问事领域
+4. 得到正确宫位和 trace
+5. 查看现代解释、原典与来源
+6. 在关键风险场景看到正确伦理提示
 
-## 9. Explicit Non-Goals During Implementation
+## 8. 最终报告
 
-Do not spend time on:
+主代理只报告：
 
-- elaborate animation
-- AI chat
-- remote accounts
-- cloud history
-- social sharing
-- payment
-- astrology or other divination systems
-- Android release pipeline
-- full PDF export
-- automatic natural-language question classification beyond optional local keyword suggestions
-
-## 10. Controller Completion Report
-
-The controller must report:
-
-- agents actually created
-- worktrees and branches used
-- files changed by each agent
-- shared contract changes
-- commands actually run
-- test counts and failures
-- knowledge validation result
-- golden fixture result
-- red-team fixture result
-- build result
-- remaining known limitations
-- unresolved traditional variants
-- screenshots for implemented UI
-
-No unexecuted command may be described as passing.
+- 完成项
+- 未完成项
+- 已知问题
+- 实际运行的必要命令
+- 提交、分支和 PR 信息
+- 代表性截图
