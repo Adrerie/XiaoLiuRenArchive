@@ -8,24 +8,27 @@
 
 ## 当前状态
 
-Batch 02、Batch 03 与 Batch 04 的知识、算法和实现合同已经完成。下一步是直接实现 R1 Local Web MVP，不再继续扩写规划。
+R1 Local Web MVP 已完成并合并。
 
-已经具备：
+当前已经具备：
 
-- 冻结的月、日、时起课算法
-- 历法策略与完整 trace 合同
-- 六宫、领域、阶段、来源和异文知识库
-- 解释规则与伦理规则合同
-- 请求和结果 JSON Schema
-- 黄金样例与关键伦理案例
-- 产品需求、UI 信息架构和子代理任务书
+- React、TypeScript strict 与 Vite 本地 Web 工程
+- 手动农历与公历时间输入
+- 固定月、日、时起课算法和完整 trace
+- 本地六宫、领域、阶段、来源和异文知识
+- 解释组合与伦理过滤
+- 普通、hard-block 与 hard-stop 结构化结果
+- 输出 Schema 测试
+- 移动端与桌面端界面
+- 本地构建、核心测试和关键交互验证
 
-尚未完成：
+下一阶段为 R2 Calendar and Knowledge Expansion。执行计划：
 
-- React 与 TypeScript 工程
-- 历法适配、核心推理、解释和伦理引擎代码
-- 可操作的 Web 界面
-- 必要测试、构建和截图
+```text
+codex/r2-calendar-knowledge-expansion-plan.md
+```
+
+本轮将同时完成知识版本与来源追踪收口、公历策略增强、六宫资料库、结构化详情和隐私优先 JSON 导出。
 
 ## 执行优先
 
@@ -84,21 +87,18 @@ hourIndex = (dayIndex + earthlyBranchIndex - 1) mod 6
 - 不输出医疗诊断、收益保证、法律保证、死亡预测或无证据犯罪指控
 - 伦理引擎可以阻止结论，但不能修改落宫
 
-## R1 Local Web MVP
+## R2 Calendar and Knowledge Expansion
 
-第一轮只完成最小可操作闭环：
+本轮实现：
 
-1. React、TypeScript strict、Vite
-2. 手动农历输入
-3. 一条公历与时区转换路径
-4. 核心起课和完整 trace
-5. 六宫知识与领域解释
-6. 伦理规则求值
-7. 结果总览、推演路径、现代解释、原典与来源
-8. 移动端优先界面
-9. 构建、核心测试、关键伦理测试和主要流程实测
+1. 知识包版本与迁移记录
+2. 全部展示区块的 provenance 聚合
+3. 公历策略选择和本地 IANA 时区搜索
+4. 六宫资料库、搜索、详情、异文和来源
+5. 结构化结果详情
+6. 隐私优先的本地 JSON 复制与下载
 
-不优先开发复杂动画、账号、云同步、社区、付费、Android 发布和完整 PDF 导出。
+本轮不做 Android、账号、云同步、社区、PDF、PNG、完整设置中心或生成式 AI 解释。
 
 ## Codex 开发入口
 
@@ -108,40 +108,26 @@ hourIndex = (dayIndex + earthlyBranchIndex - 1) mod 6
 2. `AGENTS.md`
 3. `CODEX_MASTER_PROMPT.md`
 4. `codex/execution-first-policy.md`
-5. `codex/batch-04-implementation-plan.md`
-6. `codex/batch-04-acceptance-criteria.md`
+5. `codex/r2-calendar-knowledge-expansion-plan.md`
 
-随后分配子代理。每个子代理只阅读对应 `codex/tasks/*.md` 和其中列出的直接依赖。
+随后按计划分配小范围、互不重叠的子任务。只有主代理操作 Git，并持续负责应用导航、provenance、导出和整合。
 
-强制角色：
+## R2 必要验收
 
-- `architecture-agent`
-- `calendar-agent`
-- `core-algorithm-agent`
-- `knowledge-agent`
-- `ethics-agent`
-- `frontend-agent`
-- `test-audit-agent`
-
-其中 `test-audit-agent` 只做一次针对整合结果的必要验证，不进行全仓回溯式审计。
-
-## 必要验收
-
-R1 只以这些项目作为默认合并门槛：
-
+- `npm run typecheck` 成功
 - `npm run build` 成功
-- 农历三月初五辰时得到小吉
-- 核心算法保持确定性，身份字段不影响落宫
-- 手动农历主流程可以完成并显示 trace
-- 明确拒绝、第三方身份、健康、财务和失联危险的关键守卫有效
-- 结果符合输出合同
-- 问题文本不上传
-- 移动端和桌面端各保留一张代表性截图
-
-其他全量验证只在相关结构变更、跨模块故障或正式发布前运行。
+- `npm test` 成功
+- R1 手动农历主流程无回归
+- 公历模式可明确选择两种策略
+- 资料库可搜索并查看小吉五行异文与来源
+- provenance 覆盖最终展示来源和 disputed 字段
+- JSON 默认导出不包含问题文本和精确时间
+- hard-stop 仍以现实行动为首要内容
+- 移动端与桌面端保留少量代表性截图
 
 ## 仓库入口
 
+- `src/`：R1 Web 工程、历法、算法、知识、伦理、服务与界面
 - `algorithm/`：传统计算、解释与伦理合同
 - `knowledge/`：结构化知识、规则和 Schema
 - `fixtures/`：黄金与伦理案例
@@ -149,4 +135,4 @@ R1 只以这些项目作为默认合并门槛：
 - `codex/`：执行计划与子代理任务书
 - `scripts/`：知识校验脚本规范
 
-本项目当前处于**规范完成，R1 工程实现待开始**阶段。
+本项目当前处于 **R1 已完成，R2 待执行** 阶段。
