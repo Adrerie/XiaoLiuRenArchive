@@ -1,123 +1,42 @@
 # Task: architecture-agent
 
-## Mission
+遵循 `codex/execution-first-policy.md`。
 
-建立 R1 Local Web MVP 的工程骨架、共享类型、模块依赖和整合边界。你负责让其他子代理能够并行工作，但无权修改传统算法或知识内容。
+## 任务
 
-## Required Reading
+建立 R1 工程骨架和最小共享接口，让其他代理立即并行开发。
 
-- `README.md`
-- `AGENTS.md`
-- `CODEX_MASTER_PROMPT.md`
-- `docs/01-system-architecture.md`
+## 只读这些文件
+
+- 本任务书
 - `docs/10-product-requirements.md`
 - `docs/11-ui-information-architecture.md`
-- `algorithm/contract.md`
-- `algorithm/interpretation-engine-contract.md`
-- `algorithm/ethics-engine-contract.md`
-- `codex/batch-04-implementation-plan.md`
-- `codex/batch-04-acceptance-criteria.md`
+- request 与 result Schema
 
-## Allowed Areas
+不扫描整个仓库。
 
-Primary ownership:
+## 完成项
 
-- `package.json`
-- TypeScript, Vite, Vitest and lint configuration
-- `.github/workflows/**`
-- `src/app/**`
-- `src/shared/**`
-- `src/types/**`
-- integration service boundary
-- architecture ADRs created during implementation
+- React、TypeScript strict、Vite
+- Vitest 与基础构建脚本
+- 最小共享类型
+- `runDivination` 服务接口
+- 清晰的模块目录
+- 必要依赖安装
 
-Shared files require controller coordination.
+## 边界
 
-## Forbidden Areas
+- 不修改冻结算法
+- 不改知识与伦理语义
+- 不在应用服务中复制落宫逻辑
+- 不为形式生成依赖图、长 ADR 或架构报告
 
-Do not change without explicit controller approval:
-
-- `algorithm/contract.md`
-- `algorithm/test-vectors.v1.json`
-- traditional fields in `knowledge/palaces.v1.json`
-- ethics policy semantics
-- calendar policy meaning
-
-Do not write an alternative palace calculation in the app service or UI.
-
-## Deliverables
-
-1. React + TypeScript strict + Vite scaffold.
-2. Vitest and Node test environments.
-3. Draft 2020-12 JSON Schema validation dependency.
-4. Shared interfaces for request, calculation, interpretation, ethics and result.
-5. Module dependency rules.
-6. One high-level `runDivination` service interface.
-7. Basic CI for validation, tests and build.
-8. Local-only dependency inventory.
-9. Architecture report and dependency diagram.
-
-## Required Dependency Direction
+## 必要验证
 
 ```text
-shared types
-   ↑
-calendar     core
-   \         /
- application service
-   ↑       ↑
-knowledge  ethics
-   \       /
- interpretation
-      ↑
-   frontend
+typecheck 或 build
 ```
 
-The exact drawing may differ, but these prohibitions are mandatory:
+## 回报
 
-- core must not import frontend, knowledge, ethics or calendar conversion
-- calendar must not import interpretation
-- knowledge data must not import UI
-- frontend must not import raw algorithm constants to recalculate results
-- ethics must not mutate core results
-
-## Shared Type Freeze
-
-Before other agents integrate, publish interfaces for:
-
-- `DivinationRequest`
-- `QuestionContext`
-- `NormalizedLunarInput`
-- `CalculationResult`
-- `InterpretationDraft`
-- `CandidateClaim`
-- `EthicsEvaluationResult`
-- `DivinationResult`
-- typed error union
-
-Generate or manually mirror types from schemas only if consistency tests are added.
-
-## Tests to Run
-
-At minimum:
-
-```bash
-npm run typecheck
-npm test
-npm run build
-```
-
-Also verify a dependency scan or lint rule catches forbidden imports.
-
-## Completion Report
-
-Include:
-
-- directory tree
-- dependency decisions
-- files changed
-- commands actually run
-- results
-- shared interfaces frozen
-- unresolved integration questions
-- confirmation that no algorithm semantics were changed
+只写完成项、未完成项、已知问题、运行命令和提交信息。
