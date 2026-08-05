@@ -66,11 +66,17 @@
     "domain": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "name", "description", "palaceInterpretations", "mandatoryEthicsRuleIds"],
+      "required": ["id", "name", "description", "sourceIds", "palaceInterpretations", "mandatoryEthicsRuleIds"],
       "properties": {
         "id": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
         "name": {"type": "string", "minLength": 1},
         "description": {"type": "string", "minLength": 1},
+        "sourceIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"}
+        },
         "roleTerms": {
           "type": "object",
           "additionalProperties": {"type": "string", "minLength": 1}

@@ -15,6 +15,18 @@ export type CalendarErrorCode =
   | 'CALENDAR_LUNAR_DATE_INVALID'
   | 'CALENDAR_RUNTIME_UNAVAILABLE';
 
+export type CalendarPolicyId =
+  | 'civil-midnight-reuse-leap-month'
+  | 'zi-hour-23-reuse-leap-month'
+  | 'manual-lunar-input-v1';
+
+export interface CalendarPolicyDefinition {
+  readonly id: CalendarPolicyId;
+  readonly label: string;
+  readonly description: string;
+  readonly warning: string;
+}
+
 export interface CalendarNormalizationErrorShape {
   code: CalendarErrorCode;
   message: string;
@@ -59,7 +71,9 @@ export interface NormalizedDivinationTime {
   isLeapMonth: boolean;
   earthlyBranch: EarthlyBranch;
   earthlyBranchIndex: number;
-  calendarPolicyId: string;
+  calendarPolicyId: CalendarPolicyId;
+  appliedDayOffset: -1 | 0 | 1;
+  lunarConversionLocalDateTime?: string;
   libraryId?: string;
   libraryVersion?: string;
   warnings: string[];
@@ -80,6 +94,7 @@ export interface CalendarAdapter {
 }
 
 export const DEFAULT_CALENDAR_POLICY_ID: 'civil-midnight-reuse-leap-month';
+export const CALENDAR_POLICIES: readonly CalendarPolicyDefinition[];
 export const EARTHLY_BRANCHES: readonly EarthlyBranch[];
 export const MANUAL_TIME_ZONE: 'manual';
 export const POLICY_IDS: readonly string[];

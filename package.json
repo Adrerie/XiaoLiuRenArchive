@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "npm run validate:knowledge && vite build",
+    "validate:knowledge": "node scripts/validate-knowledge-manifest.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --exclude src/core/index.test.ts",
     "test:core": "node --test --experimental-strip-types src/core/index.test.ts",

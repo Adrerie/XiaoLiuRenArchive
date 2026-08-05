@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://xiaoliurenarchive.local/schemas/knowledge-manifest.schema.json",
+  "title": "XiaoLiuRen Knowledge Bundle Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "bundleVersion",
+    "status",
+    "updatedAt",
+    "palacesVersion",
+    "questionDomainsVersion",
+    "interpretationFragmentsVersion",
+    "sourceRegistryVersion",
+    "ethicsRulesVersion",
+    "safetyMessagesVersion"
+  ],
+  "properties": {
+    "$schema": {"type": "string", "format": "uri"},
+    "bundleVersion": {"type": "string", "minLength": 1},
+    "status": {"enum": ["draft", "provisional", "reviewed", "canonical"]},
+    "updatedAt": {"type": "string", "format": "date"},
+    "palacesVersion": {"type": "string", "minLength": 1},
+    "questionDomainsVersion": {"type": "string", "minLength": 1},
+    "interpretationFragmentsVersion": {"type": "string", "minLength": 1},
+    "sourceRegistryVersion": {"type": "string", "minLength": 1},
+    "ethicsRulesVersion": {"type": "string", "minLength": 1},
+    "safetyMessagesVersion": {"type": "string", "minLength": 1}
+  }
+}

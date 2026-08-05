@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "knowledgeVersion": "1.0.0-provisional.1",
+  "knowledgeVersion": "1.0.0-provisional.2",
   "status": "provisional",
   "assemblyPolicy": {
     "maxFragmentsPerSection": 4,
@@ -18,12 +18,20 @@
       "id": "palace.da_an.neutral",
       "kind": "neutral_summary",
       "text": "大安可理解为稳定、守成、静止或缓慢推进。它强调结构是否稳固，不自动等于事情会立刻成功。",
-      "palaceIds": ["da_an"],
+      "palaceIds": [
+        "da_an"
+      ],
       "domainIds": [],
       "stageIds": [],
-      "tags": ["stable", "slow", "maintain"],
+      "tags": [
+        "stable",
+        "slow",
+        "maintain"
+      ],
       "claimTypes": [],
-      "sourceIds": [],
+      "sourceIds": [
+        "xiaoliurenarchive-editorial-modern-knowledge-v1"
+      ],
       "status": "provisional",
       "priority": 500
     },
@@ -31,12 +39,20 @@
       "id": "palace.liu_lian.neutral",
       "kind": "neutral_summary",
       "text": "留连可理解为拖延、反复、牵连或尚未定型。重点在于识别被卡住的环节，而不是把等待本身解释为必有好结果。",
-      "palaceIds": ["liu_lian"],
+      "palaceIds": [
+        "liu_lian"
+      ],
       "domainIds": [],
       "stageIds": [],
-      "tags": ["delay", "entanglement", "unclear"],
+      "tags": [
+        "delay",
+        "entanglement",
+        "unclear"
+      ],
       "claimTypes": [],
-      "sourceIds": [],
+      "sourceIds": [
+        "xiaoliurenarchive-editorial-modern-knowledge-v1"
+      ],
       "status": "provisional",
       "priority": 500
     },
@@ -44,12 +60,20 @@
       "id": "palace.su_xi.neutral",
       "kind": "neutral_summary",
       "text": "速喜可理解为消息迅速、短期转机或事件加速。速度代表窗口出现，不代表长期结果已经确定。",
-      "palaceIds": ["su_xi"],
+      "palaceIds": [
+        "su_xi"
+      ],
       "domainIds": [],
       "stageIds": [],
-      "tags": ["fast", "message", "opportunity"],
+      "tags": [
+        "fast",
+        "message",
+        "opportunity"
+      ],
       "claimTypes": [],
-      "sourceIds": [],
+      "sourceIds": [
+        "xiaoliurenarchive-editorial-modern-knowledge-v1"
+      ],
       "status": "provisional",
       "priority": 500
     },
@@ -57,12 +81,20 @@
       "id": "palace.chi_kou.neutral",
       "kind": "neutral_summary",
       "text": "赤口可理解为争执、压力、公开表达或沟通风险。它也可能提示问题已经进入必须面对和澄清的阶段。",
-      "palaceIds": ["chi_kou"],
+      "palaceIds": [
+        "chi_kou"
+      ],
       "domainIds": [],
       "stageIds": [],
-      "tags": ["conflict", "speech", "pressure"],
+      "tags": [
+        "conflict",
+        "speech",
+        "pressure"
+      ],
       "claimTypes": [],
-      "sourceIds": [],
+      "sourceIds": [
+        "xiaoliurenarchive-editorial-modern-knowledge-v1"
+      ],
       "status": "provisional",
       "priority": 500
     },
@@ -70,12 +102,20 @@
       "id": "palace.xiao_ji.neutral",
       "kind": "neutral_summary",
       "text": "小吉可理解为协助、小幅改善、合作与渐进收益。它通常适合通过现实行动累积，而不是等待突然反转。",
-      "palaceIds": ["xiao_ji"],
+      "palaceIds": [
+        "xiao_ji"
+      ],
       "domainIds": [],
       "stageIds": [],
-      "tags": ["cooperation", "incremental", "support"],
+      "tags": [
+        "cooperation",
+        "incremental",
+        "support"
+      ],
       "claimTypes": [],
-      "sourceIds": [],
+      "sourceIds": [
+        "xiaoliurenarchive-editorial-modern-knowledge-v1"
+      ],
       "status": "provisional",
       "priority": 500
     },
@@ -83,12 +123,20 @@
       "id": "palace.kong_wang.neutral",
       "kind": "neutral_summary",
       "text": "空亡可理解为缺位、未落实、信息不足或期待失去支撑。它描述当前结构的空缺，不等于终身失败或不可改变。",
-      "palaceIds": ["kong_wang"],
+      "palaceIds": [
+        "kong_wang"
+      ],
       "domainIds": [],
       "stageIds": [],
-      "tags": ["absence", "unrealized", "insufficient_evidence"],
+      "tags": [
+        "absence",
+        "unrealized",
+        "insufficient_evidence"
+      ],
       "claimTypes": [],
-      "sourceIds": [],
+      "sourceIds": [
+        "xiaoliurenarchive-editorial-modern-knowledge-v1"
+      ],
       "status": "provisional",
       "priority": 500
     },
@@ -96,12 +144,19 @@
       "id": "action.da_an.verify-foundation",
       "kind": "action_prompt",
       "text": "检查现有基础是否真实稳定，并确认缓慢推进是否符合你的时间要求。",
-      "palaceIds": ["da_an"],
+      "palaceIds": [
+        "da_an"
+      ],
       "domainIds": [],
       "stageIds": [],
-      "tags": ["verify", "foundation"],
+      "tags": [
+        "verify",
+        "foundation"
+      ],
       "claimTypes": [],
-      "sourceIds": [],
+      "sourceIds": [
+        "xiaoliurenarchive-editorial-modern-knowledge-v1"
+      ],
       "status": "provisional",
       "priority": 300
     },
@@ -109,12 +164,19 @@
       "id": "action.liu_lian.define-blocker",
       "kind": "action_prompt",
       "text": "把拖延拆成具体阻塞项，区分等待外部条件与自己尚未采取的行动。",
-      "palaceIds": ["liu_lian"],
+      "palaceIds": [
+        "liu_lian"
+      ],
       "domainIds": [],
       "stageIds": [],
-      "tags": ["blocker", "clarify"],
+      "tags": [
+        "blocker",
+        "clarify"
+      ],
       "claimTypes": [],
-      "sourceIds": [],
+      "sourceIds": [
+        "xiaoliurenarchive-editorial-modern-knowledge-v1"
+      ],
       "status": "provisional",
       "priority": 300
     },
@@ -122,12 +184,19 @@
       "id": "action.su_xi.verify-fast-news",
       "kind": "action_prompt",
       "text": "及时回应窗口，同时核对消息来源、正式条件和后续可持续性。",
-      "palaceIds": ["su_xi"],
+      "palaceIds": [
+        "su_xi"
+      ],
       "domainIds": [],
       "stageIds": [],
-      "tags": ["verify", "timely_response"],
+      "tags": [
+        "verify",
+        "timely_response"
+      ],
       "claimTypes": [],
-      "sourceIds": [],
+      "sourceIds": [
+        "xiaoliurenarchive-editorial-modern-knowledge-v1"
+      ],
       "status": "provisional",
       "priority": 300
     },
@@ -135,12 +204,19 @@
       "id": "action.chi_kou.reduce-escalation",
       "kind": "action_prompt",
       "text": "优先降低冲突升级，保留事实记录，并选择清晰、可验证的沟通方式。",
-      "palaceIds": ["chi_kou"],
+      "palaceIds": [
+        "chi_kou"
+      ],
       "domainIds": [],
       "stageIds": [],
-      "tags": ["deescalation", "evidence"],
+      "tags": [
+        "deescalation",
+        "evidence"
+      ],
       "claimTypes": [],
-      "sourceIds": [],
+      "sourceIds": [
+        "xiaoliurenarchive-editorial-modern-knowledge-v1"
+      ],
       "status": "provisional",
       "priority": 300
     },
@@ -148,12 +224,19 @@
       "id": "action.xiao_ji.make-small-agreement",
       "kind": "action_prompt",
       "text": "把积极迹象转化为一个清晰、有限且可检验的小步骤。",
-      "palaceIds": ["xiao_ji"],
+      "palaceIds": [
+        "xiao_ji"
+      ],
       "domainIds": [],
       "stageIds": [],
-      "tags": ["small_step", "agreement"],
+      "tags": [
+        "small_step",
+        "agreement"
+      ],
       "claimTypes": [],
-      "sourceIds": [],
+      "sourceIds": [
+        "xiaoliurenarchive-editorial-modern-knowledge-v1"
+      ],
       "status": "provisional",
       "priority": 300
     },
@@ -161,12 +244,19 @@
       "id": "action.kong_wang.return-to-facts",
       "kind": "action_prompt",
       "text": "回到已经发生的事实，确认对象、资源、承诺或信息是否真实存在。",
-      "palaceIds": ["kong_wang"],
+      "palaceIds": [
+        "kong_wang"
+      ],
       "domainIds": [],
       "stageIds": [],
-      "tags": ["facts", "reality_check"],
+      "tags": [
+        "facts",
+        "reality_check"
+      ],
       "claimTypes": [],
-      "sourceIds": [],
+      "sourceIds": [
+        "xiaoliurenarchive-editorial-modern-knowledge-v1"
+      ],
       "status": "provisional",
       "priority": 300
     },
@@ -174,26 +264,44 @@
       "id": "reality.verified-evidence-priority",
       "kind": "reality_check",
       "text": "当排盘解释与正式通知、检查结果、合同、明确表态或其他可核验事实冲突时，以现实证据为准。",
-      "palaceIds": ["all"],
+      "palaceIds": [
+        "all"
+      ],
       "domainIds": [],
       "stageIds": [],
-      "tags": ["evidence_priority"],
+      "tags": [
+        "evidence_priority"
+      ],
       "claimTypes": [],
-      "sourceIds": [],
+      "sourceIds": [
+        "xiaoliurenarchive-editorial-modern-knowledge-v1"
+      ],
       "status": "provisional",
       "priority": 1000,
-      "requiresEthicsRuleIds": ["reality-evidence-priority"]
+      "requiresEthicsRuleIds": [
+        "reality-evidence-priority"
+      ]
     },
     {
       "id": "relationship.stage.seeking",
       "kind": "stage_modifier",
       "text": "在尚未有具体对象的阶段，本课更适合用于观察社交机会与自身准备，不应凭宫位虚构某个命定对象。",
-      "palaceIds": ["all"],
-      "domainIds": ["relationship"],
-      "stageIds": ["seeking"],
-      "tags": ["no_fabricated_partner"],
+      "palaceIds": [
+        "all"
+      ],
+      "domainIds": [
+        "relationship"
+      ],
+      "stageIds": [
+        "seeking"
+      ],
+      "tags": [
+        "no_fabricated_partner"
+      ],
       "claimTypes": [],
-      "sourceIds": [],
+      "sourceIds": [
+        "xiaoliurenarchive-editorial-modern-knowledge-v1"
+      ],
       "status": "provisional",
       "priority": 600
     },
@@ -201,99 +309,185 @@
       "id": "relationship.stage.ambiguous",
       "kind": "stage_modifier",
       "text": "暧昧状态应通过可拒绝的询问和明确回应来确认，长期不确定本身不能被自动解释为隐藏的爱意。",
-      "palaceIds": ["all"],
-      "domainIds": ["relationship"],
-      "stageIds": ["ambiguous"],
-      "tags": ["consent", "clarity"],
+      "palaceIds": [
+        "all"
+      ],
+      "domainIds": [
+        "relationship"
+      ],
+      "stageIds": [
+        "ambiguous"
+      ],
+      "tags": [
+        "consent",
+        "clarity"
+      ],
       "claimTypes": [],
-      "sourceIds": [],
+      "sourceIds": [
+        "xiaoliurenarchive-editorial-modern-knowledge-v1"
+      ],
       "status": "provisional",
       "priority": 700,
-      "requiresEthicsRuleIds": ["consent-overrides-divination"]
+      "requiresEthicsRuleIds": [
+        "consent-overrides-divination"
+      ]
     },
     {
       "id": "relationship.stage.reconciliation",
       "kind": "stage_modifier",
       "text": "复合需要双方重新同意并处理原有问题。过去的关系、吉宫或持续想念都不能替代对方当前意愿。",
-      "palaceIds": ["all"],
-      "domainIds": ["relationship"],
-      "stageIds": ["reconciliation"],
-      "tags": ["consent", "past_not_consent"],
+      "palaceIds": [
+        "all"
+      ],
+      "domainIds": [
+        "relationship"
+      ],
+      "stageIds": [
+        "reconciliation"
+      ],
+      "tags": [
+        "consent",
+        "past_not_consent"
+      ],
       "claimTypes": [],
-      "sourceIds": [],
+      "sourceIds": [
+        "xiaoliurenarchive-editorial-modern-knowledge-v1"
+      ],
       "status": "provisional",
       "priority": 700,
-      "requiresEthicsRuleIds": ["consent-overrides-divination"]
+      "requiresEthicsRuleIds": [
+        "consent-overrides-divination"
+      ]
     },
     {
       "id": "ethics.relationship.identity-private",
       "kind": "ethics_notice",
       "text": "宫位不能确认或推断第三方的性取向、性别身份、出柜状态或性行为角色。这些只能由当事人自行表达。",
-      "palaceIds": ["all"],
-      "domainIds": ["relationship"],
+      "palaceIds": [
+        "all"
+      ],
+      "domainIds": [
+        "relationship"
+      ],
       "stageIds": [],
-      "tags": ["third_party_identity"],
-      "claimTypes": ["third_party_identity"],
-      "sourceIds": [],
+      "tags": [
+        "third_party_identity"
+      ],
+      "claimTypes": [
+        "third_party_identity"
+      ],
+      "sourceIds": [
+        "xiaoliurenarchive-editorial-modern-knowledge-v1"
+      ],
       "status": "provisional",
       "priority": 990,
-      "requiresEthicsRuleIds": ["no-third-party-orientation-inference"]
+      "requiresEthicsRuleIds": [
+        "no-third-party-orientation-inference"
+      ]
     },
     {
       "id": "ethics.health.non-diagnosis",
       "kind": "ethics_notice",
       "text": "健康内容仅作传统文化解释，不能诊断疾病、判断严重程度或排除风险。请根据实际症状与专业医疗意见行动。",
-      "palaceIds": ["all"],
-      "domainIds": ["health"],
+      "palaceIds": [
+        "all"
+      ],
+      "domainIds": [
+        "health"
+      ],
       "stageIds": [],
-      "tags": ["medical_boundary"],
-      "claimTypes": ["medical_diagnosis", "medical_risk_exclusion"],
-      "sourceIds": [],
+      "tags": [
+        "medical_boundary"
+      ],
+      "claimTypes": [
+        "medical_diagnosis",
+        "medical_risk_exclusion"
+      ],
+      "sourceIds": [
+        "xiaoliurenarchive-editorial-modern-knowledge-v1"
+      ],
       "status": "provisional",
       "priority": 970,
-      "requiresEthicsRuleIds": ["medical-non-diagnosis"]
+      "requiresEthicsRuleIds": [
+        "medical-non-diagnosis"
+      ]
     },
     {
       "id": "ethics.finance.non-reliance",
       "kind": "ethics_notice",
       "text": "排盘不能提供投资建议、收益保证或买卖指令。重大财务决定应依据可核验信息、风险承受能力和合格专业意见。",
-      "palaceIds": ["all"],
-      "domainIds": ["finance"],
+      "palaceIds": [
+        "all"
+      ],
+      "domainIds": [
+        "finance"
+      ],
       "stageIds": [],
-      "tags": ["financial_boundary"],
-      "claimTypes": ["financial_return_guarantee"],
-      "sourceIds": [],
+      "tags": [
+        "financial_boundary"
+      ],
+      "claimTypes": [
+        "financial_return_guarantee"
+      ],
+      "sourceIds": [
+        "xiaoliurenarchive-editorial-modern-knowledge-v1"
+      ],
       "status": "provisional",
       "priority": 950,
-      "requiresEthicsRuleIds": ["financial-non-reliance"]
+      "requiresEthicsRuleIds": [
+        "financial-non-reliance"
+      ]
     },
     {
       "id": "ethics.legal.non-reliance",
       "kind": "ethics_notice",
       "text": "本系统不构成法律意见，也不能预测裁判、刑罚或执法结果。请核对正式文件、期限并在需要时咨询合格法律专业人士。",
-      "palaceIds": ["all"],
-      "domainIds": ["legal_dispute"],
+      "palaceIds": [
+        "all"
+      ],
+      "domainIds": [
+        "legal_dispute"
+      ],
       "stageIds": [],
-      "tags": ["legal_boundary"],
-      "claimTypes": ["legal_outcome_guarantee"],
-      "sourceIds": [],
+      "tags": [
+        "legal_boundary"
+      ],
+      "claimTypes": [
+        "legal_outcome_guarantee"
+      ],
+      "sourceIds": [
+        "xiaoliurenarchive-editorial-modern-knowledge-v1"
+      ],
       "status": "provisional",
       "priority": 950,
-      "requiresEthicsRuleIds": ["legal-non-reliance"]
+      "requiresEthicsRuleIds": [
+        "legal-non-reliance"
+      ]
     },
     {
       "id": "historical.supernatural-language",
       "kind": "historical_context",
       "text": "传统文本中的鬼神、咒诅、禳解或瘟黄等词语只作为历史语言展示，不构成现实因果判断。",
-      "palaceIds": ["all"],
+      "palaceIds": [
+        "all"
+      ],
       "domainIds": [],
       "stageIds": [],
-      "tags": ["historical_language", "supernatural"],
-      "claimTypes": ["supernatural_causation"],
-      "sourceIds": [],
+      "tags": [
+        "historical_language",
+        "supernatural"
+      ],
+      "claimTypes": [
+        "supernatural_causation"
+      ],
+      "sourceIds": [
+        "xiaoliurenarchive-editorial-modern-knowledge-v1"
+      ],
       "status": "provisional",
       "priority": 960,
-      "requiresEthicsRuleIds": ["no-supernatural-causation"]
+      "requiresEthicsRuleIds": [
+        "no-supernatural-causation"
+      ]
     }
   ]
 }

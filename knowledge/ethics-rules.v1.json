@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "knowledgeVersion": "1.0.0-provisional.2",
+  "knowledgeVersion": "1.0.0-provisional.3",
   "status": "provisional",
   "enginePolicy": {
     "evaluationOrder": "priority-descending-then-id-ascending",

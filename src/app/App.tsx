@@ -1,5 +1,10 @@
 import { useMemo, useState, type FormEvent, type ReactElement } from "react";
 import { runLocalDivination } from "./index";
+import { ExportPanel, StructuredDetails } from "./ResultTools";
+import { CALENDAR_POLICIES, listSupportedTimeZones, type CalendarPolicyId } from "../calendar";
+import { PrimaryNavigation, type AppView } from "../components/navigation/PrimaryNavigation";
+import KnowledgeLibraryPage from "../pages/knowledge/KnowledgeLibraryPage";
+import AboutPage from "../pages/about/AboutPage";
 import { getSources, listDomains, listStages, type KnowledgeDomain } from "../knowledge";
 import type {
   ContentBlock,
@@ -49,6 +54,7 @@ interface FormState {
   readonly localDateTime: string;
   readonly timezone: string;
   readonly fold: "" | "0" | "1";
+  readonly calendarPolicyId: Exclude<CalendarPolicyId, "manual-lunar-input-v1">;
   readonly domainId: string;
   readonly stageId: string;
   readonly explicitRefusalExists: boolean;
@@ -64,6 +70,7 @@ const INITIAL_FORM: FormState = {
   localDateTime: "2024-02-10T12:00",
   timezone: "Asia/Shanghai",
   fold: "",
+  calendarPolicyId: "civil-midnight-reuse-leap-month",
   domainId: "relationship",
   stageId: "seeking",
   explicitRefusalExists: false,
@@ -91,6 +98,14 @@ function foldValue(value: FormState["fold"]): 0 | 1 | null {
 function foldOption(value: string): FormState["fold"] {
   if (value === "0" || value === "1") return value;
   return "";
+}
+
+function policyDefinition(policyId: string) {
+  return CALENDAR_POLICIES.find((policy) => policy.id === policyId);
+}
+
+function civilPolicyOption(value: string): FormState["calendarPolicyId"] {
+  return value === "zi-hour-23-reuse-leap-month" ? value : "civil-midnight-reuse-leap-month";
 }
 
 function BlockSection({
@@ -124,6 +139,10 @@ function BlockSection({
 
 function ResolvedCalendar({ result }: { readonly result: DivinationResult }): ReactElement {
   const lunar = result.calendar.resolvedLunarDate;
+  const boundaryTrace = result.calendar.trace.find((entry) => entry.stage === "calendar-boundary");
+  const lunarConversionLocalDateTime = typeof boundaryTrace?.lunarConversionLocalDateTime === "string"
+    ? boundaryTrace.lunarConversionLocalDateTime
+    : "manual input";
   return (
     <section className="result-section resolved-calendar">
       <div className="section-heading">
@@ -131,6 +150,10 @@ function ResolvedCalendar({ result }: { readonly result: DivinationResult }): Re
         <h3>转换后的历法输入</h3>
       </div>
       <dl className="provenance-grid">
+        <dt>appliedDayOffset</dt>
+        <dd>{result.calendar.boundaryDecision.appliedDayOffset}</dd>
+        <dt>lunarConversionLocalDateTime</dt>
+        <dd>{lunarConversionLocalDateTime}</dd>
         <dt>输入模式</dt>
         <dd>{result.input.inputMode === "civil_datetime" ? "公历时间" : "手动农历"}</dd>
         <dt>本地日期时间</dt>
@@ -144,7 +167,11 @@ function ResolvedCalendar({ result }: { readonly result: DivinationResult }): Re
         <dt>时辰</dt>
         <dd>{branchLabel(result.calendar.earthlyBranch)}</dd>
         <dt>历法策略</dt>
-        <dd>{result.calendar.calendarPolicyId}</dd>
+        <dd>
+          {policyDefinition(result.calendar.calendarPolicyId)?.label ?? result.calendar.calendarPolicyId}
+          <br /><code>{result.calendar.calendarPolicyId}</code>
+          {policyDefinition(result.calendar.calendarPolicyId)?.description ? <p className="calendar-note">{policyDefinition(result.calendar.calendarPolicyId)?.description}</p> : null}
+        </dd>
       </dl>
       {result.calendar.warnings.map((warning) => (
         <p className="calendar-warning" key={warning}>{warning}</p>
@@ -175,7 +202,7 @@ function TraceSection({ result }: { readonly result: DivinationResult }): ReactE
           </article>
         ))}
       </div>
-    </section>
+      </section>
   );
 }
 
@@ -221,6 +248,8 @@ function ResultPanel({ result }: { readonly result: DivinationResult }): ReactEl
         </section>
       )}
       <TraceSection result={result} />
+      <StructuredDetails result={result} />
+      <ExportPanel result={result} />
       {!hardStop && (
         <>
           <BlockSection title="中性象意" blocks={result.interpretation.sections.neutral} />
@@ -264,6 +293,8 @@ function ResultPanel({ result }: { readonly result: DivinationResult }): ReactEl
 
 export default function App(): ReactElement {
   const domains = useMemo<readonly KnowledgeDomain[]>(() => listDomains(), []);
+  const timeZones = useMemo(() => listSupportedTimeZones(), []);
+  const [view, setView] = useState<AppView>("divination");
   const [form, setForm] = useState<FormState>(INITIAL_FORM);
   const [result, setResult] = useState<DivinationResult | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -332,7 +363,7 @@ export default function App(): ReactElement {
         nextRequest = {
           requestVersion: "1.0.0",
           inputMode: "civil_datetime",
-          calendarPolicyId: "civil-midnight-reuse-leap-month",
+          calendarPolicyId: form.calendarPolicyId,
           timeInput: {
             kind: "civil_datetime",
             localDateTime: form.localDateTime,
@@ -356,13 +387,16 @@ export default function App(): ReactElement {
     <main className="app-shell">
       <header className="app-header">
         <div>
-          <span className="eyebrow">XiaoLiuRenArchive · R1 LOCAL WEB MVP</span>
+          <span className="eyebrow">XiaoLiuRenArchive · R2 LOCAL KNOWLEDGE</span>
           <h1>小六壬档案</h1>
           <p className="lede">把输入、历法、传统计算、本地知识与现实边界放在同一条可复现路径上。</p>
         </div>
         <div className="offline-badge"><span />本地运行 · 不上传问题</div>
       </header>
 
+      <PrimaryNavigation activeView={view} onChange={setView} />
+
+      {view === "library" ? <KnowledgeLibraryPage /> : view === "about" ? <AboutPage /> : <>
       <section className="input-card">
         <div className="card-heading">
           <div>
@@ -370,7 +404,7 @@ export default function App(): ReactElement {
             <h2>开始一课</h2>
           </div>
           <span className="policy-chip">
-            {form.inputMode === "manual_lunar" ? "manual-lunar-input-v1" : "civil-midnight-reuse-leap-month"}
+            {form.inputMode === "manual_lunar" ? "manual-lunar-input-v1" : form.calendarPolicyId}
           </span>
         </div>
         <p className="helper">选择一条本地历法入口。转换结果、时辰和策略会原样进入可复现结果。</p>
@@ -398,9 +432,16 @@ export default function App(): ReactElement {
             <>
               <div className="form-grid three-columns">
                 <label>本地日期时间<input type="datetime-local" step="60" value={form.localDateTime} onChange={(event) => update("localDateTime", event.target.value)} /></label>
-                <label>IANA 时区<input type="text" placeholder="Asia/Shanghai" value={form.timezone} onChange={(event) => update("timezone", event.target.value)} /></label>
+                <label>IANA 时区<input list="iana-time-zones" type="search" placeholder="Asia/Shanghai" value={form.timezone} onChange={(event) => update("timezone", event.target.value)} /></label>
                 <label>fold（歧义时必选）<select value={form.fold} onChange={(event) => update("fold", foldOption(event.target.value))}><option value="">自动（非歧义时间）</option><option value="0">0 · 较早一次</option><option value="1">1 · 较晚一次</option></select></label>
               </div>
+              <datalist id="iana-time-zones">{timeZones.map((timeZone) => <option value={timeZone} key={timeZone} />)}</datalist>
+              <label className="calendar-policy-field">历法策略
+                <select value={form.calendarPolicyId} onChange={(event) => update("calendarPolicyId", civilPolicyOption(event.target.value))}>
+                  {CALENDAR_POLICIES.filter((policy) => policy.id !== "manual-lunar-input-v1").map((policy) => <option value={policy.id} key={policy.id}>{policy.label} · {policy.id}</option>)}
+                </select>
+              </label>
+              {policyDefinition(form.calendarPolicyId) ? <p className="calendar-note">{policyDefinition(form.calendarPolicyId)?.description} {policyDefinition(form.calendarPolicyId)?.warning}</p> : null}
               <p className="calendar-note">当前 smoke 路径使用 `2024-02-10 12:00` + `Asia/Shanghai`。遇到夏令时回拨的重复时间，请选择 fold 0 或 1；不存在的本地时间会返回明确错误。</p>
             </>
           )}
@@ -417,10 +458,11 @@ export default function App(): ReactElement {
           <p className="privacy-note">隐私：此界面不要求问题原文；本地结果默认不保存问题文本，也不会调用远程服务。</p>
           {error && <div className="error-box" role="alert">{error}</div>}
           <button className="primary-button" type="submit" disabled={busy}>{busy ? "正在本地计算…" : "生成可复现结果"}</button>
-        </form>
+      </form>
       </section>
 
       {result ? <ResultPanel result={result} /> : <section className="empty-state"><span className="section-kicker">02 · RESULT</span><h2>结果会在这里展开</h2><p>提交后可查看最终宫位、三步 trace、本地解释、原典来源和伦理提示。</p></section>}
+      </>}
       <footer className="app-footer">传统计算为固定规则的文化解释，不构成医疗、法律或财务意见。</footer>
     </main>
   );

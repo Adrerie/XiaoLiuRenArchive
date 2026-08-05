@@ -4,9 +4,10 @@
   "title": "XiaoLiuRen Source Registry",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "updatedAt", "sources", "sourcePolicy"],
+  "required": ["schemaVersion", "knowledgeVersion", "updatedAt", "sources", "sourcePolicy"],
   "properties": {
     "schemaVersion": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+    "knowledgeVersion": {"type": "string", "minLength": 1},
     "updatedAt": {"type": "string", "format": "date"},
     "sources": {
       "type": "array",

@@ -1,6 +1,7 @@
 import resultSchema from "../../knowledge/divination-result.schema.json";
 import { describe, expect, it } from "vitest";
 import { runLocalDivination } from "./divination-runtime";
+import { createExportPayload } from "./result-export";
 import type { DivinationRequest } from "../shared";
 
 type JsonRecord = Record<string, unknown>;
@@ -142,6 +143,7 @@ describe("serialized divination result schema", () => {
     const result = await runLocalDivination(input);
 
     expect(() => assertSchemaValue(result, resultSchema)).not.toThrow();
+    expect(() => assertSchemaValue(createExportPayload(result), resultSchema)).not.toThrow();
     expect(Object.prototype.hasOwnProperty.call(result.interpretation, "candidateClaims")).toBe(false);
     expect(Object.prototype.hasOwnProperty.call(result.interpretation, "selectedFragments")).toBe(false);
     expect(Object.prototype.hasOwnProperty.call(result.ethics, "controlledMessages")).toBe(false);

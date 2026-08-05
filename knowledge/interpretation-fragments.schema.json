@@ -40,7 +40,7 @@
         "stageIds": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}},
         "tags": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"}},
         "claimTypes": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}},
-        "sourceIds": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"}},
+        "sourceIds": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"}},
         "status": {"enum": ["provisional", "reviewed", "canonical", "blocked"]},
         "priority": {"type": "integer", "minimum": 0, "maximum": 1000},
         "requiresEthicsRuleIds": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},

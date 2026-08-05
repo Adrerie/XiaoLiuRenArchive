@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "knowledgeVersion": "1.0.0-provisional.1",
+  "knowledgeVersion": "1.0.0-provisional.3",
   "status": "provisional",
   "compositionPolicy": {
     "order": [
@@ -41,43 +41,73 @@
           "summary": "关系状态偏稳定或维持原状，发展通常较慢。已有关系更适合看长期基础，尚未开始的关系则可能缺少立即推进。",
           "supportive": "可通过持续接触、可靠行动和安全感积累关系。",
           "caution": "稳定不等于热情，也不等于对方已经承诺。",
-          "actionPrompts": ["确认双方当前关系定义", "观察稳定行为而非单次表达"],
-          "tags": ["relationship_domain_guidance"]
+          "actionPrompts": [
+            "确认双方当前关系定义",
+            "观察稳定行为而非单次表达"
+          ],
+          "tags": [
+            "relationship_domain_guidance"
+          ]
         },
         "liu_lian": {
           "summary": "关系可能处于暧昧、反复、等待或边界不清的阶段。",
           "supportive": "延迟期可用于澄清需求和现实限制。",
           "caution": "不要把长期暧昧自动解释为深情，也不要猜测对方未公开的性取向。",
-          "actionPrompts": ["用尊重的方式询问意愿", "为等待设置边界和期限"],
-          "tags": ["relationship_domain_guidance"]
+          "actionPrompts": [
+            "用尊重的方式询问意愿",
+            "为等待设置边界和期限"
+          ],
+          "tags": [
+            "relationship_domain_guidance"
+          ]
         },
         "su_xi": {
           "summary": "互动、消息或认识新人的速度较快，关系可能迅速明朗。",
           "supportive": "适合及时回应、安排见面或明确表达兴趣。",
           "caution": "快速靠近不保证长期适配，也不能覆盖对方后续撤回。",
-          "actionPrompts": ["核对双方期待", "保留逐步建立信任的空间"],
-          "tags": ["relationship_domain_guidance"]
+          "actionPrompts": [
+            "核对双方期待",
+            "保留逐步建立信任的空间"
+          ],
+          "tags": [
+            "relationship_domain_guidance"
+          ]
         },
         "chi_kou": {
           "summary": "关系中可能出现争执、公开压力、误解或边界冲突。",
           "supportive": "坦诚沟通可使隐藏问题浮现，必要时明确底线。",
           "caution": "不得把冲突归咎于性取向或性别身份，也不得以占断合理化纠缠、监视或报复。",
-          "actionPrompts": ["降低指责式表达", "在不安全时优先离开并求助"],
-          "tags": ["relationship_domain_guidance"]
+          "actionPrompts": [
+            "降低指责式表达",
+            "在不安全时优先离开并求助"
+          ],
+          "tags": [
+            "relationship_domain_guidance"
+          ]
         },
         "xiao_ji": {
           "summary": "关系可通过朋友、共同社群、协商和日常互动逐步改善。",
           "supportive": "适合接受介绍、共同完成事情或建立可持续的小约定。",
           "caution": "积极合作不等于恋爱同意，朋友善意也不代表对方具有某种性取向。",
-          "actionPrompts": ["把好感转化为清晰且可拒绝的邀请", "尊重对方回答"],
-          "tags": ["relationship_domain_guidance"]
+          "actionPrompts": [
+            "把好感转化为清晰且可拒绝的邀请",
+            "尊重对方回答"
+          ],
+          "tags": [
+            "relationship_domain_guidance"
+          ]
         },
         "kong_wang": {
           "summary": "当前关系期待可能缺少现实对象、明确回应或可落实条件。",
           "supportive": "可停止消耗性的投射，重新确认自己真正需要的关系。",
           "caution": "不得解释为同性恋没有姻缘、终身无伴侣或某人必定消失。",
-          "actionPrompts": ["回到已发生的事实", "停止以反复占问替代沟通"],
-          "tags": ["relationship_domain_guidance"]
+          "actionPrompts": [
+            "回到已发生的事实",
+            "停止以反复占问替代沟通"
+          ],
+          "tags": [
+            "relationship_domain_guidance"
+          ]
         }
       },
       "mandatoryEthicsRuleIds": [
@@ -85,6 +115,9 @@
         "no-third-party-orientation-inference",
         "consent-overrides-divination",
         "no-heteronormative-role-forcing"
+      ],
+      "sourceIds": [
+        "xiaoliurenarchive-editorial-modern-knowledge-v1"
       ]
     },
     {
@@ -92,98 +125,481 @@
       "name": "学业与考试",
       "description": "适用于课程学习、作业、考试准备、申请和结果等待。",
       "palaceInterpretations": {
-        "da_an": {"summary": "基础相对稳定，适合按计划复习和巩固。", "supportive": "持续性和规律性比临时冲刺更重要。", "caution": "稳定可能掩盖薄弱模块。", "actionPrompts": ["检查错题与薄弱点", "按真实时间做模拟"]},
-        "liu_lian": {"summary": "学习进度或结果可能拖延，知识点之间存在纠缠。", "supportive": "拆分问题后仍可推进。", "caution": "不要用继续看资料替代主动练习。", "actionPrompts": ["缩小当前任务", "设定可验证的完成标准"]},
-        "su_xi": {"summary": "短期反馈较快，可能出现理解突破或及时消息。", "supportive": "适合集中解决关键题型。", "caution": "一次高分或顿悟不等于长期掌握。", "actionPrompts": ["立即做迁移题验证", "记录错误原因"]},
-        "chi_kou": {"summary": "容易出现时间压力、沟通争议或答题失误。", "supportive": "模拟压力可以暴露问题。", "caution": "不要把焦虑当成能力结论。", "actionPrompts": ["训练限时表达", "核对考试规则和材料"]},
-        "xiao_ji": {"summary": "通过老师、同学或结构化反馈可逐步改善。", "supportive": "合作学习与针对性答疑有效。", "caution": "帮助不能替代个人掌握。", "actionPrompts": ["带着具体问题求助", "复述解法确认理解"]},
-        "kong_wang": {"summary": "当前计划可能缺少内容、时间或有效反馈。", "supportive": "可及时放弃低效方法并重建计划。", "caution": "不得据此断言必然落榜。", "actionPrompts": ["用一次诊断测试收集数据", "优先补最影响分数的缺口"]}
+        "da_an": {
+          "summary": "基础相对稳定，适合按计划复习和巩固。",
+          "supportive": "持续性和规律性比临时冲刺更重要。",
+          "caution": "稳定可能掩盖薄弱模块。",
+          "actionPrompts": [
+            "检查错题与薄弱点",
+            "按真实时间做模拟"
+          ]
+        },
+        "liu_lian": {
+          "summary": "学习进度或结果可能拖延，知识点之间存在纠缠。",
+          "supportive": "拆分问题后仍可推进。",
+          "caution": "不要用继续看资料替代主动练习。",
+          "actionPrompts": [
+            "缩小当前任务",
+            "设定可验证的完成标准"
+          ]
+        },
+        "su_xi": {
+          "summary": "短期反馈较快，可能出现理解突破或及时消息。",
+          "supportive": "适合集中解决关键题型。",
+          "caution": "一次高分或顿悟不等于长期掌握。",
+          "actionPrompts": [
+            "立即做迁移题验证",
+            "记录错误原因"
+          ]
+        },
+        "chi_kou": {
+          "summary": "容易出现时间压力、沟通争议或答题失误。",
+          "supportive": "模拟压力可以暴露问题。",
+          "caution": "不要把焦虑当成能力结论。",
+          "actionPrompts": [
+            "训练限时表达",
+            "核对考试规则和材料"
+          ]
+        },
+        "xiao_ji": {
+          "summary": "通过老师、同学或结构化反馈可逐步改善。",
+          "supportive": "合作学习与针对性答疑有效。",
+          "caution": "帮助不能替代个人掌握。",
+          "actionPrompts": [
+            "带着具体问题求助",
+            "复述解法确认理解"
+          ]
+        },
+        "kong_wang": {
+          "summary": "当前计划可能缺少内容、时间或有效反馈。",
+          "supportive": "可及时放弃低效方法并重建计划。",
+          "caution": "不得据此断言必然落榜。",
+          "actionPrompts": [
+            "用一次诊断测试收集数据",
+            "优先补最影响分数的缺口"
+          ]
+        }
       },
-      "mandatoryEthicsRuleIds": ["no-guaranteed-outcome", "reality-evidence-priority"]
+      "mandatoryEthicsRuleIds": [
+        "no-guaranteed-outcome",
+        "reality-evidence-priority"
+      ],
+      "sourceIds": [
+        "xiaoliurenarchive-editorial-modern-knowledge-v1"
+      ]
     },
     {
       "id": "career_work",
       "name": "事业与工作",
       "description": "适用于求职、项目、晋升、合作、组织关系和职业变化。",
       "palaceInterpretations": {
-        "da_an": {"summary": "岗位或项目结构较稳，变化速度较低。", "supportive": "适合维护核心流程和长期信誉。", "caution": "稳定也可能意味着晋升或转型缓慢。", "actionPrompts": ["确认评价标准", "记录可量化成果"]},
-        "liu_lian": {"summary": "流程反复、审批延迟或责任边界不清。", "supportive": "补齐依赖和明确负责人可降低拖延。", "caution": "长期等待不应替代主动跟进。", "actionPrompts": ["列出阻塞项", "用书面方式确认下一步"]},
-        "su_xi": {"summary": "可能快速收到面试、反馈或项目机会。", "supportive": "适合及时准备并抓住窗口。", "caution": "口头机会尚不等于正式录用或合同。", "actionPrompts": ["核对书面条件", "准备快速响应材料"]},
-        "chi_kou": {"summary": "竞争、争议、沟通冲突或绩效压力上升。", "supportive": "清晰表达立场和证据有助于处理分歧。", "caution": "避免冲动辞职、公开攻击或泄露机密。", "actionPrompts": ["保存工作记录", "必要时使用正式申诉渠道"]},
-        "xiao_ji": {"summary": "合作、人脉和小步成果有利于推进。", "supportive": "适合跨团队协调和试点。", "caution": "不要把友好态度当作资源承诺。", "actionPrompts": ["明确各方交付", "用小范围成果换取下一步支持"]},
-        "kong_wang": {"summary": "职位、项目或承诺可能尚未落实，或原目标失去支撑。", "supportive": "可停止投入没有预算或负责人支持的事项。", "caution": "不得据此断言失业或公司倒闭。", "actionPrompts": ["核验预算、编制和决策人", "准备替代方案"]}
+        "da_an": {
+          "summary": "岗位或项目结构较稳，变化速度较低。",
+          "supportive": "适合维护核心流程和长期信誉。",
+          "caution": "稳定也可能意味着晋升或转型缓慢。",
+          "actionPrompts": [
+            "确认评价标准",
+            "记录可量化成果"
+          ]
+        },
+        "liu_lian": {
+          "summary": "流程反复、审批延迟或责任边界不清。",
+          "supportive": "补齐依赖和明确负责人可降低拖延。",
+          "caution": "长期等待不应替代主动跟进。",
+          "actionPrompts": [
+            "列出阻塞项",
+            "用书面方式确认下一步"
+          ]
+        },
+        "su_xi": {
+          "summary": "可能快速收到面试、反馈或项目机会。",
+          "supportive": "适合及时准备并抓住窗口。",
+          "caution": "口头机会尚不等于正式录用或合同。",
+          "actionPrompts": [
+            "核对书面条件",
+            "准备快速响应材料"
+          ]
+        },
+        "chi_kou": {
+          "summary": "竞争、争议、沟通冲突或绩效压力上升。",
+          "supportive": "清晰表达立场和证据有助于处理分歧。",
+          "caution": "避免冲动辞职、公开攻击或泄露机密。",
+          "actionPrompts": [
+            "保存工作记录",
+            "必要时使用正式申诉渠道"
+          ]
+        },
+        "xiao_ji": {
+          "summary": "合作、人脉和小步成果有利于推进。",
+          "supportive": "适合跨团队协调和试点。",
+          "caution": "不要把友好态度当作资源承诺。",
+          "actionPrompts": [
+            "明确各方交付",
+            "用小范围成果换取下一步支持"
+          ]
+        },
+        "kong_wang": {
+          "summary": "职位、项目或承诺可能尚未落实，或原目标失去支撑。",
+          "supportive": "可停止投入没有预算或负责人支持的事项。",
+          "caution": "不得据此断言失业或公司倒闭。",
+          "actionPrompts": [
+            "核验预算、编制和决策人",
+            "准备替代方案"
+          ]
+        }
       },
-      "mandatoryEthicsRuleIds": ["no-guaranteed-outcome", "reality-evidence-priority"]
+      "mandatoryEthicsRuleIds": [
+        "no-guaranteed-outcome",
+        "reality-evidence-priority"
+      ],
+      "sourceIds": [
+        "xiaoliurenarchive-editorial-modern-knowledge-v1"
+      ]
     },
     {
       "id": "finance",
       "name": "财务与交易",
       "description": "适用于预算、收入、交易、购买与一般财务安排，不提供投资保证。",
       "palaceInterpretations": {
-        "da_an": {"summary": "财务结构偏稳定，适合保守管理和核对长期成本。", "supportive": "已有现金流或预算可维持。", "caution": "稳定不等于没有风险或一定增值。", "actionPrompts": ["检查现金流", "核对合同与费用"]},
-        "liu_lian": {"summary": "回款、审批或交易可能延迟。", "supportive": "延迟期可用于尽调。", "caution": "不要因已经投入而继续追加。", "actionPrompts": ["设定付款节点", "核验对方资质"]},
-        "su_xi": {"summary": "财务消息或交易机会出现较快。", "supportive": "可及时处理明确的小额事务。", "caution": "快速、高收益与限时话术可能伴随诈骗风险。", "actionPrompts": ["独立核验信息", "避免在压力下转账"]},
-        "chi_kou": {"summary": "价格、合同或利益分配容易发生争议。", "supportive": "明确条款可减少损失。", "caution": "不得以占断替代法律或财务审查。", "actionPrompts": ["保留凭证", "重大交易咨询合格专业人士"]},
-        "xiao_ji": {"summary": "通过协商、分期或小额合作可逐步改善。", "supportive": "适合建立清晰、可控的小步骤。", "caution": "小利不等于整体交易安全。", "actionPrompts": ["限制风险敞口", "设置退出条件"]},
-        "kong_wang": {"summary": "收益预期可能缺少现实支撑，交易对象或资金条件未落实。", "supportive": "停止可疑交易本身可能是收益。", "caution": "不得给出买卖指令、回报保证或具体价格预测。", "actionPrompts": ["暂停付款并核验", "检查是否存在诈骗信号"]}
+        "da_an": {
+          "summary": "财务结构偏稳定，适合保守管理和核对长期成本。",
+          "supportive": "已有现金流或预算可维持。",
+          "caution": "稳定不等于没有风险或一定增值。",
+          "actionPrompts": [
+            "检查现金流",
+            "核对合同与费用"
+          ]
+        },
+        "liu_lian": {
+          "summary": "回款、审批或交易可能延迟。",
+          "supportive": "延迟期可用于尽调。",
+          "caution": "不要因已经投入而继续追加。",
+          "actionPrompts": [
+            "设定付款节点",
+            "核验对方资质"
+          ]
+        },
+        "su_xi": {
+          "summary": "财务消息或交易机会出现较快。",
+          "supportive": "可及时处理明确的小额事务。",
+          "caution": "快速、高收益与限时话术可能伴随诈骗风险。",
+          "actionPrompts": [
+            "独立核验信息",
+            "避免在压力下转账"
+          ]
+        },
+        "chi_kou": {
+          "summary": "价格、合同或利益分配容易发生争议。",
+          "supportive": "明确条款可减少损失。",
+          "caution": "不得以占断替代法律或财务审查。",
+          "actionPrompts": [
+            "保留凭证",
+            "重大交易咨询合格专业人士"
+          ]
+        },
+        "xiao_ji": {
+          "summary": "通过协商、分期或小额合作可逐步改善。",
+          "supportive": "适合建立清晰、可控的小步骤。",
+          "caution": "小利不等于整体交易安全。",
+          "actionPrompts": [
+            "限制风险敞口",
+            "设置退出条件"
+          ]
+        },
+        "kong_wang": {
+          "summary": "收益预期可能缺少现实支撑，交易对象或资金条件未落实。",
+          "supportive": "停止可疑交易本身可能是收益。",
+          "caution": "不得给出买卖指令、回报保证或具体价格预测。",
+          "actionPrompts": [
+            "暂停付款并核验",
+            "检查是否存在诈骗信号"
+          ]
+        }
       },
-      "mandatoryEthicsRuleIds": ["financial-non-reliance", "no-guaranteed-outcome", "reality-evidence-priority"]
+      "mandatoryEthicsRuleIds": [
+        "financial-non-reliance",
+        "no-guaranteed-outcome",
+        "reality-evidence-priority"
+      ],
+      "sourceIds": [
+        "xiaoliurenarchive-editorial-modern-knowledge-v1"
+      ]
     },
     {
       "id": "travel_mobility",
       "name": "出行与移动",
       "description": "适用于一般行程、到达、搬迁和等待人员消息。紧急失联归入失踪与安全规则。",
       "palaceInterpretations": {
-        "da_an": {"summary": "行程偏稳但移动可能较慢或尚未开始。", "supportive": "适合按原计划和充分准备。", "caution": "不要忽略实时交通与天气。", "actionPrompts": ["核对票务和路线", "预留缓冲时间"]},
-        "liu_lian": {"summary": "可能有延误、改期或反复等待。", "supportive": "提前准备替代路线可降低影响。", "caution": "不要仅凭占断判断他人位置。", "actionPrompts": ["查看官方动态", "主动联系相关人员"]},
-        "su_xi": {"summary": "移动或消息较快，可能迅速到达或收到更新。", "supportive": "适合及时行动。", "caution": "仍需核验实时信息。", "actionPrompts": ["开启通知", "确认接驳安排"]},
-        "chi_kou": {"summary": "行程中可能出现争执、检查、突发压力或安全摩擦。", "supportive": "提前准备证件和应急方案。", "caution": "危险环境以撤离和求助优先。", "actionPrompts": ["保持沟通", "遵循官方安全指引"]},
-        "xiao_ji": {"summary": "行程可通过协调、同行者或工作人员帮助顺利推进。", "supportive": "适合主动寻求协助。", "caution": "帮助仍需确认具体安排。", "actionPrompts": ["明确集合时间地点", "保存联系方式"]},
-        "kong_wang": {"summary": "计划可能取消、信息缺失或当前无法落实。", "supportive": "及时取消不安全或条件不足的行程。", "caution": "若人员失联或存在危险，不得继续占问等待。", "actionPrompts": ["使用官方查询渠道", "紧急情况立即报警或联系当地救援"]}
+        "da_an": {
+          "summary": "行程偏稳但移动可能较慢或尚未开始。",
+          "supportive": "适合按原计划和充分准备。",
+          "caution": "不要忽略实时交通与天气。",
+          "actionPrompts": [
+            "核对票务和路线",
+            "预留缓冲时间"
+          ]
+        },
+        "liu_lian": {
+          "summary": "可能有延误、改期或反复等待。",
+          "supportive": "提前准备替代路线可降低影响。",
+          "caution": "不要仅凭占断判断他人位置。",
+          "actionPrompts": [
+            "查看官方动态",
+            "主动联系相关人员"
+          ]
+        },
+        "su_xi": {
+          "summary": "移动或消息较快，可能迅速到达或收到更新。",
+          "supportive": "适合及时行动。",
+          "caution": "仍需核验实时信息。",
+          "actionPrompts": [
+            "开启通知",
+            "确认接驳安排"
+          ]
+        },
+        "chi_kou": {
+          "summary": "行程中可能出现争执、检查、突发压力或安全摩擦。",
+          "supportive": "提前准备证件和应急方案。",
+          "caution": "危险环境以撤离和求助优先。",
+          "actionPrompts": [
+            "保持沟通",
+            "遵循官方安全指引"
+          ]
+        },
+        "xiao_ji": {
+          "summary": "行程可通过协调、同行者或工作人员帮助顺利推进。",
+          "supportive": "适合主动寻求协助。",
+          "caution": "帮助仍需确认具体安排。",
+          "actionPrompts": [
+            "明确集合时间地点",
+            "保存联系方式"
+          ]
+        },
+        "kong_wang": {
+          "summary": "计划可能取消、信息缺失或当前无法落实。",
+          "supportive": "及时取消不安全或条件不足的行程。",
+          "caution": "若人员失联或存在危险，不得继续占问等待。",
+          "actionPrompts": [
+            "使用官方查询渠道",
+            "紧急情况立即报警或联系当地救援"
+          ]
+        }
       },
-      "mandatoryEthicsRuleIds": ["missing-person-emergency-escalation", "reality-evidence-priority"]
+      "mandatoryEthicsRuleIds": [
+        "missing-person-emergency-escalation",
+        "reality-evidence-priority"
+      ],
+      "sourceIds": [
+        "xiaoliurenarchive-editorial-modern-knowledge-v1"
+      ]
     },
     {
       "id": "lost_item",
       "name": "寻物",
       "description": "适用于普通物品遗失。方向、人物和时间只作传统资料展示，不替代现实搜索。",
       "palaceInterpretations": {
-        "da_an": {"summary": "物品可能仍在熟悉、稳定或原先活动范围。", "supportive": "按最后使用路径仔细复查。", "caution": "不保证一定找回。", "actionPrompts": ["检查固定收纳处", "回溯最后一次确认时间"]},
-        "liu_lian": {"summary": "搜索过程可能反复，物品被遮挡、夹带或暂未归位。", "supportive": "分区域重复检查可能有效。", "caution": "避免无依据指责他人。", "actionPrompts": ["清空容器逐件检查", "联系可能接触过物品的人"]},
-        "su_xi": {"summary": "可能较快收到线索或在移动路径中发现。", "supportive": "及时联系失物招领和相关地点。", "caution": "先核验认领信息。", "actionPrompts": ["立即致电相关场所", "准备物品特征证明"]},
-        "chi_kou": {"summary": "寻找过程可能伴随争议、误拿或沟通冲突。", "supportive": "清晰描述和保存凭证有帮助。", "caution": "不得据此指控盗窃。", "actionPrompts": ["调取合法可用的记录", "通过正式渠道沟通"]},
-        "xiao_ji": {"summary": "他人协助、工作人员或共同搜索可能带来进展。", "supportive": "扩大可信搜索网络。", "caution": "注意隐私与诈骗认领。", "actionPrompts": ["联系失物招领", "不公开敏感识别信息"]},
-        "kong_wang": {"summary": "当前线索不足或物品已离开原搜索范围。", "supportive": "可停止无效重复并转向挂失、补办。", "caution": "重要证件和设备应立即采取现实保护措施。", "actionPrompts": ["冻结账户或远程锁定", "办理挂失和补办"]}
+        "da_an": {
+          "summary": "物品可能仍在熟悉、稳定或原先活动范围。",
+          "supportive": "按最后使用路径仔细复查。",
+          "caution": "不保证一定找回。",
+          "actionPrompts": [
+            "检查固定收纳处",
+            "回溯最后一次确认时间"
+          ]
+        },
+        "liu_lian": {
+          "summary": "搜索过程可能反复，物品被遮挡、夹带或暂未归位。",
+          "supportive": "分区域重复检查可能有效。",
+          "caution": "避免无依据指责他人。",
+          "actionPrompts": [
+            "清空容器逐件检查",
+            "联系可能接触过物品的人"
+          ]
+        },
+        "su_xi": {
+          "summary": "可能较快收到线索或在移动路径中发现。",
+          "supportive": "及时联系失物招领和相关地点。",
+          "caution": "先核验认领信息。",
+          "actionPrompts": [
+            "立即致电相关场所",
+            "准备物品特征证明"
+          ]
+        },
+        "chi_kou": {
+          "summary": "寻找过程可能伴随争议、误拿或沟通冲突。",
+          "supportive": "清晰描述和保存凭证有帮助。",
+          "caution": "不得据此指控盗窃。",
+          "actionPrompts": [
+            "调取合法可用的记录",
+            "通过正式渠道沟通"
+          ]
+        },
+        "xiao_ji": {
+          "summary": "他人协助、工作人员或共同搜索可能带来进展。",
+          "supportive": "扩大可信搜索网络。",
+          "caution": "注意隐私与诈骗认领。",
+          "actionPrompts": [
+            "联系失物招领",
+            "不公开敏感识别信息"
+          ]
+        },
+        "kong_wang": {
+          "summary": "当前线索不足或物品已离开原搜索范围。",
+          "supportive": "可停止无效重复并转向挂失、补办。",
+          "caution": "重要证件和设备应立即采取现实保护措施。",
+          "actionPrompts": [
+            "冻结账户或远程锁定",
+            "办理挂失和补办"
+          ]
+        }
       },
-      "mandatoryEthicsRuleIds": ["no-criminal-accusation", "reality-evidence-priority"]
+      "mandatoryEthicsRuleIds": [
+        "no-criminal-accusation",
+        "reality-evidence-priority"
+      ],
+      "sourceIds": [
+        "xiaoliurenarchive-editorial-modern-knowledge-v1"
+      ]
     },
     {
       "id": "health",
       "name": "健康与身体",
       "description": "仅提供传统文化象意与一般现实提醒，不诊断、不排除风险、不预测病程。",
       "palaceInterpretations": {
-        "da_an": {"summary": "传统上可读为状态相对平稳，但不能据此排除疾病。", "supportive": "可继续记录症状和遵循既有专业建议。", "caution": "平稳感不等于医学安全。", "actionPrompts": ["根据症状寻求医疗评估", "紧急信号立即求助"]},
-        "liu_lian": {"summary": "可象征症状反复、恢复较慢或信息尚不明确。", "supportive": "系统记录有助于就医沟通。", "caution": "不得用拖延象意延误检查。", "actionPrompts": ["记录持续时间和诱因", "按需复诊"]},
-        "su_xi": {"summary": "可象征较快获得检查、反馈或阶段性改善。", "supportive": "及时处理预约和结果。", "caution": "积极象意不能排除严重情况。", "actionPrompts": ["查看正式检查结果", "遵循专业医嘱"]},
-        "chi_kou": {"summary": "可象征急性压力、炎症联想或就医沟通摩擦，但不是诊断。", "supportive": "清晰陈述症状和用药史。", "caution": "不得解释为咒诅、瘟疫或特定疾病。", "actionPrompts": ["出现急症信号立即就医", "不要自行停药或加药"]},
-        "xiao_ji": {"summary": "可象征通过支持、护理和渐进调整得到改善。", "supportive": "适合落实可持续的照护安排。", "caution": "祈祷或象意不能替代治疗。", "actionPrompts": ["建立复诊与照护计划", "向可信专业人员求助"]},
-        "kong_wang": {"summary": "可象征信息不足、精力空耗或当前解释不成立。", "supportive": "停止自我猜测并寻求检查。", "caution": "严禁推出死亡、绝症、暗鬼或无救。", "actionPrompts": ["以医学评估补足信息", "危险症状立即联系急救"]}
+        "da_an": {
+          "summary": "传统上可读为状态相对平稳，但不能据此排除疾病。",
+          "supportive": "可继续记录症状和遵循既有专业建议。",
+          "caution": "平稳感不等于医学安全。",
+          "actionPrompts": [
+            "根据症状寻求医疗评估",
+            "紧急信号立即求助"
+          ]
+        },
+        "liu_lian": {
+          "summary": "可象征症状反复、恢复较慢或信息尚不明确。",
+          "supportive": "系统记录有助于就医沟通。",
+          "caution": "不得用拖延象意延误检查。",
+          "actionPrompts": [
+            "记录持续时间和诱因",
+            "按需复诊"
+          ]
+        },
+        "su_xi": {
+          "summary": "可象征较快获得检查、反馈或阶段性改善。",
+          "supportive": "及时处理预约和结果。",
+          "caution": "积极象意不能排除严重情况。",
+          "actionPrompts": [
+            "查看正式检查结果",
+            "遵循专业医嘱"
+          ]
+        },
+        "chi_kou": {
+          "summary": "可象征急性压力、炎症联想或就医沟通摩擦，但不是诊断。",
+          "supportive": "清晰陈述症状和用药史。",
+          "caution": "不得解释为咒诅、瘟疫或特定疾病。",
+          "actionPrompts": [
+            "出现急症信号立即就医",
+            "不要自行停药或加药"
+          ]
+        },
+        "xiao_ji": {
+          "summary": "可象征通过支持、护理和渐进调整得到改善。",
+          "supportive": "适合落实可持续的照护安排。",
+          "caution": "祈祷或象意不能替代治疗。",
+          "actionPrompts": [
+            "建立复诊与照护计划",
+            "向可信专业人员求助"
+          ]
+        },
+        "kong_wang": {
+          "summary": "可象征信息不足、精力空耗或当前解释不成立。",
+          "supportive": "停止自我猜测并寻求检查。",
+          "caution": "严禁推出死亡、绝症、暗鬼或无救。",
+          "actionPrompts": [
+            "以医学评估补足信息",
+            "危险症状立即联系急救"
+          ]
+        }
       },
-      "mandatoryEthicsRuleIds": ["medical-non-diagnosis", "no-death-prediction", "no-supernatural-causation", "reality-evidence-priority"]
+      "mandatoryEthicsRuleIds": [
+        "medical-non-diagnosis",
+        "no-death-prediction",
+        "no-supernatural-causation",
+        "reality-evidence-priority"
+      ],
+      "sourceIds": [
+        "xiaoliurenarchive-editorial-modern-knowledge-v1"
+      ]
     },
     {
       "id": "legal_dispute",
       "name": "法律、合同与争议",
       "description": "仅提供一般风险整理，不构成法律意见，也不预测裁判结果。",
       "palaceInterpretations": {
-        "da_an": {"summary": "现有状态或安排可能较稳定，程序变化较慢。", "supportive": "适合整理证据和确认既有权利义务。", "caution": "现状稳定不等于法律上必然有利。", "actionPrompts": ["阅读正式文件", "记录期限"]},
-        "liu_lian": {"summary": "程序、协商或文书可能拖延反复。", "supportive": "补齐资料和明确时间表有帮助。", "caution": "不要因占断而错过法定期限。", "actionPrompts": ["核对时效", "书面跟进"]},
-        "su_xi": {"summary": "可能快速收到通知、回复或程序变化。", "supportive": "及时阅读并响应正式文件。", "caution": "消息快不代表结果有利。", "actionPrompts": ["确认送达和期限", "必要时咨询律师"]},
-        "chi_kou": {"summary": "争议、对抗和言辞风险突出。", "supportive": "证据化、程序化处理比情绪争执有效。", "caution": "不得据此判断犯罪、败诉或对方恶意。", "actionPrompts": ["保存证据", "避免公开发表可能损害案件的言论"]},
-        "xiao_ji": {"summary": "协商、调解或有限合作可能推进问题。", "supportive": "适合寻找可执行的中间方案。", "caution": "和解条件需理解其法律后果。", "actionPrompts": ["把协议写清楚", "重大事项接受专业审查"]},
-        "kong_wang": {"summary": "主张、承诺或证据可能缺少现实支撑。", "supportive": "及时识别不可执行方案。", "caution": "不得预测刑罚、死亡或确定裁判。", "actionPrompts": ["核验证据链", "咨询有资质的法律专业人士"]}
+        "da_an": {
+          "summary": "现有状态或安排可能较稳定，程序变化较慢。",
+          "supportive": "适合整理证据和确认既有权利义务。",
+          "caution": "现状稳定不等于法律上必然有利。",
+          "actionPrompts": [
+            "阅读正式文件",
+            "记录期限"
+          ]
+        },
+        "liu_lian": {
+          "summary": "程序、协商或文书可能拖延反复。",
+          "supportive": "补齐资料和明确时间表有帮助。",
+          "caution": "不要因占断而错过法定期限。",
+          "actionPrompts": [
+            "核对时效",
+            "书面跟进"
+          ]
+        },
+        "su_xi": {
+          "summary": "可能快速收到通知、回复或程序变化。",
+          "supportive": "及时阅读并响应正式文件。",
+          "caution": "消息快不代表结果有利。",
+          "actionPrompts": [
+            "确认送达和期限",
+            "必要时咨询律师"
+          ]
+        },
+        "chi_kou": {
+          "summary": "争议、对抗和言辞风险突出。",
+          "supportive": "证据化、程序化处理比情绪争执有效。",
+          "caution": "不得据此判断犯罪、败诉或对方恶意。",
+          "actionPrompts": [
+            "保存证据",
+            "避免公开发表可能损害案件的言论"
+          ]
+        },
+        "xiao_ji": {
+          "summary": "协商、调解或有限合作可能推进问题。",
+          "supportive": "适合寻找可执行的中间方案。",
+          "caution": "和解条件需理解其法律后果。",
+          "actionPrompts": [
+            "把协议写清楚",
+            "重大事项接受专业审查"
+          ]
+        },
+        "kong_wang": {
+          "summary": "主张、承诺或证据可能缺少现实支撑。",
+          "supportive": "及时识别不可执行方案。",
+          "caution": "不得预测刑罚、死亡或确定裁判。",
+          "actionPrompts": [
+            "核验证据链",
+            "咨询有资质的法律专业人士"
+          ]
+        }
       },
-      "mandatoryEthicsRuleIds": ["legal-non-reliance", "no-criminal-accusation", "no-guaranteed-outcome", "reality-evidence-priority"]
+      "mandatoryEthicsRuleIds": [
+        "legal-non-reliance",
+        "no-criminal-accusation",
+        "no-guaranteed-outcome",
+        "reality-evidence-priority"
+      ],
+      "sourceIds": [
+        "xiaoliurenarchive-editorial-modern-knowledge-v1"
+      ]
     }
   ]
 }
