@@ -135,6 +135,7 @@ function request(overrides: Partial<DivinationRequest> = {}): DivinationRequest 
 describe("serialized divination result schema", () => {
   it.each([
     ["manual", request()],
+    ["consent_block", request({ questionContext: { domainId: "relationship", stageId: "seeking", flags: [], facts: { explicitRefusalExists: true, immediateSafetyRisk: false } } })],
     ["hard_block", request({ questionContext: { domainId: "health", stageId: null, flags: [], facts: { explicitRefusalExists: false, immediateSafetyRisk: false } } })],
     ["hard_stop", request({ questionContext: { domainId: "travel_mobility", stageId: null, flags: ["missing_person"], facts: { explicitRefusalExists: false, immediateSafetyRisk: true } } })],
   ] as const)("serializes a %s result without undeclared fields", async (_name, input) => {

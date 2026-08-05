@@ -76,6 +76,46 @@ describe("local divination runtime", () => {
     expect(identity.ethics.triggeredRuleIds).toContain("no-third-party-orientation-inference");
   });
 
+  it("routes relationship domain guidance through consent filtering", async () => {
+    const result = await runLocalDivination(request({
+      questionContext: {
+        domainId: "relationship",
+        stageId: "seeking",
+        flags: [],
+        facts: { explicitRefusalExists: true, immediateSafetyRisk: false },
+      },
+    }));
+
+    expect(result.calculation.finalPalaceId).toBe("xiao_ji");
+    expect(result.ethics.mode).toBe("hard_block");
+    expect(result.ethics.triggeredRuleIds).toContain("consent-overrides-divination");
+    expect(result.ethics.requiredNotices).toContain("现实中已经表达的拒绝、撤回或边界优先于任何占断。结果不能被解释为对方其实同意，也不能成为继续纠缠的理由。");
+
+    const displayedBlocks = Object.values(result.interpretation.sections).flat();
+    const displayedTexts = displayedBlocks.map((block) => block.text);
+    expect(displayedTexts).not.toContain("关系可通过朋友、共同社群、协商和日常互动逐步改善。");
+    expect(displayedTexts).not.toContain("适合接受介绍、共同完成事情或建立可持续的小约定。");
+    expect(displayedTexts).not.toContain("把好感转化为清晰且可拒绝的邀请");
+    expect(displayedTexts).toContain("积极合作不等于恋爱同意，朋友善意也不代表对方具有某种性取向。");
+
+    expect(result.ethics.blockedFragmentIds).toEqual(expect.arrayContaining([
+      "relationship.xiao_ji.summary",
+      "relationship.xiao_ji.supportive",
+      "relationship.xiao_ji.action.1",
+      "relationship.xiao_ji.action.2",
+    ]));
+    expect(result.ethics.suppressedClaims.map((claim) => claim.claimId)).toEqual(expect.arrayContaining([
+      "relationship.xiao_ji.summary.domain_summary",
+      "relationship.xiao_ji.supportive.domain_supportive",
+      "relationship.xiao_ji.action.1.domain_action",
+      "relationship.xiao_ji.action.2.domain_action",
+    ]));
+    expect(result.ethics.retainedFragmentIds).toEqual(result.interpretation.fragmentIds);
+    expect(result.ethics.retainedClaimIds).toEqual(result.interpretation.candidateClaimIds);
+    expect(result.interpretation.candidateClaimIds).toContain("relationship.xiao_ji.caution.domain_caution");
+    expect(result.interpretation.candidateClaimIds).not.toContain("relationship.xiao_ji.summary.domain_summary");
+  });
+
   it.each([
     ["refusal", "relationship", "hard_block", { explicitRefusalExists: true }],
     ["health", "health", "hard_block", { explicitRefusalExists: false }],

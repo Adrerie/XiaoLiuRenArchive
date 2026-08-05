@@ -60,7 +60,7 @@
       "effects": [
         {"type": "suppress_claim_types", "claimTypes": ["third_party_consent", "guaranteed_future_outcome"]},
         {"type": "force_conclusion", "conclusionCode": "respect_explicit_refusal"},
-        {"type": "block_fragments_with_tags", "tags": ["hidden_yes", "persistence_will_win", "refusal_is_test"]}
+        {"type": "block_fragments_with_tags", "tags": ["hidden_yes", "persistence_will_win", "refusal_is_test", "relationship_domain_guidance"]}
       ],
       "requiredNotice": "现实中已经表达的拒绝、撤回或边界优先于任何占断。结果不能被解释为对方其实同意，也不能成为继续纠缠的理由。",
       "rationale": "占断不能替他人提供同意。"

@@ -41,37 +41,43 @@
           "summary": "关系状态偏稳定或维持原状，发展通常较慢。已有关系更适合看长期基础，尚未开始的关系则可能缺少立即推进。",
           "supportive": "可通过持续接触、可靠行动和安全感积累关系。",
           "caution": "稳定不等于热情，也不等于对方已经承诺。",
-          "actionPrompts": ["确认双方当前关系定义", "观察稳定行为而非单次表达"]
+          "actionPrompts": ["确认双方当前关系定义", "观察稳定行为而非单次表达"],
+          "tags": ["relationship_domain_guidance"]
         },
         "liu_lian": {
           "summary": "关系可能处于暧昧、反复、等待或边界不清的阶段。",
           "supportive": "延迟期可用于澄清需求和现实限制。",
           "caution": "不要把长期暧昧自动解释为深情，也不要猜测对方未公开的性取向。",
-          "actionPrompts": ["用尊重的方式询问意愿", "为等待设置边界和期限"]
+          "actionPrompts": ["用尊重的方式询问意愿", "为等待设置边界和期限"],
+          "tags": ["relationship_domain_guidance"]
         },
         "su_xi": {
           "summary": "互动、消息或认识新人的速度较快，关系可能迅速明朗。",
           "supportive": "适合及时回应、安排见面或明确表达兴趣。",
           "caution": "快速靠近不保证长期适配，也不能覆盖对方后续撤回。",
-          "actionPrompts": ["核对双方期待", "保留逐步建立信任的空间"]
+          "actionPrompts": ["核对双方期待", "保留逐步建立信任的空间"],
+          "tags": ["relationship_domain_guidance"]
         },
         "chi_kou": {
           "summary": "关系中可能出现争执、公开压力、误解或边界冲突。",
           "supportive": "坦诚沟通可使隐藏问题浮现，必要时明确底线。",
           "caution": "不得把冲突归咎于性取向或性别身份，也不得以占断合理化纠缠、监视或报复。",
-          "actionPrompts": ["降低指责式表达", "在不安全时优先离开并求助"]
+          "actionPrompts": ["降低指责式表达", "在不安全时优先离开并求助"],
+          "tags": ["relationship_domain_guidance"]
         },
         "xiao_ji": {
           "summary": "关系可通过朋友、共同社群、协商和日常互动逐步改善。",
           "supportive": "适合接受介绍、共同完成事情或建立可持续的小约定。",
           "caution": "积极合作不等于恋爱同意，朋友善意也不代表对方具有某种性取向。",
-          "actionPrompts": ["把好感转化为清晰且可拒绝的邀请", "尊重对方回答"]
+          "actionPrompts": ["把好感转化为清晰且可拒绝的邀请", "尊重对方回答"],
+          "tags": ["relationship_domain_guidance"]
         },
         "kong_wang": {
           "summary": "当前关系期待可能缺少现实对象、明确回应或可落实条件。",
           "supportive": "可停止消耗性的投射，重新确认自己真正需要的关系。",
           "caution": "不得解释为同性恋没有姻缘、终身无伴侣或某人必定消失。",
-          "actionPrompts": ["回到已发生的事实", "停止以反复占问替代沟通"]
+          "actionPrompts": ["回到已发生的事实", "停止以反复占问替代沟通"],
+          "tags": ["relationship_domain_guidance"]
         }
       },
       "mandatoryEthicsRuleIds": [

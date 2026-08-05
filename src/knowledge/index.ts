@@ -41,6 +41,7 @@ export interface DomainPalaceInterpretation {
   readonly supportive: string;
   readonly caution: string;
   readonly actionPrompts: readonly string[];
+  readonly tags: readonly string[];
 }
 
 export interface KnowledgeSource {
@@ -238,6 +239,7 @@ function parseRegistry(): KnowledgeRegistry {
         supportive: stringValue(interpretation.supportive, `domain ${id}.${palace}.supportive`),
         caution: stringValue(interpretation.caution, `domain ${id}.${palace}.caution`),
         actionPrompts: stringArray(interpretation.actionPrompts, `domain ${id}.${palace}.actionPrompts`),
+        tags: interpretation.tags === undefined ? [] : stringArray(interpretation.tags, `domain ${id}.${palace}.tags`),
       };
     }
     domainMap.set(id, {
@@ -379,11 +381,28 @@ export function selectInterpretation(input: {
   }
   const neutral = neutralFragments[0];
   const domainReading = domain.palaceInterpretations[input.finalPalaceId];
-  const domainBlocks = [
-    block(`${input.domainId}.${input.finalPalaceId}.summary`, domainReading.summary, "domain_summary", "provisional", palace.sourceIds),
-    block(`${input.domainId}.${input.finalPalaceId}.supportive`, domainReading.supportive, "domain_supportive", "provisional", palace.sourceIds),
-    block(`${input.domainId}.${input.finalPalaceId}.caution`, domainReading.caution, "domain_caution", "provisional", palace.sourceIds),
-  ];
+  const domainSummary = block(
+    `${input.domainId}.${input.finalPalaceId}.summary`,
+    domainReading.summary,
+    "domain_summary",
+    "provisional",
+    palace.sourceIds,
+  );
+  const domainSupportive = block(
+    `${input.domainId}.${input.finalPalaceId}.supportive`,
+    domainReading.supportive,
+    "domain_supportive",
+    "provisional",
+    palace.sourceIds,
+  );
+  const domainCaution = block(
+    `${input.domainId}.${input.finalPalaceId}.caution`,
+    domainReading.caution,
+    "domain_caution",
+    "provisional",
+    palace.sourceIds,
+  );
+  const domainBlocks = [domainSummary, domainSupportive, domainCaution];
   const stageFragments = matchingFragments("stage_modifier", input.finalPalaceId, input.domainId, input.stageId);
   const actionFragments = matchingFragments("action_prompt", input.finalPalaceId, input.domainId, input.stageId);
   const realityFragments = matchingFragments("reality_check", input.finalPalaceId, input.domainId, input.stageId);
@@ -393,9 +412,16 @@ export function selectInterpretation(input: {
   const selected: FragmentRecord[] = [];
   addFragments(selected, [neutral, ...stageFragments, ...actionFragments, ...realityFragments, ...historicalFragments, ...ethicsFragments]);
 
+  const domainActionBlocks = domainReading.actionPrompts.map((text, index) => block(
+    `${input.domainId}.${input.finalPalaceId}.action.${index + 1}`,
+    text,
+    "domain_action",
+    "provisional",
+    palace.sourceIds,
+  ));
   const actions = [
     ...actionFragments.map((fragment) => block(fragment.id, fragment.text, fragment.kind, fragment.status, fragment.sourceIds)),
-    ...domainReading.actionPrompts.map((text, index) => block(`${input.domainId}.${input.finalPalaceId}.action.${index + 1}`, text, "domain_action", "provisional", palace.sourceIds)),
+    ...domainActionBlocks,
   ];
   const sections: InterpretationSections = {
     neutral: [block(neutral.id, neutral.text, neutral.kind, neutral.status, [...neutral.sourceIds, ...palace.sourceIds])],
@@ -411,6 +437,12 @@ export function selectInterpretation(input: {
     ethicsNotices: ethicsFragments.map((fragment) => block(fragment.id, fragment.text, fragment.kind, fragment.status, fragment.sourceIds)),
   };
 
+  const domainClaimSpecs = [
+    { block: domainSummary, claimType: "domain_summary", tags: domainReading.tags },
+    { block: domainSupportive, claimType: "domain_supportive", tags: domainReading.tags },
+    { block: domainCaution, claimType: "domain_caution", tags: [] },
+    ...domainActionBlocks.map((domainAction) => ({ block: domainAction, claimType: "domain_action", tags: domainReading.tags })),
+  ] as const;
   const candidateClaims: CandidateClaim[] = [];
   for (const fragment of selected) {
     for (const claimType of fragment.claimTypes) {
@@ -425,7 +457,19 @@ export function selectInterpretation(input: {
       });
     }
   }
-  const selectedFragments: SelectedFragment[] = selected.map((fragment) => ({ id: fragment.id, tags: fragment.tags }));
+  candidateClaims.push(...domainClaimSpecs.map(({ block: domainBlock, claimType, tags }) => ({
+    id: `${domainBlock.id}.${claimType}`,
+    claimType,
+    sourceKind: "domain" as const,
+    fragmentIds: [domainBlock.id],
+    text: domainBlock.text,
+    certainty: "tentative" as const,
+    tags,
+  })));
+  const selectedFragments: SelectedFragment[] = [
+    ...selected.map((fragment) => ({ id: fragment.id, tags: fragment.tags })),
+    ...domainClaimSpecs.map(({ block: domainBlock, tags }) => ({ id: domainBlock.id, tags })),
+  ];
   const sourceIds = [
     ...palace.sourceIds,
     ...palace.traditionalSourceIds,
