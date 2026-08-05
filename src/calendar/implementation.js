@@ -10,11 +10,28 @@
 const DEFAULT_CALENDAR_POLICY_ID = 'civil-midnight-reuse-leap-month';
 const MANUAL_TIME_ZONE = 'manual';
 
-const POLICY_IDS = Object.freeze([
-  DEFAULT_CALENDAR_POLICY_ID,
-  'zi-hour-23-reuse-leap-month',
-  'manual-lunar-input-v1',
+const CALENDAR_POLICIES = Object.freeze([
+  Object.freeze({
+    id: DEFAULT_CALENDAR_POLICY_ID,
+    label: '民用午夜复用闰月',
+    description: '以当地民用午夜作为换日边界；23:00 仍按当天的农历日期转换。',
+    warning: '切换到子初 23:00 策略可能改变农历日期与最终落宫。',
+  }),
+  Object.freeze({
+    id: 'zi-hour-23-reuse-leap-month',
+    label: '子初 23:00 复用闰月',
+    description: '23:00 起按下一民用日转换农历日期，同时保留子时地支。',
+    warning: '与民用午夜策略相比，23:00 附近可能改变农历日期与最终落宫。',
+  }),
+  Object.freeze({
+    id: 'manual-lunar-input-v1',
+    label: '手动农历输入',
+    description: '直接使用用户提供的农历月、日和时辰，不进行公历转换。',
+    warning: '手动输入不验证完整公历边界，只验证当前输入结构。',
+  }),
 ]);
+
+const POLICY_IDS = Object.freeze(CALENDAR_POLICIES.map((policy) => policy.id));
 
 const EARTHLY_BRANCHES = Object.freeze([
   '子', '丑', '寅', '卯', '辰', '巳',
@@ -479,6 +496,7 @@ const calendarAdapter = Object.freeze({
 
 export {
   CALENDAR_ERROR_CODES,
+  CALENDAR_POLICIES,
   DEFAULT_CALENDAR_POLICY_ID,
   EARTHLY_BRANCHES,
   MANUAL_TIME_ZONE,

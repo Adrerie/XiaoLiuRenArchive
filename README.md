@@ -8,7 +8,7 @@
 
 ## 当前状态
 
-R1 Local Web MVP 已完成并合并。
+R2 Calendar and Knowledge Expansion 已完成并推送到 feature 分支，PR 收尾中。
 
 当前已经具备：
 
@@ -21,6 +21,11 @@ R1 Local Web MVP 已完成并合并。
 - 输出 Schema 测试
 - 移动端与桌面端界面
 - 本地构建、核心测试和关键交互验证
+- 知识包 manifest、迁移记录和规则/来源版本追踪
+- 完整 provenance、disputed 字段与最终展示片段聚合
+- 两种公历边界策略、本地 IANA 时区搜索和 fold 错误提示
+- 移动端优先六宫资料库、搜索、详情、异文与来源卡
+- 结构化结果详情和隐私优先 JSON 复制/下载
 
 下一阶段为 R2 Calendar and Knowledge Expansion。执行计划：
 
@@ -28,7 +33,7 @@ R1 Local Web MVP 已完成并合并。
 codex/r2-calendar-knowledge-expansion-plan.md
 ```
 
-本轮将同时完成知识版本与来源追踪收口、公历策略增强、六宫资料库、结构化详情和隐私优先 JSON 导出。
+本轮已完成知识版本与来源追踪收口、公历策略增强、六宫资料库、结构化详情和隐私优先 JSON 导出。
 
 ## 执行优先
 
@@ -135,4 +140,4 @@ hourIndex = (dayIndex + earthlyBranchIndex - 1) mod 6
 - `codex/`：执行计划与子代理任务书
 - `scripts/`：知识校验脚本规范
 
-本项目当前处于 **R1 已完成，R2 待执行** 阶段。
+本项目当前处于 **R2 已完成，PR 待审阅** 阶段。

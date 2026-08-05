@@ -60,6 +60,20 @@ describe("local divination runtime", () => {
     expect(result.calendar.calendarPolicyId).toBe("civil-midnight-reuse-leap-month");
   });
 
+  it("aggregates final display provenance and disputed palace fields", async () => {
+    const result = await runLocalDivination(request());
+    const displayedIds = Object.values(result.interpretation.sections).flat().map((block) => block.id);
+
+    expect(new Set(result.provenance.fragmentIds)).toEqual(new Set(displayedIds));
+    expect(result.provenance.sourceIds).toEqual(expect.arrayContaining([
+      "moe-revised-dictionary-xiaoliuren",
+      "yuxiaji-liuren-shike-web-transcription-8s8s",
+      "modern-explanatory-source-sanyuandaoshi",
+    ]));
+    expect(result.provenance.disputedFieldIds).toContain("palace.xiao_ji.classical.element");
+    expect(result.provenance.provisionalSourceIds.every((id) => result.provenance.sourceIds.includes(id))).toBe(true);
+  });
+
   it("does not let identity flags alter the final palace", async () => {
     const plain = await runLocalDivination(request());
     const identity = await runLocalDivination(request({
@@ -128,6 +142,7 @@ describe("local divination runtime", () => {
     expect(result.ethics.triggeredRuleIds.length).toBeGreaterThan(0);
     expect(result.ethics.retainedFragmentIds).toEqual(result.interpretation.fragmentIds);
     const displayedIds = Object.values(result.interpretation.sections).flat().map((block) => block.id);
+    expect(new Set(result.interpretation.fragmentIds)).toEqual(new Set(displayedIds));
     expect(result.ethics.blockedFragmentIds.every((id) => !displayedIds.includes(id))).toBe(true);
     expect(result.ethics.suppressedClaims.flatMap((claim) => claim.fragmentIds).every((id) => !displayedIds.includes(id))).toBe(true);
   });

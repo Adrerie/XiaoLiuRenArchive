@@ -16,6 +16,10 @@ import {
   type RawEthicsResult,
 } from "../ethics";
 import {
+  getContextSourceIds,
+  getEthicsRulesVersion,
+  getKnowledgeManifest,
+  getPalace,
   getKnowledgeVersion,
   getSources,
   selectInterpretation,
@@ -435,7 +439,10 @@ function present(input: {
   const displayedBlockIds = new Set(
     DISPLAY_SECTION_KEYS.flatMap((key) => sections[key].map((block) => block.id)),
   );
-  const retainedFragmentIds = input.ethics.retainedFragmentIds.filter((id) => displayedBlockIds.has(id));
+  const retainedFragmentIds = [...new Set([
+    ...input.ethics.retainedFragmentIds.filter((id) => displayedBlockIds.has(id)),
+    ...[...displayedBlockIds],
+  ])];
   const retainedFragmentSet = new Set(retainedFragmentIds);
   const retainedClaimIds = input.ethics.retainedClaimIds.filter((claimId) => {
     const claim = candidateClaims.find((candidate) => candidate.id === claimId);
@@ -469,10 +476,27 @@ function provenance(input: {
   readonly interpretation: InterpretationResult;
   readonly ethics: EthicsResult;
 }): Provenance {
-  const rawRules = jsonObject(ethicsRulesJson, "ethicsRules");
-  const ruleVersion = jsonString(rawRules.knowledgeVersion, "ethicsRules.knowledgeVersion");
-  const sourceIds = [...new Set(input.interpretation.sections.neutral.flatMap((block) => block.sourceIds))];
+  const interpretationSections: readonly (readonly ContentBlock[])[] = [
+    input.interpretation.sections.neutral,
+    input.interpretation.sections.domain,
+    input.interpretation.sections.stage,
+    input.interpretation.sections.actions,
+    input.interpretation.sections.traditionalText,
+    input.interpretation.sections.historicalContext,
+    input.interpretation.sections.realityChecks,
+    input.interpretation.sections.ethicsNotices,
+  ];
+  const displayedSourceIds = interpretationSections.flatMap((blocks) => blocks.flatMap((block) => block.sourceIds));
+  const contextSourceIds = getContextSourceIds({
+    finalPalaceId: input.calculation.finalPalaceId,
+    domainId: input.resolvedInput.domainId,
+    stageId: input.resolvedInput.stageId,
+  });
+  const sourceIds = [...new Set([...displayedSourceIds, ...contextSourceIds])];
   const sources = getSources(sourceIds);
+  const ruleVersion = getEthicsRulesVersion();
+  const manifest = getKnowledgeManifest();
+  const palace = getPalace(input.calculation.finalPalaceId);
   return {
     knowledgeVersion: getKnowledgeVersion(),
     ruleVersion,
@@ -481,10 +505,15 @@ function provenance(input: {
       result: "1.1.0",
       calendar: "1.0.0",
       ethics: ruleVersion,
+      palaces: manifest.palacesVersion,
+      questionDomains: manifest.questionDomainsVersion,
+      interpretationFragments: manifest.interpretationFragmentsVersion,
+      sourceRegistry: manifest.sourceRegistryVersion,
+      safetyMessages: manifest.safetyMessagesVersion,
     },
     sourceIds,
     provisionalSourceIds: sources.filter((source) => source.verificationStatus !== "verified-url").map((source) => source.id),
-    disputedFieldIds: [],
+    disputedFieldIds: palace.disputedFieldIds,
     calendarPolicyId: input.request.calendarPolicyId,
     algorithmId: input.calculation.algorithmId,
     fragmentIds: input.interpretation.fragmentIds,
