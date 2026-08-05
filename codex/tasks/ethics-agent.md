@@ -1,115 +1,47 @@
 # Task: ethics-agent
 
-## Mission
+遵循 `codex/execution-first-policy.md`。
 
-实现结构化伦理规则求值器，阻止不允许的结论并生成现实提示。伦理引擎不得改变传统落宫。
+## 任务
 
-## Required Reading
+实现当前 MVP 的关键伦理守卫，不扩展全部可能规则。
 
-- `AGENTS.md`
-- `docs/06-modern-ethics.md`
+## 只读这些文件
+
+- 本任务书
 - `algorithm/ethics-engine-contract.md`
-- `algorithm/rule-conflict-examples.v1.json`
 - `knowledge/ethics-rules.v1.json`
-- `knowledge/ethics-rules.schema.json`
-- `fixtures/ethics-red-team-cases.v1.json`
-- `codex/batch-04-acceptance-criteria.md`
+- `knowledge/safety-messages.v1.json`
+- 当前关键伦理案例
 
-## Allowed Areas
+## 完成项
 
-- `src/ethics/**`
-- `tests/ethics/**`
-- local conclusion and reality-action registries
+- 稳定规则排序
+- 必要条件与 effect
+- claim 抑制
+- 受控结论和现实行动
+- hard-block 与 hard-stop
+- 落宫不变
 
-Knowledge rule changes require knowledge-agent and controller review.
+## 必须覆盖
 
-## Forbidden Areas
+- 明确拒绝
+- 第三方身份
+- 健康非诊断
+- 财务非依赖
+- 人员失联危险
 
-- Do not modify palace ID, trace or calendar result.
-- Do not infer sensitive facts from free text.
-- Do not replace hard-block logic with keyword rewriting.
-- Do not classify attack, disease, crime or sexuality as fact without explicit structured input.
-- Do not force same-sex relationships into husband-wife or yin-yang sex roles.
-- Do not hide traditional text. Restrict its use to historical sections when required.
+## 边界
 
-## Deliverables
+- 不修改宫位和 trace
+- 不从自由文本推断敏感事实
+- 不自由生成安全文案
+- 不强制同性关系进入夫位、妻位或攻受阴阳
 
-1. stable rule sorter
-2. condition evaluator
-3. effect executor
-4. severity merger
-5. claim suppression
-6. fragment blocking
-7. forced conclusion registry
-8. reality action registry
-9. required notice collection and deduplication
-10. hard-stop handling
-11. typed rule errors
-12. ethics trace
-13. red-team tests
-14. palace invariance test
+## 必要验证
 
-## Mandatory Condition Types
+只运行上述五个场景和落宫不变量。其他红队案例在相关规则变化或正式发布前再运行。
 
-- always
-- domainEquals
-- factEquals
-- questionHasAnyFlag
-- outputContainsAnyTag
+## 回报
 
-Unknown condition types must fail closed.
-
-## Mandatory Effect Types
-
-Implement all effects used by `knowledge/ethics-rules.v1.json`, including:
-
-- suppress_claim_types
-- force_conclusion
-- block_fragments_with_tags
-- allow_topics
-- preferred_terms
-- forbid_terms_as_inference
-- require_reality_action
-- stop_divination_as_primary_action
-- forbid_action_types
-- replace_certainty_terms
-- assert_invariant
-- assert_priority
-- historical_text_only
-- append_context
-- require_evidence_language
-- exclude_from_core_input
-
-Unknown effects must fail closed.
-
-## Required Test Areas
-
-- explicit refusal
-- third-party orientation
-- same-sex relationship role neutrality
-- health diagnosis and risk exclusion
-- death and lifespan
-- finance action and return guarantee
-- legal result guarantee
-- missing person hard stop
-- criminal accusation
-- supernatural causation
-- minor safeguarding
-- severity monotonicity
-- stable ordering
-- notice deduplication
-- forbidden claim cannot reappear through synonyms
-- final palace unchanged
-
-## Completion Report
-
-Include:
-
-- rules implemented
-- condition and effect coverage
-- tests actually run
-- red-team case results
-- suppressed claim examples
-- hard-stop behavior
-- confirmation that no core result was modified
-- unresolved rule semantics escalated to controller
+只写完成项、未完成项、已知问题、运行命令和提交信息。
