@@ -1,16 +1,16 @@
 package io.github.adrerie.xiaoliurenarchive;
 
-import static androidx.test.espresso.web.action.DriverAtoms.webKeys;
-import static androidx.test.espresso.web.action.WebViewActions.clearElement;
-import static androidx.test.espresso.web.action.WebViewActions.webClick;
 import static androidx.test.espresso.web.assertion.WebViewAssertions.webMatches;
-import static androidx.test.espresso.web.model.Atoms.findElement;
-import static androidx.test.espresso.web.model.Atoms.getText;
 import static androidx.test.espresso.web.sugar.Web.onWebView;
+import static androidx.test.espresso.web.webdriver.DriverAtoms.clearElement;
+import static androidx.test.espresso.web.webdriver.DriverAtoms.findElement;
+import static androidx.test.espresso.web.webdriver.DriverAtoms.getText;
+import static androidx.test.espresso.web.webdriver.DriverAtoms.webClick;
+import static androidx.test.espresso.web.webdriver.DriverAtoms.webKeys;
 import static org.hamcrest.CoreMatchers.containsString;
 
 import androidx.test.core.app.ActivityScenario;
-import androidx.test.espresso.web.model.Locator;
+import androidx.test.espresso.web.webdriver.Locator;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.UiDevice;
