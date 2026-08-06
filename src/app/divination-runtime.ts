@@ -22,6 +22,7 @@ import {
   getPalace,
   getKnowledgeVersion,
   getSources,
+  isProvisionalSource,
   selectInterpretation,
 } from "../knowledge";
 import {
@@ -524,7 +525,7 @@ function provenance(input: {
       safetyMessages: manifest.safetyMessagesVersion,
     },
     sourceIds,
-    provisionalSourceIds: sources.filter((source) => source.verificationStatus !== "verified-url").map((source) => source.id),
+    provisionalSourceIds: sources.filter(isProvisionalSource).map((source) => source.id),
     disputedFieldIds: palace.disputedFieldIds,
     calendarPolicyId: input.request.calendarPolicyId,
     algorithmId: input.calculation.algorithmId,

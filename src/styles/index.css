@@ -15,6 +15,10 @@
   --danger: #963f35;
   --danger-soft: #fff0ea;
   --shadow: 0 18px 55px rgba(45, 65, 57, 0.08);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
 }
 
 * { box-sizing: border-box; }
@@ -33,7 +37,7 @@ button, select, input { min-height: 2.9rem; }
 .app-shell {
   width: min(100%, 72rem);
   margin: 0 auto;
-  padding: 1.2rem 1rem 3rem;
+  padding: calc(1.2rem + var(--safe-top)) calc(1rem + var(--safe-right)) calc(3rem + var(--safe-bottom)) calc(1rem + var(--safe-left));
 }
 
 .app-header {
@@ -159,7 +163,7 @@ code { color: #60756c; font-size: 0.68rem; word-break: break-word; }
 .app-footer { padding: 1.5rem 0 0; color: #82908a; font-size: 0.74rem; text-align: center; }
 
 @media (min-width: 620px) {
-  .app-shell { padding: 2rem 1.5rem 4rem; }
+  .app-shell { padding: calc(2rem + var(--safe-top)) calc(1.5rem + var(--safe-right)) calc(4rem + var(--safe-bottom)) calc(1.5rem + var(--safe-left)); }
   .input-card, .result-section, .result-hero, .empty-state { padding: 1.5rem; }
   .three-columns { grid-template-columns: repeat(3, 1fr); }
   .two-columns { grid-template-columns: repeat(2, 1fr); }
@@ -283,7 +287,7 @@ code { color: #60756c; font-size: 0.68rem; word-break: break-word; }
 }
 
 @media (max-width: 480px) {
-  .primary-navigation { position: sticky; top: 0.4rem; z-index: 2; }
+  .primary-navigation { position: sticky; top: calc(0.4rem + var(--safe-top)); z-index: 2; }
   .nav-item { font-size: 0.82rem; }
   .knowledge-source-columns { grid-template-columns: 1fr; }
 }

@@ -10,6 +10,8 @@
 
 R2 Calendar and Knowledge Expansion 已完成并合并到 `main`。
 
+R3 Mobile Packaging 当前已完成 Capacitor Android 容器、离线资源同步、运行时网络审计、系统返回键适配和 GitHub CI；debug APK 是否生成取决于本机 Android SDK/JDK 工具链。
+
 当前已经具备：
 
 - React、TypeScript strict 与 Vite 本地 Web 工程
@@ -104,6 +106,13 @@ R2 已完成：
 
 ## R3 Mobile Packaging
 
+当前实现包含：
+
+- Capacitor 8 Android 容器，固定 appId/appName，构建产物使用本地相对资源路径
+- `npm run mobile:sync`、`npm run mobile:open` 和 `npm run mobile:build:debug`
+- Android 安全区、系统返回键分层返回和离线本地资源运行
+- `npm run audit:network` 运行时网络审计与 PR/main GitHub CI
+
 R3 计划完成：
 
 1. 修正 `provisionalSourceIds` 状态分类
@@ -143,7 +152,7 @@ R3 不做账号、云同步、社区、PDF、PNG、正式商店发布、签名 r
 ## 仓库入口
 
 - `src/`：Web 工程、历法、算法、知识、伦理、服务与界面
-- `android/`：R3 Android 容器，实施后加入
+- `android/`：R3 Android 容器与 Gradle wrapper
 - `algorithm/`：传统计算、解释与伦理合同
 - `knowledge/`：结构化知识、规则和 Schema
 - `fixtures/`：黄金与伦理案例
@@ -151,4 +160,4 @@ R3 不做账号、云同步、社区、PDF、PNG、正式商店发布、签名 r
 - `codex/`：执行计划与子代理任务书
 - `scripts/`：知识校验与发布审计脚本
 
-本项目当前处于 **R2 已完成，R3 待执行** 阶段。
+本项目当前处于 **R2 已完成，R3 Mobile Packaging 已实现，等待发布 PR 审阅** 阶段。

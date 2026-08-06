@@ -61,6 +61,12 @@ export interface KnowledgeSource {
   readonly url: string | null;
 }
 
+const PROVISIONAL_SOURCE_STATUSES = new Set(["unverified", "provisional"]);
+
+export function isProvisionalSource(source: Pick<KnowledgeSource, "verificationStatus">): boolean {
+  return PROVISIONAL_SOURCE_STATUSES.has(source.verificationStatus);
+}
+
 export interface KnowledgeVariant {
   readonly value: string;
   readonly sourceIds: readonly string[];

@@ -1,0 +1,49 @@
+name: Local app verification
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verify local web and knowledge bundle
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24.x
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate knowledge manifest
+        run: npm run validate:knowledge
+
+      - name: Audit runtime network access
+        run: npm run audit:network
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+
+      - name: Run application tests
+        run: npm test
+
+      - name: Run core algorithm tests
+        run: npm run test:core
+
+      - name: Run ethics tests
+        run: npm run test:ethics
