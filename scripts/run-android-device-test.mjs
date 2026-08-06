@@ -8,10 +8,11 @@ const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url))
 const androidDirectory = path.join(repositoryRoot, "android");
 const apkPath = path.join(androidDirectory, "app", "build", "outputs", "apk", "debug", "app-debug.apk");
 const applicationId = "io.github.adrerie.xiaoliurenarchive";
-const activityName = `${applicationId}.MainActivity`;
 const evidenceDirectory = path.join(repositoryRoot, "output", "device-smoke");
-const logcatPath = path.join(evidenceDirectory, "r4-app-logcat.txt");
-const screenshotPath = path.join(evidenceDirectory, "r4-final-screen.png");
+const logcatPath = path.join(evidenceDirectory, "r5-app-logcat.txt");
+const screenshotPath = path.join(evidenceDirectory, "r5-final-screen.png");
+const launcherStartPath = path.join(evidenceDirectory, "r5-launcher-start.txt");
+const launcherScreenshotPath = path.join(evidenceDirectory, "r5-launcher-cold-start.png");
 
 function run(command, args, options = {}) {
   const result = spawnSync(command, args, {
@@ -50,6 +51,7 @@ function captureText(command, args) {
 
 function captureBinary(command, args) {
   const result = spawnSync(command, args, {
+    maxBuffer: 16 * 1024 * 1024,
     stdio: ["ignore", "pipe", "pipe"],
   });
   if (result.error) {
@@ -132,6 +134,7 @@ function relevantLogcat(output) {
   const webViewResourceFailure = /(?:WebView|chromium).*(?:error|fail|load|resource|ERR_)/i;
   const linesForApplication = lines.filter((line) => (
     line.includes(applicationId)
+    || line.includes("R5LauncherColdStart")
     || line.includes("FATAL EXCEPTION")
     || webViewResourceFailure.test(line)
   ));
@@ -140,7 +143,74 @@ function relevantLogcat(output) {
     : "No application-scoped FATAL/WebView/resource errors were found in logcat.\n";
 }
 
-function captureDeviceEvidence(adbPath, serial, launchApplication) {
+function captureLauncherCheckpoint(adbPath, serial, checkpointSeconds) {
+  const suffix = `${checkpointSeconds}s`;
+  const windowResult = captureText(adbPath, ["-s", serial, "shell", "dumpsys", "window", "windows"]);
+  fs.writeFileSync(
+    path.join(evidenceDirectory, `r5-launcher-${suffix}-window.txt`),
+    windowResult.ok ? windowResult.output : `window dump failed: ${windowResult.error}\n`,
+    "utf8",
+  );
+
+  const dumpResult = captureText(adbPath, ["-s", serial, "shell", "uiautomator", "dump", "/sdcard/r5-launcher-window.xml"]);
+  const xmlResult = dumpResult.ok
+    ? captureText(adbPath, ["-s", serial, "shell", "cat", "/sdcard/r5-launcher-window.xml"])
+    : dumpResult;
+  fs.writeFileSync(
+    path.join(evidenceDirectory, `r5-launcher-${suffix}-ui.xml`),
+    xmlResult.ok ? xmlResult.output : `UI dump failed: ${xmlResult.error}\n`,
+    "utf8",
+  );
+}
+
+function runLauncherColdStart(adbPath, serial) {
+  fs.mkdirSync(evidenceDirectory, { recursive: true });
+  run(adbPath, ["-s", serial, "shell", "am", "force-stop", applicationId]);
+  run(adbPath, ["-s", serial, "logcat", "-c"]);
+
+  const launchResult = captureText(adbPath, [
+    "-s",
+    serial,
+    "shell",
+    "am",
+    "start",
+    "-W",
+    "-a",
+    "android.intent.action.MAIN",
+    "-c",
+    "android.intent.category.LAUNCHER",
+    "-n",
+    `${applicationId}/.MainActivity`,
+  ]);
+  fs.writeFileSync(
+    launcherStartPath,
+    launchResult.ok ? launchResult.output : `Launcher start failed: ${launchResult.error}\n`,
+    "utf8",
+  );
+  if (!launchResult.ok) {
+    throw new Error(`MAIN/LAUNCHER intent failed: ${launchResult.error}`);
+  }
+
+  let elapsedSeconds = 0;
+  for (const checkpointSeconds of [1, 3, 10]) {
+    const waitSeconds = checkpointSeconds - elapsedSeconds;
+    if (waitSeconds > 0) run(adbPath, ["-s", serial, "shell", "sleep", String(waitSeconds)]);
+    captureLauncherCheckpoint(adbPath, serial, checkpointSeconds);
+    elapsedSeconds = checkpointSeconds;
+  }
+
+  try {
+    fs.writeFileSync(
+      launcherScreenshotPath,
+      captureBinary(adbPath, ["-s", serial, "exec-out", "screencap", "-p"]),
+    );
+  } catch (error) {
+    throw new Error(`Launcher cold-start screenshot failed: ${error instanceof Error ? error.message : String(error)}`);
+  }
+  console.log(`Launcher cold-start evidence written to ${evidenceDirectory}`);
+}
+
+function captureDeviceEvidence(adbPath, serial) {
   const errors = [];
   fs.mkdirSync(evidenceDirectory, { recursive: true });
 
@@ -156,27 +226,6 @@ function captureDeviceEvidence(adbPath, serial, launchApplication) {
     fs.writeFileSync(logcatPath, relevantLogcat(logcatResult.output), "utf8");
   } else {
     errors.push(`logcat capture failed: ${logcatResult.error}`);
-  }
-
-  if (launchApplication) {
-    const installResult = captureText(adbPath, ["-s", serial, "install", "-r", apkPath]);
-    if (!installResult.ok) {
-      errors.push(`application reinstall for screenshot failed: ${installResult.error}`);
-    }
-    const launchResult = installResult.ok ? captureText(adbPath, [
-      "-s",
-      serial,
-      "shell",
-      "am",
-      "start",
-      "-n",
-      `${applicationId}/${activityName}`,
-    ]) : { ok: false, output: "", error: "application reinstall failed" };
-    if (!launchResult.ok) {
-      errors.push(`application launch for screenshot failed: ${launchResult.error}`);
-    } else {
-      captureText(adbPath, ["-s", serial, "shell", "sleep", "1"]);
-    }
   }
 
   try {
@@ -200,6 +249,7 @@ try {
   let testError = null;
   try {
     run(adbPath, ["-s", serial, "install", "-r", apkPath], { inherit: true });
+    runLauncherColdStart(adbPath, serial);
 
     const environment = { ...process.env, ANDROID_SERIAL: serial };
     if (path.isAbsolute(adbPath)) {
@@ -223,7 +273,7 @@ try {
     testError = error;
   }
 
-  const evidenceErrors = captureDeviceEvidence(adbPath, serial, testError === null);
+  const evidenceErrors = captureDeviceEvidence(adbPath, serial);
   if (testError) {
     throw testError;
   }

@@ -31,14 +31,17 @@ const share = vi.mocked(Share.share);
 
 function request(): DivinationRequest {
   return {
-    requestVersion: "1.0.0",
-    inputMode: "civil_datetime",
-    calendarPolicyId: "civil-midnight-reuse-leap-month",
-    timeInput: {
-      kind: "civil_datetime",
-      localDateTime: "2024-02-10T12:00",
-      timezone: "Asia/Shanghai",
-      fold: null,
+    requestVersion: "1.1.0",
+    casting: {
+      kind: "calendar",
+      inputMode: "civil_datetime",
+      calendarPolicyId: "civil-midnight-reuse-leap-month",
+      timeInput: {
+        kind: "civil_datetime",
+        localDateTime: "2024-02-10T12:00",
+        timezone: "Asia/Shanghai",
+        fold: null,
+      },
     },
     questionContext: {
       domainId: "relationship",

@@ -11,15 +11,18 @@ import { describe, expect, it } from "vitest";
 import { runDivination, type DivinationDependencies } from "./divination-service";
 
 const request: DivinationRequest = {
-  requestVersion: "1.0.0",
-  inputMode: "manual_lunar",
-  calendarPolicyId: "manual-lunar-v1",
-  timeInput: {
-    kind: "manual_lunar",
-    lunarMonth: 1,
-    lunarDay: 1,
-    earthlyBranchIndex: 1,
-    isLeapMonth: false,
+  requestVersion: "1.1.0",
+  casting: {
+    kind: "calendar",
+    inputMode: "manual_lunar",
+    calendarPolicyId: "manual-lunar-v1",
+    timeInput: {
+      kind: "manual_lunar",
+      lunarMonth: 1,
+      lunarDay: 1,
+      earthlyBranchIndex: 1,
+      isLeapMonth: false,
+    },
   },
   questionContext: {},
   displayPreferences: {
@@ -31,6 +34,7 @@ const request: DivinationRequest = {
 };
 
 const resolvedInput: ResultInput = {
+  kind: "calendar",
   inputMode: "manual_lunar",
   timezone: null,
   localDateTime: null,
@@ -127,7 +131,7 @@ const provenance: Provenance = {
   sourceIds: [],
   provisionalSourceIds: [],
   disputedFieldIds: [],
-  calendarPolicyId: request.calendarPolicyId,
+  calendarPolicyId: request.casting.kind === "calendar" ? request.casting.calendarPolicyId : null,
   algorithmId: calculation.algorithmId,
   fragmentIds: [],
   ethicsRuleIds: [],
@@ -137,9 +141,14 @@ const dependencies: DivinationDependencies = {
   calendar: {
     async resolve() {
       return {
+        casting: {
+          kind: "calendar",
+          inputMode: "manual_lunar",
+          calendarPolicyId: "manual-lunar-v1",
+        },
         input: resolvedInput,
         calendar,
-        calculationInput: { lunarMonth: 1, lunarDay: 1, earthlyBranchIndex: 1 },
+        calculationInput: { kind: "calendar", lunarMonth: 1, lunarDay: 1, earthlyBranchIndex: 1 },
       };
     },
   },

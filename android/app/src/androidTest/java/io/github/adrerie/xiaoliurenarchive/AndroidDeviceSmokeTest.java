@@ -122,7 +122,7 @@ public final class AndroidDeviceSmokeTest {
 
         try (ActivityScenario<MainActivity> ignored = ActivityScenario.launch(launchIntent)) {
             onWebView()
-                    .withElement(findElement(Locator.CSS_SELECTOR, "input[name='inputMode']"))
+                    .withElement(findElement(Locator.ID, "casting-mode-manual_lunar_time"))
                     .perform(webClick())
                     .withElement(findElement(Locator.ID, "lunar-month-input"))
                     .perform(clearElement())
@@ -160,7 +160,7 @@ public final class AndroidDeviceSmokeTest {
             onWebView()
                     .withElement(findElement(Locator.ID, "nav-about"))
                     .perform(webClick());
-            assertElementText(ignored, "about-app-version", "0.4.0-beta.1");
+            assertElementText(ignored, "about-app-version", "0.5.0-beta.1");
             assertElementText(ignored, "about-build-channel", "beta-debug");
             assertElementText(ignored, "about-build-heading", "\u6d4b\u8bd5\u7248\u4fe1\u606f");
         }

@@ -4,15 +4,18 @@ import type { DivinationRequest } from "../shared";
 
 function request(overrides: Partial<DivinationRequest> = {}): DivinationRequest {
   return {
-    requestVersion: "1.0.0",
-    inputMode: "manual_lunar",
-    calendarPolicyId: "manual-lunar-input-v1",
-    timeInput: {
-      kind: "manual_lunar",
-      lunarMonth: 3,
-      lunarDay: 5,
-      earthlyBranchIndex: 5,
-      isLeapMonth: false,
+    requestVersion: "1.1.0",
+    casting: {
+      kind: "calendar",
+      inputMode: "manual_lunar",
+      calendarPolicyId: "manual-lunar-input-v1",
+      timeInput: {
+        kind: "manual_lunar",
+        lunarMonth: 3,
+        lunarDay: 5,
+        earthlyBranchIndex: 5,
+        isLeapMonth: false,
+      },
     },
     questionContext: {
       domainId: "relationship",
@@ -36,28 +39,53 @@ describe("local divination runtime", () => {
 
     expect(result.calculation.finalPalaceId).toBe("xiao_ji");
     expect(result.calculation.trace.map((step) => step.stage)).toEqual(["month", "day", "hour"]);
-    expect(result.calendar.boundaryDecision.manualInputBypass).toBe(true);
+    expect(result.calendar?.boundaryDecision.manualInputBypass).toBe(true);
     expect(result.input.privacy.questionTextStored).toBe(false);
   });
 
   it("resolves the stable Gregorian/IANA smoke path", async () => {
     const result = await runLocalDivination(request({
-      inputMode: "civil_datetime",
-      calendarPolicyId: "civil-midnight-reuse-leap-month",
-      timeInput: {
-        kind: "civil_datetime",
-        localDateTime: "2024-02-10T12:00",
-        timezone: "Asia/Shanghai",
-        fold: null,
+      casting: {
+        kind: "calendar",
+        inputMode: "civil_datetime",
+        calendarPolicyId: "civil-midnight-reuse-leap-month",
+        timeInput: {
+          kind: "civil_datetime",
+          localDateTime: "2024-02-10T12:00",
+          timezone: "Asia/Shanghai",
+          fold: null,
+        },
       },
     }));
 
-    expect(result.input.inputMode).toBe("civil_datetime");
-    expect(result.calendar.localDateTime).toBe("2024-02-10T12:00:00");
-    expect(result.calendar.timezone).toBe("Asia/Shanghai");
-    expect(result.calendar.resolvedLunarDate).toMatchObject({ month: 1, day: 1, isLeapMonth: false });
-    expect(result.calendar.earthlyBranch).toBe("wu");
-    expect(result.calendar.calendarPolicyId).toBe("civil-midnight-reuse-leap-month");
+    expect(result.input.kind).toBe("calendar");
+    expect(result.input.kind === "calendar" ? result.input.inputMode : null).toBe("civil_datetime");
+    expect(result.calendar?.localDateTime).toBe("2024-02-10T12:00:00");
+    expect(result.calendar?.timezone).toBe("Asia/Shanghai");
+    expect(result.calendar?.resolvedLunarDate).toMatchObject({ month: 1, day: 1, isLeapMonth: false });
+    expect(result.calendar?.earthlyBranch).toBe("wu");
+    expect(result.calendar?.calendarPolicyId).toBe("civil-midnight-reuse-leap-month");
+  });
+
+  it("runs the independent three-number variant without calendar fields", async () => {
+    const result = await runLocalDivination(request({
+      casting: {
+        kind: "three_numbers",
+        input: { kind: "three_numbers", first: 3, second: 5, third: 5 },
+      },
+    }));
+
+    expect(result.casting.kind).toBe("three_numbers");
+    expect(result.calculation.algorithmId).toBe("three-number-sequential-count-v1");
+    expect(result.calculation.finalPalaceId).toBe("xiao_ji");
+    expect(result.calculation.trace.map((step) => step.stage)).toEqual(["first_number", "second_number", "third_number"]);
+    expect(result.calendar).toBeNull();
+    expect(result.provenance.calendarPolicyId).toBeNull();
+    expect(result.input.kind).toBe("three_numbers");
+    if (result.input.kind === "three_numbers") {
+      expect(result.input).not.toHaveProperty("lunarMonth");
+      expect(result.input.numbers).toEqual({ kind: "three_numbers", first: 3, second: 5, third: 5 });
+    }
   });
 
   it("aggregates final display provenance and disputed palace fields", async () => {

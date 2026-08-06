@@ -1,4 +1,5 @@
-export type InputMode = "manual_lunar" | "civil_datetime";
+export type CalendarInputMode = "manual_lunar" | "civil_datetime";
+export type InputMode = CalendarInputMode | "three_numbers";
 
 export type PalaceId =
   | "da_an"
@@ -51,6 +52,27 @@ export interface CivilDateTimeInput {
 
 export type TimeInput = ManualLunarTimeInput | CivilDateTimeInput;
 
+export interface ThreeNumberInput {
+  readonly kind: "three_numbers";
+  readonly first: number;
+  readonly second: number;
+  readonly third: number;
+}
+
+export interface CalendarCastingRequest {
+  readonly kind: "calendar";
+  readonly inputMode: CalendarInputMode;
+  readonly calendarPolicyId: string;
+  readonly timeInput: TimeInput;
+}
+
+export interface ThreeNumberCastingRequest {
+  readonly kind: "three_numbers";
+  readonly input: ThreeNumberInput;
+}
+
+export type CastingRequest = CalendarCastingRequest | ThreeNumberCastingRequest;
+
 export interface DisplayPreferences {
   readonly language: "zh-CN" | "zh-TW";
   readonly showTraditionalText: boolean;
@@ -76,10 +98,8 @@ export interface QuestionContext {
 }
 
 export interface DivinationRequest {
-  readonly requestVersion: "1.0.0";
-  readonly inputMode: InputMode;
-  readonly calendarPolicyId: string;
-  readonly timeInput: TimeInput;
+  readonly requestVersion: "1.1.0";
+  readonly casting: CastingRequest;
   readonly questionContext: QuestionContext;
   readonly displayPreferences: DisplayPreferences;
   readonly clientMetadata?: Readonly<{
@@ -89,21 +109,21 @@ export interface DivinationRequest {
   }>;
 }
 
-export interface CalculationInput {
+export interface TraditionalCalculationInput {
+  readonly kind: "calendar";
   readonly lunarMonth: number;
   readonly lunarDay: number;
   readonly earthlyBranchIndex: number;
 }
 
-export interface ResultInput {
-  readonly inputMode: InputMode;
+export interface ThreeNumberCalculationInput extends ThreeNumberInput {
+  readonly kind: "three_numbers";
+}
+
+export type CalculationInput = TraditionalCalculationInput | ThreeNumberCalculationInput;
+
+interface ResultInputContext {
   readonly timezone: string | null;
-  readonly localDateTime?: string | null;
-  readonly lunarMonth: number;
-  readonly lunarDay: number;
-  readonly isLeapMonth: boolean;
-  readonly earthlyBranch: EarthlyBranch;
-  readonly earthlyBranchIndex: number;
   readonly domainId: string;
   readonly stageId: string | null;
   readonly questionFlags: readonly string[];
@@ -112,6 +132,24 @@ export interface ResultInput {
     readonly questionTextIncludedInExport: boolean;
   };
 }
+
+export interface CalendarResultInput extends ResultInputContext {
+  readonly kind: "calendar";
+  readonly inputMode: CalendarInputMode;
+  readonly localDateTime: string | null;
+  readonly lunarMonth: number;
+  readonly lunarDay: number;
+  readonly isLeapMonth: boolean;
+  readonly earthlyBranch: EarthlyBranch;
+  readonly earthlyBranchIndex: number;
+}
+
+export interface ThreeNumberResultInput extends ResultInputContext {
+  readonly kind: "three_numbers";
+  readonly numbers: ThreeNumberInput;
+}
+
+export type ResultInput = CalendarResultInput | ThreeNumberResultInput;
 
 export interface ResolvedLunarDate {
   readonly year: number | null;
@@ -153,7 +191,7 @@ export interface CalculationTrace {
   readonly formula: string;
 }
 
-export interface CalculationResult {
+export interface TraditionalCalculationResult {
   readonly algorithmId: "traditional-month-day-hour-v1";
   readonly algorithmStatus: "FROZEN-PROVISIONAL" | "FROZEN-REVIEWED";
   readonly palaceOrder: PalaceOrder;
@@ -165,6 +203,29 @@ export interface CalculationResult {
   readonly finalPalaceId: PalaceId;
   readonly trace: readonly [CalculationTrace, CalculationTrace, CalculationTrace];
 }
+
+export interface ThreeNumberCalculationTrace {
+  readonly stage: "first_number" | "second_number" | "third_number";
+  readonly startPalaceId: PalaceId;
+  readonly countValue: number;
+  readonly normalizedOffset: PalaceIndex;
+  readonly resultIndex: PalaceIndex;
+  readonly resultPalaceId: PalaceId;
+  readonly formula: string;
+}
+
+export interface ThreeNumberCalculationResult {
+  readonly algorithmId: "three-number-sequential-count-v1";
+  readonly algorithmStatus: "FROZEN-PROVISIONAL";
+  readonly palaceOrder: PalaceOrder;
+  readonly firstIndex: PalaceIndex;
+  readonly secondIndex: PalaceIndex;
+  readonly thirdIndex: PalaceIndex;
+  readonly finalPalaceId: PalaceId;
+  readonly trace: readonly [ThreeNumberCalculationTrace, ThreeNumberCalculationTrace, ThreeNumberCalculationTrace];
+}
+
+export type CalculationResult = TraditionalCalculationResult | ThreeNumberCalculationResult;
 
 export interface ContentBlock {
   readonly id: string;
@@ -247,17 +308,30 @@ export interface Provenance {
   readonly sourceIds: readonly string[];
   readonly provisionalSourceIds: readonly string[];
   readonly disputedFieldIds: readonly string[];
-  readonly calendarPolicyId: string;
-  readonly algorithmId: "traditional-month-day-hour-v1";
+  readonly calendarPolicyId: string | null;
+  readonly algorithmId: CalculationResult["algorithmId"];
   readonly fragmentIds: readonly string[];
   readonly ethicsRuleIds: readonly string[];
 }
 
+export type CastingSummary =
+  | {
+      readonly kind: "calendar";
+      readonly inputMode: CalendarInputMode;
+      readonly calendarPolicyId: string;
+    }
+  | {
+      readonly kind: "three_numbers";
+      readonly algorithmId: "three-number-sequential-count-v1";
+      readonly input: ThreeNumberInput;
+    };
+
 export interface DivinationResult {
-  readonly resultVersion: "1.1.0";
+  readonly resultVersion: "1.2.0";
   readonly createdAt: string | null;
+  readonly casting: CastingSummary;
   readonly input: ResultInput;
-  readonly calendar: CalendarResult;
+  readonly calendar: CalendarResult | null;
   readonly calculation: CalculationResult;
   readonly interpretation: InterpretationResult;
   readonly ethics: EthicsResult;

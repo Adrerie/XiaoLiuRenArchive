@@ -10,6 +10,7 @@ import {
   PALACE_ORDER as CORE_PALACE_ORDER,
   type PalaceStep,
 } from "../core";
+import { computeThreeNumberCasting } from "../core/three-number";
 import {
   assertFinalPalaceInvariant,
   evaluateEthics,
@@ -27,6 +28,8 @@ import {
 } from "../knowledge";
 import {
   AppError,
+  type CastingSummary,
+  type CalendarResultInput,
   type CandidateClaim,
   type CalculationInput,
   type CalculationResult,
@@ -43,6 +46,8 @@ import {
   type QuestionContext,
   type ResultInput,
   type SelectedFragment,
+  type ThreeNumberCalculationInput,
+  type ThreeNumberResultInput,
 } from "../shared";
 import {
   createDivinationService,
@@ -169,6 +174,9 @@ function toStep(step: PalaceStep): {
 }
 
 function calculate(input: CalculationInput): CalculationResult {
+  if (input.kind === "three_numbers") {
+    return computeThreeNumberCasting(input);
+  }
   const coreResult = computeDivination({
     lunarMonth: input.lunarMonth,
     lunarDay: input.lunarDay,
@@ -188,30 +196,56 @@ function calculate(input: CalculationInput): CalculationResult {
   };
 }
 
-function resolveCalendar(request: DivinationRequest, context: RuntimeQuestionContext): CalendarResolution {
+function resolveCasting(request: DivinationRequest, context: RuntimeQuestionContext): CalendarResolution {
   try {
-    if (request.inputMode === "manual_lunar" && request.timeInput.kind !== "manual_lunar") {
+    if (request.casting.kind === "three_numbers") {
+      const input: ThreeNumberResultInput = {
+        kind: "three_numbers",
+        numbers: { ...request.casting.input },
+        timezone: null,
+        domainId: context.domainId,
+        stageId: context.stageId,
+        questionFlags: context.flags,
+        privacy: {
+          questionTextStored: false,
+          questionTextIncludedInExport: false,
+        },
+      };
+      return {
+        casting: {
+          kind: "three_numbers",
+          algorithmId: "three-number-sequential-count-v1",
+          input: { ...request.casting.input },
+        },
+        input,
+        calendar: null,
+        calculationInput: { ...request.casting.input },
+      };
+    }
+
+    const casting = request.casting;
+    if (casting.inputMode === "manual_lunar" && casting.timeInput.kind !== "manual_lunar") {
       throw new AppError("INVALID_REQUEST", "manual_lunar inputMode requires manual_lunar timeInput", { field: "timeInput.kind" });
     }
-    if (request.inputMode === "civil_datetime" && request.timeInput.kind !== "civil_datetime") {
+    if (casting.inputMode === "civil_datetime" && casting.timeInput.kind !== "civil_datetime") {
       throw new AppError("INVALID_REQUEST", "civil_datetime inputMode requires civil_datetime timeInput", { field: "timeInput.kind" });
     }
-    const normalized = request.inputMode === "manual_lunar"
+    const normalized = casting.inputMode === "manual_lunar"
       ? fromManualLunar({
           kind: "manual_lunar",
-          lunarMonth: request.timeInput.kind === "manual_lunar" ? request.timeInput.lunarMonth : 0,
-          lunarDay: request.timeInput.kind === "manual_lunar" ? request.timeInput.lunarDay : 0,
-          earthlyBranchIndex: request.timeInput.kind === "manual_lunar" ? request.timeInput.earthlyBranchIndex : 0,
-          isLeapMonth: request.timeInput.kind === "manual_lunar" ? request.timeInput.isLeapMonth : false,
-          timezone: request.timeInput.kind === "manual_lunar" ? request.timeInput.timezone : null,
-          calendarPolicyId: request.calendarPolicyId,
+          lunarMonth: casting.timeInput.kind === "manual_lunar" ? casting.timeInput.lunarMonth : 0,
+          lunarDay: casting.timeInput.kind === "manual_lunar" ? casting.timeInput.lunarDay : 0,
+          earthlyBranchIndex: casting.timeInput.kind === "manual_lunar" ? casting.timeInput.earthlyBranchIndex : 0,
+          isLeapMonth: casting.timeInput.kind === "manual_lunar" ? casting.timeInput.isLeapMonth : false,
+          timezone: casting.timeInput.kind === "manual_lunar" ? casting.timeInput.timezone : null,
+          calendarPolicyId: casting.calendarPolicyId,
         } satisfies ManualLunarInput)
       : fromGregorian({
           kind: "civil_datetime",
-          localDateTime: request.timeInput.kind === "civil_datetime" ? request.timeInput.localDateTime : "",
-          timezone: request.timeInput.kind === "civil_datetime" ? request.timeInput.timezone : "",
-          fold: request.timeInput.kind === "civil_datetime" ? request.timeInput.fold : null,
-          calendarPolicyId: request.calendarPolicyId,
+          localDateTime: casting.timeInput.kind === "civil_datetime" ? casting.timeInput.localDateTime : "",
+          timezone: casting.timeInput.kind === "civil_datetime" ? casting.timeInput.timezone : "",
+          fold: casting.timeInput.kind === "civil_datetime" ? casting.timeInput.fold : null,
+          calendarPolicyId: casting.calendarPolicyId,
         } satisfies GregorianDateTimeInput);
     const branch = branchName(normalized.earthlyBranch);
     const manual = normalized.source === "manual_lunar";
@@ -245,8 +279,9 @@ function resolveCalendar(request: DivinationRequest, context: RuntimeQuestionCon
       ],
       warnings: normalized.warnings,
     };
-    const resolvedInput: ResultInput = {
-      inputMode: request.inputMode,
+    const resolvedInput: CalendarResultInput = {
+      kind: "calendar",
+      inputMode: casting.inputMode,
       timezone: calendar.timezone ?? null,
       localDateTime: calendar.localDateTime ?? null,
       lunarMonth: normalized.lunarMonth,
@@ -263,9 +298,15 @@ function resolveCalendar(request: DivinationRequest, context: RuntimeQuestionCon
       },
     };
     return {
+      casting: {
+        kind: "calendar",
+        inputMode: casting.inputMode,
+        calendarPolicyId: casting.calendarPolicyId,
+      },
       input: resolvedInput,
       calendar,
       calculationInput: {
+        kind: "calendar",
         lunarMonth: normalized.lunarMonth,
         lunarDay: normalized.lunarDay,
         earthlyBranchIndex: normalized.earthlyBranchIndex,
@@ -515,8 +556,8 @@ function provenance(input: {
     ruleVersion,
     schemaVersions: {
       request: input.request.requestVersion,
-      result: "1.1.0",
-      calendar: "1.0.0",
+      result: "1.2.0",
+      calendar: input.request.casting.kind === "calendar" ? "1.0.0" : "not-applicable",
       ethics: ruleVersion,
       palaces: manifest.palacesVersion,
       questionDomains: manifest.questionDomainsVersion,
@@ -527,7 +568,7 @@ function provenance(input: {
     sourceIds,
     provisionalSourceIds: sources.filter(isProvisionalSource).map((source) => source.id),
     disputedFieldIds: palace.disputedFieldIds,
-    calendarPolicyId: input.request.calendarPolicyId,
+    calendarPolicyId: input.request.casting.kind === "calendar" ? input.request.casting.calendarPolicyId : null,
     algorithmId: input.calculation.algorithmId,
     fragmentIds: input.interpretation.fragmentIds,
     ethicsRuleIds: input.ethics.triggeredRuleIds,
@@ -538,7 +579,7 @@ function dependencies(): DivinationDependencies {
   return {
     calendar: {
       async resolve(request): Promise<CalendarResolution> {
-        return resolveCalendar(request, contextFor(request));
+        return resolveCasting(request, contextFor(request));
       },
     },
     calculation: { calculate },

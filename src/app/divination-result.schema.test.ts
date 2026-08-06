@@ -46,6 +46,21 @@ function assertSchemaValue(value: unknown, schemaValue: unknown, path = "result"
     return;
   }
 
+  const oneOf = schema.oneOf === undefined ? [] : schemaArray(schema.oneOf, `${path}.oneOf`);
+  if (oneOf.length > 0) {
+    let matches = 0;
+    for (const item of oneOf) {
+      try {
+        assertSchemaValue(value, item, path);
+        matches += 1;
+      } catch {
+        // A branch mismatch is expected while evaluating oneOf.
+      }
+    }
+    if (matches !== 1) throw new Error(`${path} matched ${matches} oneOf branches`);
+    return;
+  }
+
   const allOf = schema.allOf === undefined ? [] : schemaArray(schema.allOf, `${path}.allOf`);
   for (const item of allOf) assertSchemaValue(value, item, path);
   if ("const" in schema && JSON.stringify(value) !== JSON.stringify(schema.const)) {
@@ -118,10 +133,13 @@ function assertSchemaValue(value: unknown, schemaValue: unknown, path = "result"
 
 function request(overrides: Partial<DivinationRequest> = {}): DivinationRequest {
   return {
-    requestVersion: "1.0.0",
-    inputMode: "manual_lunar",
-    calendarPolicyId: "manual-lunar-input-v1",
-    timeInput: { kind: "manual_lunar", lunarMonth: 3, lunarDay: 5, earthlyBranchIndex: 5, isLeapMonth: false },
+    requestVersion: "1.1.0",
+    casting: {
+      kind: "calendar",
+      inputMode: "manual_lunar",
+      calendarPolicyId: "manual-lunar-input-v1",
+      timeInput: { kind: "manual_lunar", lunarMonth: 3, lunarDay: 5, earthlyBranchIndex: 5, isLeapMonth: false },
+    },
     questionContext: {
       domainId: "relationship",
       stageId: "seeking",

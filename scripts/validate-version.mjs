@@ -10,8 +10,8 @@ const androidBuildPath = path.join(repositoryRoot, "android", "app", "build.grad
 
 const expected = {
   packageName: "xiaoliurenarchive",
-  version: "0.4.0-beta.1",
-  versionCode: "401",
+  version: "0.5.0-beta.1",
+  versionCode: "501",
   buildChannel: "beta-debug",
 };
 const errors = [];

@@ -2,6 +2,7 @@ import type {
   CalculationInput,
   CalculationResult,
   CalendarResult,
+  CastingSummary,
   DivinationRequest,
   DivinationResult,
   EthicsResult,
@@ -12,7 +13,8 @@ import type {
 
 export interface CalendarResolution {
   readonly input: ResultInput;
-  readonly calendar: CalendarResult;
+  readonly casting: CastingSummary;
+  readonly calendar: CalendarResult | null;
   readonly calculationInput: CalculationInput;
 }
 
@@ -28,7 +30,7 @@ export interface InterpretationPort {
   interpret(input: {
     readonly request: DivinationRequest;
     readonly resolvedInput: ResultInput;
-    readonly calendar: CalendarResult;
+    readonly calendar: CalendarResult | null;
     readonly calculation: CalculationResult;
   }): Promise<InterpretationResult>;
 }
@@ -61,7 +63,7 @@ export interface PresentationPort {
   present(input: {
     readonly request: DivinationRequest;
     readonly resolvedInput: ResultInput;
-    readonly calendar: CalendarResult;
+    readonly calendar: CalendarResult | null;
     readonly calculation: CalculationResult;
     readonly interpretation: InterpretationResult;
     readonly ethics: EthicsResult;
@@ -110,8 +112,9 @@ export function createDivinationService(
       }) ?? { interpretation, ethics };
 
       return {
-        resultVersion: "1.1.0",
+        resultVersion: "1.2.0",
         createdAt: null,
+        casting: resolved.casting,
         input: resolved.input,
         calendar: resolved.calendar,
         calculation,

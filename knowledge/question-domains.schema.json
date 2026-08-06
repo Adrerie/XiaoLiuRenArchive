@@ -66,7 +66,7 @@
     "domain": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "name", "description", "sourceIds", "palaceInterpretations", "mandatoryEthicsRuleIds"],
+      "required": ["id", "name", "description", "sourceIds", "stageOptions", "palaceInterpretations", "mandatoryEthicsRuleIds"],
       "properties": {
         "id": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
         "name": {"type": "string", "minLength": 1},
@@ -85,6 +85,19 @@
           "type": "array",
           "uniqueItems": true,
           "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}
+        },
+        "stageOptions": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "label"],
+            "properties": {
+              "id": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+              "label": {"type": "string", "minLength": 1, "pattern": "[\\u3400-\\u9fff]"}
+            }
+          }
         },
         "palaceInterpretations": {
           "type": "object",
