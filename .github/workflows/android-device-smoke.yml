@@ -82,7 +82,7 @@ jobs:
             adb shell cmd connectivity airplane-mode enable || true
             adb shell am force-stop io.github.adrerie.xiaoliurenarchive
             set +e
-            ./android/gradlew connectedDebugAndroidTest --no-daemon
+            timeout 12m ./android/gradlew connectedDebugAndroidTest --no-daemon --console=plain
             test_status=$?
             adb logcat -d > artifacts/android-device/logcat.txt || true
             adb exec-out screencap -p > artifacts/android-device/android-device-smoke.png || true
