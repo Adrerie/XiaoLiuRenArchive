@@ -1,5 +1,6 @@
 package io.github.adrerie.xiaoliurenarchive;
 
+import android.webkit.WebView;
 import static androidx.test.espresso.web.assertion.WebViewAssertions.webMatches;
 import static androidx.test.espresso.web.sugar.Web.onWebView;
 import static androidx.test.espresso.web.webdriver.DriverAtoms.clearElement;
@@ -14,11 +15,39 @@ import androidx.test.espresso.web.webdriver.Locator;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.UiDevice;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
 public final class AndroidDeviceSmokeTest {
+
+    private static void waitForBetaDom(ActivityScenario<MainActivity> scenario) throws Exception {
+        CountDownLatch ready = new CountDownLatch(1);
+        scenario.onActivity(activity -> {
+            WebView webView = activity.getBridge().getWebView();
+            webView.post(new Runnable() {
+                private int attempts;
+
+                @Override
+                public void run() {
+                    webView.evaluateJavascript(
+                            "Boolean(document.getElementById('generate-result-button'))",
+                            value -> {
+                                if ("true".equals(value)) {
+                                    ready.countDown();
+                                } else if (++attempts < 120) {
+                                    webView.postDelayed(this, 250L);
+                                }
+                            });
+                }
+            });
+        });
+        if (!ready.await(30, TimeUnit.SECONDS)) {
+            throw new AssertionError("The beta DOM did not expose its stable smoke selector");
+        }
+    }
 
     @Test
     public void offlineBetaFlowUsesStableDomSelectors() throws Exception {
@@ -29,6 +58,7 @@ public final class AndroidDeviceSmokeTest {
 
         try (ActivityScenario<MainActivity> ignored = ActivityScenario.launch(MainActivity.class)) {
             device.waitForIdle();
+            waitForBetaDom(ignored);
             onWebView()
                     .withElement(findElement(Locator.ID, "generate-result-button"))
                     .perform(webClick())
