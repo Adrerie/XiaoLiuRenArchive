@@ -5,18 +5,27 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run validate:knowledge && vite build",
+    "build": "npm run validate:knowledge && npm run audit:network && vite build",
+    "build:mobile": "npm run validate:knowledge && npm run audit:network && vite build --mode capacitor",
     "validate:knowledge": "node scripts/validate-knowledge-manifest.mjs",
+    "audit:network": "node scripts/audit-runtime-network.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --exclude src/core/index.test.ts",
     "test:core": "node --test --experimental-strip-types src/core/index.test.ts",
-    "test:ethics": "node --test src/ethics/engine.test.mjs"
+    "test:ethics": "node --test src/ethics/engine.test.mjs",
+    "mobile:sync": "npm run build:mobile && npx cap sync android",
+    "mobile:open": "npx cap open android",
+    "mobile:build:debug": "npm run mobile:sync && node scripts/build-android-debug.mjs"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.0",
+    "@capacitor/app": "^8.1.1",
+    "@capacitor/core": "^8.5.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.5.0",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
     "@vitejs/plugin-react": "^4.6.0",

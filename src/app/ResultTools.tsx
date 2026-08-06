@@ -6,14 +6,20 @@ function IdList({ values }: { readonly values: readonly string[] }): ReactElemen
   return <code>{values.length > 0 ? values.join(" · ") : "（无）"}</code>;
 }
 
-export function StructuredDetails({ result }: { readonly result: DivinationResult }): ReactElement {
+interface StructuredDetailsProps {
+  readonly result: DivinationResult;
+  readonly open: boolean;
+  readonly onOpenChange: (open: boolean) => void;
+}
+
+export function StructuredDetails({ result, open, onOpenChange }: StructuredDetailsProps): ReactElement {
   const boundaryTrace = result.calendar.trace.find((entry) => entry.stage === "calendar-boundary");
   const lunarConversionLocalDateTime = typeof boundaryTrace?.lunarConversionLocalDateTime === "string"
     ? boundaryTrace.lunarConversionLocalDateTime
     : "manual input";
   return (
     <section className="result-section structured-details">
-      <details>
+      <details open={open} onToggle={(event) => onOpenChange(event.currentTarget.open)}>
         <summary>结构化详情（技术 ID 默认折叠）</summary>
         <dl className="provenance-grid detail-grid">
           <dt>algorithmId</dt><dd><code>{result.calculation.algorithmId}</code></dd>

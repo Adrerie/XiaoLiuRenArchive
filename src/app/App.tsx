@@ -1,4 +1,6 @@
-import { useMemo, useState, type FormEvent, type ReactElement } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactElement } from "react";
+import { App as CapacitorApp } from "@capacitor/app";
+import { Capacitor, type PluginListenerHandle } from "@capacitor/core";
 import { runLocalDivination } from "./index";
 import { ExportPanel, StructuredDetails } from "./ResultTools";
 import { CALENDAR_POLICIES, listSupportedTimeZones, type CalendarPolicyId } from "../calendar";
@@ -206,7 +208,13 @@ function TraceSection({ result }: { readonly result: DivinationResult }): ReactE
   );
 }
 
-function ResultPanel({ result }: { readonly result: DivinationResult }): ReactElement {
+interface ResultPanelProps {
+  readonly result: DivinationResult;
+  readonly structuredDetailsOpen: boolean;
+  readonly onStructuredDetailsOpenChange: (open: boolean) => void;
+}
+
+function ResultPanel({ result, structuredDetailsOpen, onStructuredDetailsOpenChange }: ResultPanelProps): ReactElement {
   const messages = result.ethics.requiredNotices;
   const hardStop = result.ethics.stopPrimaryDivination;
   const sources = getSources(result.provenance.sourceIds);
@@ -248,7 +256,11 @@ function ResultPanel({ result }: { readonly result: DivinationResult }): ReactEl
         </section>
       )}
       <TraceSection result={result} />
-      <StructuredDetails result={result} />
+      <StructuredDetails
+        result={result}
+        open={structuredDetailsOpen}
+        onOpenChange={onStructuredDetailsOpenChange}
+      />
       <ExportPanel result={result} />
       {!hardStop && (
         <>
@@ -299,8 +311,47 @@ export default function App(): ReactElement {
   const [result, setResult] = useState<DivinationResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [structuredDetailsOpen, setStructuredDetailsOpen] = useState(false);
+  const viewRef = useRef(view);
+  const resultRef = useRef(result);
+  const structuredDetailsOpenRef = useRef(structuredDetailsOpen);
+  viewRef.current = view;
+  resultRef.current = result;
+  structuredDetailsOpenRef.current = structuredDetailsOpen;
   const selectedDomain = domains.find((domain) => domain.id === form.domainId) ?? domains[0];
   const stages = selectedDomain ? listStages(selectedDomain.id) : [];
+
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+    let active = true;
+    let listenerHandle: PluginListenerHandle | null = null;
+    const listenerPromise = CapacitorApp.addListener("backButton", () => {
+      if (viewRef.current !== "divination") {
+        setView("divination");
+        return;
+      }
+      if (structuredDetailsOpenRef.current) {
+        setStructuredDetailsOpen(false);
+        return;
+      }
+      if (resultRef.current !== null) {
+        setResult(null);
+        return;
+      }
+      void CapacitorApp.exitApp();
+    });
+    void listenerPromise.then((handle) => {
+      if (active) {
+        listenerHandle = handle;
+      } else {
+        void handle.remove();
+      }
+    });
+    return () => {
+      active = false;
+      if (listenerHandle) void listenerHandle.remove();
+    };
+  }, []);
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]): void {
     setForm((current) => ({ ...current, [key]: value }));
@@ -374,9 +425,11 @@ export default function App(): ReactElement {
           displayPreferences,
         };
       }
+      setStructuredDetailsOpen(false);
       setResult(await runLocalDivination(nextRequest));
     } catch (submissionError) {
       setError(readableError(submissionError));
+      setStructuredDetailsOpen(false);
       setResult(null);
     } finally {
       setBusy(false);
@@ -461,7 +514,11 @@ export default function App(): ReactElement {
       </form>
       </section>
 
-      {result ? <ResultPanel result={result} /> : <section className="empty-state"><span className="section-kicker">02 · RESULT</span><h2>结果会在这里展开</h2><p>提交后可查看最终宫位、三步 trace、本地解释、原典来源和伦理提示。</p></section>}
+      {result ? <ResultPanel
+        result={result}
+        structuredDetailsOpen={structuredDetailsOpen}
+        onStructuredDetailsOpenChange={setStructuredDetailsOpen}
+      /> : <section className="empty-state"><span className="section-kicker">02 · RESULT</span><h2>结果会在这里展开</h2><p>提交后可查看最终宫位、三步 trace、本地解释、原典来源和伦理提示。</p></section>}
       </>}
       <footer className="app-footer">传统计算为固定规则的文化解释，不构成医疗、法律或财务意见。</footer>
     </main>

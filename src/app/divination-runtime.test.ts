@@ -74,6 +74,9 @@ describe("local divination runtime", () => {
     expect(result.interpretation.sections.traditionalText.every((block) => block.sourceIds.includes("yuxiaji-liuren-shike-web-transcription-8s8s"))).toBe(true);
     expect(result.provenance.disputedFieldIds).toContain("palace.xiao_ji.classical.element");
     expect(result.provenance.provisionalSourceIds.every((id) => result.provenance.sourceIds.includes(id))).toBe(true);
+    expect(result.provenance.provisionalSourceIds).toContain("yuxiaji-liuren-shike-web-transcription-8s8s");
+    expect(result.provenance.provisionalSourceIds).not.toContain("moe-revised-dictionary-xiaoliuren");
+    expect(result.provenance.provisionalSourceIds).not.toContain("xiaoliurenarchive-editorial-modern-knowledge-v1");
   });
 
   it("does not let identity flags alter the final palace", async () => {

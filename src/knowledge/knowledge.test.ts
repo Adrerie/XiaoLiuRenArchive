@@ -5,9 +5,16 @@ import {
   getKnowledgeManifest,
   getPalace,
   getSources,
+  isProvisionalSource,
   listPalaces,
   searchPalaces,
 } from "./index";
+
+function sourceById(sourceIds: readonly ReturnType<typeof getSources>[number][], id: string): ReturnType<typeof getSources>[number] {
+  const source = sourceIds.find((candidate) => candidate.id === id);
+  if (!source) throw new Error(`Missing source in test fixture: ${id}`);
+  return source;
+}
 
 describe("local knowledge selectors", () => {
   it("keeps the six-palace order and exposes the Xiao Ji element variant", () => {
@@ -45,5 +52,13 @@ describe("local knowledge selectors", () => {
     expect(sourceIds).toContain("yuxiaji-liuren-shike-web-transcription-8s8s");
     expect(getPalace("xiao_ji").modernSourceIds).toEqual(["xiaoliurenarchive-editorial-modern-knowledge-v1"]);
     expect(getSources(sourceIds).every((source) => source.supports.length > 0)).toBe(true);
+    const sources = getSources([
+      "moe-revised-dictionary-xiaoliuren",
+      "yuxiaji-liuren-shike-web-transcription-8s8s",
+      "xiaoliurenarchive-editorial-modern-knowledge-v1",
+    ]);
+    expect(isProvisionalSource(sourceById(sources, "yuxiaji-liuren-shike-web-transcription-8s8s"))).toBe(true);
+    expect(isProvisionalSource(sourceById(sources, "moe-revised-dictionary-xiaoliuren"))).toBe(false);
+    expect(isProvisionalSource(sourceById(sources, "xiaoliurenarchive-editorial-modern-knowledge-v1"))).toBe(false);
   });
 });
