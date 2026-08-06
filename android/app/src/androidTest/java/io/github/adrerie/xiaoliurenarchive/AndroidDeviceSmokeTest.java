@@ -23,7 +23,6 @@ public final class AndroidDeviceSmokeTest {
     @Test
     public void offlineBetaFlowUsesStableDomSelectors() {
         try (ActivityScenario<MainActivity> ignored = ActivityScenario.launch(MainActivity.class)) {
-            onWebView().forceJavascriptEnabled();
             onWebView()
                     .withElement(findElement(Locator.ID, "generate-result-button"))
                     .perform(webClick())
