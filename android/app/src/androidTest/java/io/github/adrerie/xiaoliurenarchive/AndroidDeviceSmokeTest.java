@@ -82,6 +82,36 @@ public final class AndroidDeviceSmokeTest {
         }
     }
 
+    private static void setInputValueThroughStandardEvents(
+            ActivityScenario<MainActivity> scenario,
+            String elementId,
+            String value
+    ) throws Exception {
+        CountDownLatch evaluated = new CountDownLatch(1);
+        String[] observed = new String[1];
+        String escapedValue = value.replace("\\", "\\\\").replace("'", "\\'");
+        String script = "(function() {"
+                + "var input = document.getElementById('" + elementId + "');"
+                + "if (!input) return null;"
+                + "var descriptor = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');"
+                + "if (!descriptor || !descriptor.set) return null;"
+                + "descriptor.set.call(input, '" + escapedValue + "');"
+                + "input.dispatchEvent(new Event('input', { bubbles: true }));"
+                + "input.dispatchEvent(new Event('change', { bubbles: true }));"
+                + "return input.value;"
+                + "})()";
+        scenario.onActivity(activity -> activity.getBridge().getWebView().evaluateJavascript(script, valueResult -> {
+            observed[0] = valueResult;
+            evaluated.countDown();
+        }));
+        if (!evaluated.await(5, TimeUnit.SECONDS)) {
+            throw new AssertionError("Timed out while entering the physical-device search query");
+        }
+        if (observed[0] == null || !observed[0].contains(value)) {
+            throw new AssertionError("Expected search input to contain " + value + ", got " + observed[0]);
+        }
+    }
+
     @Test
     public void offlineBetaFlowUsesStableDomSelectors() throws Exception {
         UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
@@ -113,7 +143,12 @@ public final class AndroidDeviceSmokeTest {
                     .withElement(findElement(Locator.ID, "nav-library"))
                     .perform(webClick());
             onWebView()
-                    .withElement(findElement(Locator.CSS_SELECTOR, ".palace-card:nth-child(5)"))
+                    .withElement(findElement(Locator.ID, "library-search-input"))
+                    .perform(clearElement());
+            setInputValueThroughStandardEvents(ignored, "library-search-input", "\u5c0f\u5409");
+            assertElementTextEventually(ignored, "library-result-count", "1");
+            onWebView()
+                    .withElement(findElement(Locator.ID, "palace-card-xiao_ji"))
                     .perform(webClick());
             assertElementText(ignored, "palace-detail", "\u5c0f\u5409");
 

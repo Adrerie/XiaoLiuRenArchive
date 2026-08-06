@@ -42,6 +42,7 @@ export default function KnowledgeLibraryPage(): ReactElement {
       <label className="library-search">本地搜索
         <input id="library-search-input" aria-label="资料库搜索" type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜索宫名、五行、原典或解释关键词" />
       </label>
+      <p id="library-result-count" role="status" aria-live="polite">找到 {palaces.length} 条本地资料</p>
       <div className="library-layout">
         <div className="palace-list" aria-label="六宫列表">
           {palaces.map((palace) => <PalaceCard palace={palace} selected={palace.id === selectedPalace?.id} onSelect={() => setSelectedId(palace.id)} key={palace.id} />)}

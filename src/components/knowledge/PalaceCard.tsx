@@ -17,6 +17,8 @@ interface PalaceCardProps {
 export function PalaceCard({ palace, selected, onSelect }: PalaceCardProps): ReactElement {
   return (
     <button
+      id={`palace-card-${palace.id}`}
+      data-palace-id={palace.id}
       type="button"
       className={selected ? "palace-card palace-card-selected" : "palace-card"}
       onClick={onSelect}
