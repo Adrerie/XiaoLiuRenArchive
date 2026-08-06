@@ -1,4 +1,6 @@
 import { spawnSync } from "node:child_process";
+import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -8,9 +10,25 @@ const command = process.platform === "win32" ? process.env.ComSpec ?? "cmd.exe" 
 const argumentsForPlatform = process.platform === "win32"
   ? ["/d", "/s", "/c", "gradlew.bat assembleDebug"]
   : ["assembleDebug"];
+const defaultSdkRoot = process.platform === "win32"
+  ? process.env.LOCALAPPDATA
+    ? path.join(process.env.LOCALAPPDATA, "Android", "Sdk")
+    : null
+  : path.join(os.homedir(), "Android", "Sdk");
+const sdkRoots = [process.env.ANDROID_SDK_ROOT, process.env.ANDROID_HOME, defaultSdkRoot]
+  .filter(Boolean)
+  .filter((root, index, roots) => roots.indexOf(root) === index);
+const sdkRoot = sdkRoots.find((root) => fs.existsSync(path.join(root, "platform-tools")));
+const environment = { ...process.env };
+
+if (sdkRoot) {
+  environment.ANDROID_SDK_ROOT = sdkRoot;
+  environment.ANDROID_HOME = sdkRoot;
+}
 
 const result = spawnSync(command, argumentsForPlatform, {
   cwd: androidDirectory,
+  env: environment,
   stdio: "inherit",
 });
 

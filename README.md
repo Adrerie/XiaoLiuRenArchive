@@ -10,7 +10,9 @@
 
 R2 Calendar and Knowledge Expansion 已完成并合并到 `main`。
 
-R3 Mobile Packaging 当前已完成 Capacitor Android 容器、离线资源同步、运行时网络审计、系统返回键适配和 GitHub CI；debug APK 是否生成取决于本机 Android SDK/JDK 工具链。
+R3 Mobile Packaging 已审阅并合并到 `main`：Capacitor Android 容器、离线资源同步、运行时网络审计、系统返回键适配、Android debug build 和短期 APK artifact 已形成闭环。
+
+R4 Device Validation and Beta Hardening 当前正在 `feature/r4-device-validation-beta-hardening` 实施，目标是完成可安装测试版的设备离线 smoke、原生导出、权限与备份收口、品牌资源和 beta 版本一致性。
 
 当前已经具备：
 
@@ -26,11 +28,12 @@ R3 Mobile Packaging 当前已完成 Capacitor Android 容器、离线资源同�
 - 六宫资料库、本地搜索、详情、异文和来源卡
 - 结构化结果详情和隐私优先 JSON 复制/下载
 - 移动端与桌面端关键交互验证
+- `0.4.0-beta.1` 测试版版本、beta-debug 渠道与本地优先边界
 
-下一阶段为 R3 Mobile Packaging，合并处理 R2 来源状态技术债、Capacitor Android、离线资源和发布审计。执行计划：
+当前执行计划：
 
 ```text
-codex/r3-mobile-packaging-release-plan.md
+codex/r4-device-validation-beta-hardening-plan.md
 ```
 
 ## 执行优先
@@ -106,6 +109,8 @@ R2 已完成：
 
 ## R3 Mobile Packaging
 
+R3 已审阅并合并到 `main`，GitHub Android debug build 与短期 APK artifact 已形成闭环。本节保留 R3 交付边界，R4 只在其上增加设备验证和测试版加固。
+
 当前实现包含：
 
 - Capacitor 8 Android 容器，固定 appId/appName，构建产物使用本地相对资源路径
@@ -124,6 +129,10 @@ R3 计划完成：
 
 R3 不做账号、云同步、社区、PDF、PNG、正式商店发布、签名 release 包或生成式 AI 解释。
 
+## R4 Device Validation and Beta Hardening
+
+R4 实现已完成，当前 PR 收口：统一 `xiaoliurenarchive` / `0.4.0-beta.1` / Android versionCode `401` / `beta-debug`，包含 Android 原生隐私 JSON 导出、系统浏览器来源链接、无 INTERNET 权限与无备份配置、项目品牌资源、稳定设备选择器和离线实体设备 smoke。设备验证使用 USB 连接的真实 Android 平板，不创建模拟器、不切换网络或锁屏状态。
+
 ## Codex 开发入口
 
 主代理只需先阅读：
@@ -132,7 +141,7 @@ R3 不做账号、云同步、社区、PDF、PNG、正式商店发布、签名 r
 2. `AGENTS.md`
 3. `CODEX_MASTER_PROMPT.md`
 4. `codex/execution-first-policy.md`
-5. `codex/r3-mobile-packaging-release-plan.md`
+5. `codex/r4-device-validation-beta-hardening-plan.md`
 
 随后按计划执行。只有主代理操作 Git，并持续负责 Capacitor、Android、CI、构建、应用接线和 PR 收尾。
 
@@ -152,7 +161,7 @@ R3 不做账号、云同步、社区、PDF、PNG、正式商店发布、签名 r
 ## 仓库入口
 
 - `src/`：Web 工程、历法、算法、知识、伦理、服务与界面
-- `android/`：R3 Android 容器与 Gradle wrapper
+- `android/`：R3 Android 容器、R4 beta 资源与 Gradle wrapper
 - `algorithm/`：传统计算、解释与伦理合同
 - `knowledge/`：结构化知识、规则和 Schema
 - `fixtures/`：黄金与伦理案例
@@ -160,4 +169,4 @@ R3 不做账号、云同步、社区、PDF、PNG、正式商店发布、签名 r
 - `codex/`：执行计划与子代理任务书
 - `scripts/`：知识校验与发布审计脚本
 
-本项目当前处于 **R2 已完成，R3 Mobile Packaging 已实现，等待发布 PR 审阅** 阶段。
+本项目当前处于 **R3 已合并，R4 Device Validation and Beta Hardening 正在实施** 阶段。

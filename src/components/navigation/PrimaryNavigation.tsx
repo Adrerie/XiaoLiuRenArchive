@@ -18,9 +18,11 @@ export function PrimaryNavigation({ activeView, onChange }: PrimaryNavigationPro
     <nav className="primary-navigation" aria-label="主导航">
       {ITEMS.map((item) => (
         <button
+          id={`nav-${item.id}`}
           type="button"
           className={activeView === item.id ? "nav-item nav-item-active" : "nav-item"}
           aria-current={activeView === item.id ? "page" : undefined}
+          aria-label={item.label}
           onClick={() => onChange(item.id)}
           key={item.id}
         >
