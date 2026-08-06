@@ -21,8 +21,14 @@ import org.junit.runner.RunWith;
 public final class AndroidDeviceSmokeTest {
 
     @Test
-    public void offlineBetaFlowUsesStableDomSelectors() {
+    public void offlineBetaFlowUsesStableDomSelectors() throws Exception {
+        UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        device.wakeUp();
+        device.executeShellCommand("wm dismiss-keyguard");
+        device.pressHome();
+
         try (ActivityScenario<MainActivity> ignored = ActivityScenario.launch(MainActivity.class)) {
+            device.waitForIdle();
             onWebView()
                     .withElement(findElement(Locator.ID, "generate-result-button"))
                     .perform(webClick())
@@ -38,7 +44,6 @@ public final class AndroidDeviceSmokeTest {
                     .withElement(findElement(Locator.ID, "palace-detail"))
                     .check(webMatches(getText(), containsString("\u5c0f\u5409")));
 
-            UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
             device.pressBack();
             onWebView()
                     .withElement(findElement(Locator.ID, "generate-result-button"))

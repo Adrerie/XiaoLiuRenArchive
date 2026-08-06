@@ -88,6 +88,8 @@ jobs:
             timeout --foreground -k 30s 12m bash -c 'cd android && ./gradlew connectedDebugAndroidTest --no-daemon --console=plain'
             test_status=$?
             adb logcat -d > artifacts/android-device/logcat.txt || true
+            adb shell dumpsys window windows > artifacts/android-device/window.txt || true
+            adb shell dumpsys activity activities > artifacts/android-device/activities.txt || true
             adb exec-out screencap -p > artifacts/android-device/android-device-smoke.png || true
             if grep -E "FATAL EXCEPTION|WebView.*(load|error)|server.url|ERR_INTERNET_DISCONNECTED" artifacts/android-device/logcat.txt; then
               test_status=1
