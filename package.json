@@ -15,7 +15,7 @@
     "test:ethics": "node --test src/ethics/engine.test.mjs",
     "mobile:sync": "npm run build:mobile && npx cap sync android",
     "mobile:open": "npx cap open android",
-    "mobile:build:debug": "npm run build:mobile && npx cap sync android && cd android && gradlew.bat assembleDebug"
+    "mobile:build:debug": "npm run mobile:sync && node scripts/build-android-debug.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",
