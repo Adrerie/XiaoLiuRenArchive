@@ -47,7 +47,7 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Install Android SDK packages
-        run: sdkmanager "platforms;android-36" "build-tools;36.0.0" "platform-tools" "emulator" "system-images;android-35;google_apis;x86_64"
+        run: sdkmanager "platforms;android-36" "build-tools;36.0.0" "platform-tools" "emulator" "system-images;android-27;default;x86"
 
       - name: Install Node dependencies
         run: npm ci
@@ -67,13 +67,14 @@ jobs:
       - name: Run offline device smoke
         uses: ReactiveCircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d
         with:
-          api-level: 35
-          target: google_apis
-          arch: x86_64
+          api-level: 27
+          target: default
+          arch: x86
           profile: pixel_2
           force-avd-creation: true
           disable-animations: true
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          disable-linux-hw-accel: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot
           script: |
             mkdir -p artifacts/android-device
             adb install -r android/app/build/outputs/apk/debug/app-debug.apk
