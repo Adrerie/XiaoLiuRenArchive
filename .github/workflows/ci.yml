@@ -27,6 +27,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Validate beta version
+        run: npm run validate:version
+
+      - name: Audit Android manifest
+        run: npm run audit:android:manifest
+
       - name: Validate knowledge manifest
         run: npm run validate:knowledge
 

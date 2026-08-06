@@ -23,7 +23,7 @@ export function PalaceDetail({
   readonly sources: readonly KnowledgeSource[];
 }): ReactElement {
   return (
-    <article className="palace-detail">
+    <article className="palace-detail" id="palace-detail">
       <header className="palace-detail-header">
         <div>
           <span className="section-kicker">PALACE {String(palace.order + 1).padStart(2, "0")}</span>

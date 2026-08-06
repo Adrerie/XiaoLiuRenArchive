@@ -1,5 +1,6 @@
 import type { ReactElement } from "react";
 import type { KnowledgeSource } from "../../knowledge";
+import { ExternalSourceLink } from "./ExternalSourceLink";
 
 export function SourceCard({ source }: { readonly source: KnowledgeSource }): ReactElement {
   return (
@@ -14,7 +15,7 @@ export function SourceCard({ source }: { readonly source: KnowledgeSource }): Re
         <div><span>不支持</span><ul>{source.doesNotSupport.map((item) => <li key={item}>{item}</li>)}</ul></div>
       </div>
       <small>{source.licenseNote}</small>
-      {source.url ? <a href={source.url} target="_blank" rel="noreferrer">打开外部来源</a> : null}
+      {source.url ? <ExternalSourceLink href={source.url}>打开外部来源</ExternalSourceLink> : null}
     </article>
   );
 }

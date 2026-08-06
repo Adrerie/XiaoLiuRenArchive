@@ -5,6 +5,7 @@ import { runLocalDivination } from "./index";
 import { ExportPanel, StructuredDetails } from "./ResultTools";
 import { CALENDAR_POLICIES, listSupportedTimeZones, type CalendarPolicyId } from "../calendar";
 import { PrimaryNavigation, type AppView } from "../components/navigation/PrimaryNavigation";
+import { ExternalSourceLink } from "../components/knowledge/ExternalSourceLink";
 import KnowledgeLibraryPage from "../pages/knowledge/KnowledgeLibraryPage";
 import AboutPage from "../pages/about/AboutPage";
 import { getSources, listDomains, listStages, type KnowledgeDomain } from "../knowledge";
@@ -246,7 +247,7 @@ function ResultPanel({ result, structuredDetailsOpen, onStructuredDetailsOpenCha
         <section className="result-hero">
           <div>
             <span className="section-kicker">FINAL PALACE · {result.input.domainId}</span>
-            <h2>{palaceLabel(result.calculation.finalPalaceId)}</h2>
+            <h2 id="final-palace-result">{palaceLabel(result.calculation.finalPalaceId)}</h2>
             <p>传统计算、历法策略和解释片段均保留在本地结构化结果中。</p>
           </div>
           <div className="hero-tags">
@@ -284,16 +285,14 @@ function ResultPanel({ result, structuredDetailsOpen, onStructuredDetailsOpenCha
             </dl>
             <div className="source-list">
               {sources.map((source) => (
-                <a
-                  className="source-card"
-                  href={source.url ?? undefined}
-                  target={source.url ? "_blank" : undefined}
-                  rel={source.url ? "noreferrer" : undefined}
-                  key={source.id}
-                >
-                  <strong>{source.title}</strong>
-                  <span>{source.verificationStatus} · {source.id}</span>
-                </a>
+                source.url ? (
+                  <ExternalSourceLink className="source-card" href={source.url} key={source.id}>
+                    <strong>{source.title}</strong>
+                    <span>{source.verificationStatus} · {source.id}</span>
+                  </ExternalSourceLink>
+                ) : (
+                  <span className="source-card" key={source.id}><strong>{source.title}</strong><span>{source.verificationStatus} · {source.id}</span></span>
+                )
               ))}
             </div>
           </section>
@@ -440,7 +439,7 @@ export default function App(): ReactElement {
     <main className="app-shell">
       <header className="app-header">
         <div>
-          <span className="eyebrow">XiaoLiuRenArchive · R2 LOCAL KNOWLEDGE</span>
+          <span className="eyebrow">XiaoLiuRenArchive · BETA LOCAL KNOWLEDGE</span>
           <h1>小六壬档案</h1>
           <p className="lede">把输入、历法、传统计算、本地知识与现实边界放在同一条可复现路径上。</p>
         </div>
@@ -475,9 +474,9 @@ export default function App(): ReactElement {
           {form.inputMode === "manual_lunar" ? (
             <>
               <div className="form-grid three-columns">
-                <label>农历月<input inputMode="numeric" min="1" max="12" value={form.lunarMonth} onChange={(event) => update("lunarMonth", event.target.value)} /></label>
-                <label>农历日<input inputMode="numeric" min="1" max="30" value={form.lunarDay} onChange={(event) => update("lunarDay", event.target.value)} /></label>
-                <label>十二时辰<select value={form.branchIndex} onChange={(event) => update("branchIndex", Number(event.target.value))}>{BRANCHES.map((branch) => <option value={branch.index} key={branch.id}>{branch.label}</option>)}</select></label>
+                <label>农历月<input id="lunar-month-input" aria-label="农历月" inputMode="numeric" min="1" max="12" value={form.lunarMonth} onChange={(event) => update("lunarMonth", event.target.value)} /></label>
+                <label>农历日<input id="lunar-day-input" aria-label="农历日" inputMode="numeric" min="1" max="30" value={form.lunarDay} onChange={(event) => update("lunarDay", event.target.value)} /></label>
+                <label>十二时辰<select id="earthly-branch-select" aria-label="十二时辰" value={form.branchIndex} onChange={(event) => update("branchIndex", Number(event.target.value))}>{BRANCHES.map((branch) => <option value={branch.index} key={branch.id}>{branch.label}</option>)}</select></label>
               </div>
               <label className="checkbox-row"><input type="checkbox" checked={form.isLeapMonth} onChange={(event) => update("isLeapMonth", event.target.checked)} />这是闰月（沿用当前月份数字参与计算）</label>
             </>
@@ -510,7 +509,7 @@ export default function App(): ReactElement {
           </fieldset>
           <p className="privacy-note">隐私：此界面不要求问题原文；本地结果默认不保存问题文本，也不会调用远程服务。</p>
           {error && <div className="error-box" role="alert">{error}</div>}
-          <button className="primary-button" type="submit" disabled={busy}>{busy ? "正在本地计算…" : "生成可复现结果"}</button>
+          <button id="generate-result-button" className="primary-button" type="submit" disabled={busy}>{busy ? "正在本地计算…" : "生成可复现结果"}</button>
       </form>
       </section>
 

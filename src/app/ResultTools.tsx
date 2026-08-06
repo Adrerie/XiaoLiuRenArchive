@@ -1,6 +1,7 @@
 import { useMemo, useState, type ReactElement } from "react";
 import type { DivinationResult } from "../shared";
 import { serializeExportPayload } from "./result-export";
+import { copyExportJson, saveOrShareExportJson } from "../platform/export-result";
 
 function IdList({ values }: { readonly values: readonly string[] }): ReactElement {
   return <code>{values.length > 0 ? values.join(" · ") : "（无）"}</code>;
@@ -19,7 +20,7 @@ export function StructuredDetails({ result, open, onOpenChange }: StructuredDeta
     : "manual input";
   return (
     <section className="result-section structured-details">
-      <details open={open} onToggle={(event) => onOpenChange(event.currentTarget.open)}>
+      <details id="structured-details" open={open} onToggle={(event) => onOpenChange(event.currentTarget.open)}>
         <summary>结构化详情（技术 ID 默认折叠）</summary>
         <dl className="provenance-grid detail-grid">
           <dt>algorithmId</dt><dd><code>{result.calculation.algorithmId}</code></dd>
@@ -50,23 +51,13 @@ export function ExportPanel({ result }: { readonly result: DivinationResult }): 
   );
 
   async function copyJson(): Promise<void> {
-    try {
-      await navigator.clipboard.writeText(serialized);
-      setStatus("JSON 已复制到剪贴板。");
-    } catch {
-      setStatus("复制失败，请改用下载。");
-    }
+    const action = await copyExportJson(serialized);
+    setStatus(action.message);
   }
 
-  function downloadJson(): void {
-    const blob = new Blob([serialized], { type: "application/json;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "xiaoliuren-result.json";
-    link.click();
-    URL.revokeObjectURL(url);
-    setStatus("JSON 已下载到本地。");
+  async function saveOrShareJson(): Promise<void> {
+    const action = await saveOrShareExportJson(serialized);
+    setStatus(action.message);
   }
 
   return (
@@ -84,10 +75,10 @@ export function ExportPanel({ result }: { readonly result: DivinationResult }): 
         包含精确时间（仅在本次导出中）
       </label>
       <div className="export-actions">
-        <button type="button" className="secondary-button" onClick={() => void copyJson()}>复制 JSON</button>
-        <button type="button" className="secondary-button" onClick={downloadJson}>下载 .json</button>
+        <button id="copy-json-button" type="button" className="secondary-button" onClick={() => void copyJson()}>复制 JSON</button>
+        <button id="save-share-json-button" type="button" className="secondary-button" onClick={() => void saveOrShareJson()}>保存/分享 JSON</button>
       </div>
-      {status ? <p className="export-status" role="status">{status}</p> : null}
+      {status ? <p id="export-status" className="export-status" role="status">{status}</p> : null}
     </section>
   );
 }
