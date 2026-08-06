@@ -131,7 +131,7 @@ R3 不做账号、云同步、社区、PDF、PNG、正式商店发布、签名 r
 
 ## R4 Device Validation and Beta Hardening
 
-R4 正在实施：统一 `xiaoliurenarchive` / `0.4.0-beta.1` / Android versionCode `401` / `beta-debug`，增加 Android 原生隐私 JSON 导出、系统浏览器来源链接、无 INTERNET 权限与无备份配置、项目品牌资源、稳定设备选择器、离线设备 smoke 和设备 CI artifact。
+R4 实现已完成，当前 PR 收口：统一 `xiaoliurenarchive` / `0.4.0-beta.1` / Android versionCode `401` / `beta-debug`，包含 Android 原生隐私 JSON 导出、系统浏览器来源链接、无 INTERNET 权限与无备份配置、项目品牌资源、稳定设备选择器和离线实体设备 smoke。设备验证使用 USB 连接的真实 Android 平板，不创建模拟器、不切换网络或锁屏状态。
 
 ## Codex 开发入口
 

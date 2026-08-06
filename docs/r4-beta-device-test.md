@@ -1,48 +1,39 @@
-# R4 测试版设备验证
+# R4 实体 Android 设备验证
 
-本说明覆盖 `feature/r4-device-validation-beta-hardening` 的 `0.4.0-beta.1` / `beta-debug` 设备验证边界。应用保持 local-first：起课、知识、解释和 JSON 导出均在本地完成，不上传问题文本、身份字段或结果内容。
+本说明用于 `feature/r4-device-validation-beta-hardening` 的 `0.4.0-beta.1` 测试版。验证目标是通过 USB 连接的真实 Android 平板；本地 Web 资源、起课、知识、解释和 JSON 导出均保持 local-first。
 
-## GitHub Actions 验证
+## 使用已连接的平板
 
-在 PR 或手动触发 `Android beta device smoke` workflow。成功运行会生成两个短期 artifact：
+先确认平板已解锁，并在首次连接时允许 USB 调试。Windows PowerShell 可直接检查：
 
-- `xiaoliurenarchive-beta-debug-apk`：可安装的 unsigned debug APK，保留 7 天。
-- `xiaoliurenarchive-device-smoke-report`：设备 smoke 测试结果、logcat 和截图，保留 7 天。
-
-下载 APK 后可用以下命令安装到已连接的 Android 设备：
-
-```bash
-adb install -r app-debug.apk
+```powershell
+$androidSdkAdb = "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe"
+& $androidSdkAdb devices -l
 ```
 
-该 APK 仅用于测试，不是签名 release 包，也不代表已达到 Google Play 发布条件。
+设备状态必须是 `device`。如果是 `unauthorized`，请在平板上点“允许”。如果同时连接了多个设备，可先设置：
 
-## 本地构建与 smoke
+```powershell
+$env:ANDROID_SERIAL = "你的设备序列号"
+```
 
-```bash
+然后执行完整的本地真机流程：
+
+```powershell
 npm ci
-npm run validate:version
-npm run mobile:sync
-npm run mobile:build:debug
+npm run mobile:test:device
 ```
 
-有可用模拟器时，执行：
+该命令会构建并同步 Capacitor 资源、生成 Debug APK、安装到已授权的 USB 平板，然后运行 `connectedDebugAndroidTest`。它不会创建模拟器、安装模拟器系统镜像、唤醒或解锁设备，也不会切换 Wi-Fi、移动数据或飞行模式。
 
-```bash
-adb shell svc wifi disable
-adb shell svc data disable
-adb shell cmd connectivity airplane-mode enable
-adb install -r android/app/build/outputs/apk/debug/app-debug.apk
-cd android
-./gradlew connectedDebugAndroidTest --no-daemon
-```
+## 覆盖的用户流程
 
-Windows PowerShell 使用 `gradlew.bat` 替换 `./gradlew`。设备 smoke 使用稳定 DOM 选择器，不使用坐标点击；默认手动农历三月初五辰时应得到“小吉”，并覆盖资料库检索、系统返回键、复制 JSON、About 版本信息和 local-first 说明。
+真机 smoke 测试使用稳定 DOM 选择器覆盖：
 
-## 隐私与系统边界
+- 默认手动农历三月初五辰时起课，并验证“小吉”；
+- 知识库浏览、宫位卡片选择与详情；
+- 系统返回键回到首页；
+- 复制 JSON 后的剪贴板状态；
+- About 页面版本、构建渠道和测试版说明。
 
-- Android manifest 不声明 `INTERNET`，并关闭 cleartext traffic 与 Android backup。
-- 外部来源通过系统浏览器打开，不在 WebView 内导航或后台请求。
-- Android JSON 文件只写入应用 Cache，再调用系统分享面板；不申请公共存储权限。
-- 浏览器端继续使用 Clipboard API 和 Blob 下载；Android 端使用原生 Clipboard、Filesystem、Share 插件。
-- 分享取消或插件/系统失败会显示准确的状态，不把失败报告为成功。
+Debug APK 仅用于本地验证，不是签名 release 包，也不代表已达到 Google Play 发布条件。
