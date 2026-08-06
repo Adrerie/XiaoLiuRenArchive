@@ -8,32 +8,28 @@
 
 ## 当前状态
 
-R2 Calendar and Knowledge Expansion 已完成并推送到 feature 分支，PR 收尾中。
+R2 Calendar and Knowledge Expansion 已完成并合并到 `main`。
 
 当前已经具备：
 
 - React、TypeScript strict 与 Vite 本地 Web 工程
 - 手动农历与公历时间输入
+- 两种公历日期边界策略、IANA 时区和 fold 处理
 - 固定月、日、时起课算法和完整 trace
 - 本地六宫、领域、阶段、来源和异文知识
 - 解释组合与伦理过滤
 - 普通、hard-block 与 hard-stop 结构化结果
-- 输出 Schema 测试
-- 移动端与桌面端界面
-- 本地构建、核心测试和关键交互验证
-- 知识包 manifest、迁移记录和规则/来源版本追踪
-- 完整 provenance、disputed 字段与最终展示片段聚合
-- 两种公历边界策略、本地 IANA 时区搜索和 fold 错误提示
-- 移动端优先六宫资料库、搜索、详情、异文与来源卡
+- 知识包 manifest、迁移记录和失败闭合版本校验
+- 完整 provenance、disputed 字段与展示片段聚合
+- 六宫资料库、本地搜索、详情、异文和来源卡
 - 结构化结果详情和隐私优先 JSON 复制/下载
+- 移动端与桌面端关键交互验证
 
-下一阶段为 R2 Calendar and Knowledge Expansion。执行计划：
+下一阶段为 R3 Mobile Packaging，合并处理 R2 来源状态技术债、Capacitor Android、离线资源和发布审计。执行计划：
 
 ```text
-codex/r2-calendar-knowledge-expansion-plan.md
+codex/r3-mobile-packaging-release-plan.md
 ```
-
-本轮已完成知识版本与来源追踪收口、公历策略增强、六宫资料库、结构化详情和隐私优先 JSON 导出。
 
 ## 执行优先
 
@@ -62,7 +58,7 @@ Ethics Rule Engine
   ↓
 DivinationResult
   ↓
-本地 Web UI
+本地 Web / Android UI
 ```
 
 ### 冻结算法
@@ -94,9 +90,7 @@ hourIndex = (dayIndex + earthlyBranchIndex - 1) mod 6
 
 ## R2 Calendar and Knowledge Expansion
 
-PR #9 review fixes keep the frozen palace calculation unchanged while adding adapter-reported calendar day offsets, calendar-boundary trace details, strict input-mode/policy checks, project-editorial provenance for modern knowledge, and fail-closed manifest validation through `npm run validate:knowledge`.
-
-本轮实现：
+R2 已完成：
 
 1. 知识包版本与迁移记录
 2. 全部展示区块的 provenance 聚合
@@ -104,8 +98,22 @@ PR #9 review fixes keep the frozen palace calculation unchanged while adding ada
 4. 六宫资料库、搜索、详情、异文和来源
 5. 结构化结果详情
 6. 隐私优先的本地 JSON 复制与下载
+7. 23:00 子初换日真实偏移追踪
+8. 现代解释与传统资料的来源分离
+9. manifest 与知识文件版本的一致性校验
 
-本轮不做 Android、账号、云同步、社区、PDF、PNG、完整设置中心或生成式 AI 解释。
+## R3 Mobile Packaging
+
+R3 计划完成：
+
+1. 修正 `provisionalSourceIds` 状态分类
+2. Capacitor Android 工程与本地资源同步
+3. Android 安全区、系统返回键和离线闭环
+4. 运行时网络审计
+5. GitHub CI 独立验证
+6. debug APK 构建或明确工具链阻塞报告
+
+R3 不做账号、云同步、社区、PDF、PNG、正式商店发布、签名 release 包或生成式 AI 解释。
 
 ## Codex 开发入口
 
@@ -115,31 +123,32 @@ PR #9 review fixes keep the frozen palace calculation unchanged while adding ada
 2. `AGENTS.md`
 3. `CODEX_MASTER_PROMPT.md`
 4. `codex/execution-first-policy.md`
-5. `codex/r2-calendar-knowledge-expansion-plan.md`
+5. `codex/r3-mobile-packaging-release-plan.md`
 
-随后按计划分配小范围、互不重叠的子任务。只有主代理操作 Git，并持续负责应用导航、provenance、导出和整合。
+随后按计划执行。只有主代理操作 Git，并持续负责 Capacitor、Android、CI、构建、应用接线和 PR 收尾。
 
-## R2 必要验收
+## R3 必要验收
 
+- `npm run validate:knowledge` 成功
+- `npm run audit:network` 成功
 - `npm run typecheck` 成功
 - `npm run build` 成功
-- `npm test` 成功
-- R1 手动农历主流程无回归
-- 公历模式可明确选择两种策略
-- 资料库可搜索并查看小吉五行异文与来源
-- provenance 覆盖最终展示来源和 disputed 字段
-- JSON 默认导出不包含问题文本和精确时间
-- hard-stop 仍以现实行动为首要内容
-- 移动端与桌面端保留少量代表性截图
+- `npm test`、`npm run test:core`、`npm run test:ethics` 成功
+- Capacitor Android 工程可完成资源同步
+- 本机工具链可用时 debug APK 构建成功
+- 手动农历、公历、hard-block、hard-stop 和资料库无回归
+- Android 核心流程离线可用
+- CI 提供独立可见的验证状态
 
 ## 仓库入口
 
-- `src/`：R1 Web 工程、历法、算法、知识、伦理、服务与界面
+- `src/`：Web 工程、历法、算法、知识、伦理、服务与界面
+- `android/`：R3 Android 容器，实施后加入
 - `algorithm/`：传统计算、解释与伦理合同
 - `knowledge/`：结构化知识、规则和 Schema
 - `fixtures/`：黄金与伦理案例
-- `docs/`：产品、UI、来源和历史决策
+- `docs/`：产品、UI、来源、构建和历史决策
 - `codex/`：执行计划与子代理任务书
-- `scripts/`：知识校验脚本规范
+- `scripts/`：知识校验与发布审计脚本
 
-本项目当前处于 **R2 已完成，PR 待审阅** 阶段。
+本项目当前处于 **R2 已完成，R3 待执行** 阶段。
