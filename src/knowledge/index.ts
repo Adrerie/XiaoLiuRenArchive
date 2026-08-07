@@ -37,7 +37,13 @@ export interface KnowledgeDomain {
   readonly description: string;
   readonly sourceIds: readonly string[];
   readonly stages: readonly string[];
+  readonly stageOptions: readonly KnowledgeStage[];
   readonly palaceInterpretations: Readonly<Record<string, DomainPalaceInterpretation>>;
+}
+
+export interface KnowledgeStage {
+  readonly id: string;
+  readonly label: string;
 }
 
 export interface DomainPalaceInterpretation {
@@ -200,6 +206,32 @@ function arrayValue(input: unknown, label: string): readonly unknown[] {
 
 function stringArray(input: unknown, label: string): readonly string[] {
   return arrayValue(input, label).map((item, index) => stringValue(item, `${label}[${index}]`));
+}
+
+function stageOptions(input: unknown, label: string, stageIds: readonly string[]): readonly KnowledgeStage[] {
+  const options = arrayValue(input, label).map((item, index) => {
+    const option = record(item, `${label}[${index}]`);
+    const id = stringValue(value(option, "id", `${label}[${index}]`), `${label}[${index}].id`);
+    const stageLabel = stringValue(value(option, "label", `${label}[${index}]`), `${label}[${index}].label`);
+    if (!/[\u3400-\u9fff]/u.test(stageLabel)) {
+      throw new KnowledgeError(
+        "KNOWLEDGE_INTEGRITY_ERROR",
+        `${label}[${index}].label must contain a Chinese label`,
+      );
+    }
+    return { id, label: stageLabel };
+  });
+  const ids = new Set<string>();
+  for (const option of options) {
+    if (ids.has(option.id)) {
+      throw new KnowledgeError("KNOWLEDGE_INTEGRITY_ERROR", `${label} contains duplicate stage id ${option.id}`);
+    }
+    ids.add(option.id);
+  }
+  if (ids.size !== stageIds.length || stageIds.some((stageId) => !ids.has(stageId))) {
+    throw new KnowledgeError("KNOWLEDGE_INTEGRITY_ERROR", `${label} must label each declared stage exactly once`);
+  }
+  return options;
 }
 
 function palaceId(input: unknown, label: string): PalaceId {
@@ -419,12 +451,22 @@ function parseRegistry(): KnowledgeRegistry {
         tags: interpretation.tags === undefined ? [] : stringArray(interpretation.tags, `domain ${id}.${palace}.tags`),
       };
     }
+    const stageIds = domain.stages === undefined ? [] : stringArray(domain.stages, `domain ${id}.stages`);
+    if (new Set(stageIds).size !== stageIds.length) {
+      throw new KnowledgeError("KNOWLEDGE_INTEGRITY_ERROR", `domain ${id}.stages contains duplicate stage ids`);
+    }
+    const parsedStageOptions = stageOptions(
+      value(domain, "stageOptions", `domain ${id}`),
+      `domain ${id}.stageOptions`,
+      stageIds,
+    );
     domainMap.set(id, {
       id,
       name: stringValue(value(domain, "name", `domain ${id}`), `domain ${id}.name`),
       description: stringValue(value(domain, "description", `domain ${id}`), `domain ${id}.description`),
       sourceIds,
-      stages: domain.stages === undefined ? [] : stringArray(domain.stages, `domain ${id}.stages`),
+      stages: stageIds,
+      stageOptions: parsedStageOptions,
       palaceInterpretations: parsedInterpretations,
     });
   }
@@ -543,6 +585,12 @@ export function listStages(domainId: string): readonly string[] {
   const domain = registry.domains.get(domainId);
   if (!domain) throw new KnowledgeError("KNOWLEDGE_INTEGRITY_ERROR", `Unknown domain: ${domainId}`);
   return domain.stages;
+}
+
+export function listStageOptions(domainId: string): readonly KnowledgeStage[] {
+  const domain = registry.domains.get(domainId);
+  if (!domain) throw new KnowledgeError("KNOWLEDGE_INTEGRITY_ERROR", `Unknown domain: ${domainId}`);
+  return domain.stageOptions;
 }
 
 export function getDomainInterpretation(domainId: string, palaceId: PalaceId): DomainPalaceInterpretation {

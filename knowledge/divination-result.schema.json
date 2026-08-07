@@ -4,16 +4,13 @@
   "title": "XiaoLiuRen Divination Result",
   "type": "object",
   "additionalProperties": false,
-  "required": ["resultVersion", "input", "calendar", "calculation", "interpretation", "ethics", "provenance"],
+  "required": ["resultVersion", "casting", "input", "calendar", "calculation", "interpretation", "ethics", "provenance"],
   "properties": {
-    "resultVersion": {"const": "1.1.0"},
-    "createdAt": {
-      "type": ["string", "null"],
-      "format": "date-time",
-      "description": "可选展示元数据，不参与结果确定性比较。"
-    },
+    "resultVersion": {"const": "1.2.0"},
+    "createdAt": {"type": ["string", "null"], "format": "date-time"},
+    "casting": {"$ref": "#/$defs/casting"},
     "input": {"$ref": "#/$defs/input"},
-    "calendar": {"$ref": "#/$defs/calendar"},
+    "calendar": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/calendar"}]},
     "calculation": {"$ref": "#/$defs/calculation"},
     "interpretation": {"$ref": "#/$defs/interpretation"},
     "ethics": {"$ref": "#/$defs/ethics"},
@@ -24,34 +21,47 @@
     "branch": {"enum": ["zi", "chou", "yin", "mao", "chen", "si", "wu", "wei", "shen", "you", "xu", "hai"]},
     "stringArray": {"type": "array", "items": {"type": "string"}},
     "uniqueStringArray": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
-    "input": {
+    "threeNumbers": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "inputMode",
-        "timezone",
-        "lunarMonth",
-        "lunarDay",
-        "isLeapMonth",
-        "earthlyBranch",
-        "earthlyBranchIndex",
-        "domainId",
-        "stageId",
-        "questionFlags",
-        "privacy"
-      ],
+      "required": ["kind", "first", "second", "third"],
       "properties": {
-        "inputMode": {"enum": ["civil_datetime", "manual_lunar"]},
-        "timezone": {"type": ["string", "null"]},
-        "localDateTime": {
-          "type": ["string", "null"],
-          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2})?$"
+        "kind": {"const": "three_numbers"},
+        "first": {"type": "integer", "minimum": 1},
+        "second": {"type": "integer", "minimum": 1},
+        "third": {"type": "integer", "minimum": 1}
+      }
+    },
+    "casting": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "inputMode", "calendarPolicyId"],
+          "properties": {
+            "kind": {"const": "calendar"},
+            "inputMode": {"enum": ["civil_datetime", "manual_lunar"]},
+            "calendarPolicyId": {"type": "string", "minLength": 1}
+          }
         },
-        "lunarMonth": {"type": "integer", "minimum": 1, "maximum": 12},
-        "lunarDay": {"type": "integer", "minimum": 1, "maximum": 30},
-        "isLeapMonth": {"type": "boolean"},
-        "earthlyBranch": {"$ref": "#/$defs/branch"},
-        "earthlyBranchIndex": {"type": "integer", "minimum": 1, "maximum": 12},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "algorithmId", "input"],
+          "properties": {
+            "kind": {"const": "three_numbers"},
+            "algorithmId": {"const": "three-number-sequential-count-v1"},
+            "input": {"$ref": "#/$defs/threeNumbers"}
+          }
+        }
+      ]
+    },
+    "inputContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["timezone", "domainId", "stageId", "questionFlags", "privacy"],
+      "properties": {
+        "timezone": {"type": ["string", "null"]},
         "domainId": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
         "stageId": {"type": ["string", "null"]},
         "questionFlags": {"$ref": "#/$defs/uniqueStringArray"},
@@ -64,6 +74,53 @@
             "questionTextIncludedInExport": {"type": "boolean"}
           }
         }
+      }
+    },
+    "input": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "inputMode", "timezone", "localDateTime", "lunarMonth", "lunarDay", "isLeapMonth", "earthlyBranch", "earthlyBranchIndex", "domainId", "stageId", "questionFlags", "privacy"],
+          "properties": {
+            "kind": {"const": "calendar"},
+            "inputMode": {"enum": ["civil_datetime", "manual_lunar"]},
+            "timezone": {"type": ["string", "null"]},
+            "localDateTime": {"type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2})?$"},
+            "lunarMonth": {"type": "integer", "minimum": 1, "maximum": 12},
+            "lunarDay": {"type": "integer", "minimum": 1, "maximum": 30},
+            "isLeapMonth": {"type": "boolean"},
+            "earthlyBranch": {"$ref": "#/$defs/branch"},
+            "earthlyBranchIndex": {"type": "integer", "minimum": 1, "maximum": 12},
+            "domainId": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+            "stageId": {"type": ["string", "null"]},
+            "questionFlags": {"$ref": "#/$defs/uniqueStringArray"},
+            "privacy": {"$ref": "#/$defs/privacy"}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "numbers", "timezone", "domainId", "stageId", "questionFlags", "privacy"],
+          "properties": {
+            "kind": {"const": "three_numbers"},
+            "numbers": {"$ref": "#/$defs/threeNumbers"},
+            "timezone": {"type": ["string", "null"]},
+            "domainId": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+            "stageId": {"type": ["string", "null"]},
+            "questionFlags": {"$ref": "#/$defs/uniqueStringArray"},
+            "privacy": {"$ref": "#/$defs/privacy"}
+          }
+        }
+      ]
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["questionTextStored", "questionTextIncludedInExport"],
+      "properties": {
+        "questionTextStored": {"type": "boolean"},
+        "questionTextIncludedInExport": {"type": "boolean"}
       }
     },
     "calendar": {
@@ -101,7 +158,7 @@
         "warnings": {"$ref": "#/$defs/stringArray"}
       }
     },
-    "trace": {
+    "traditionalTrace": {
       "type": "object",
       "additionalProperties": false,
       "required": ["stage", "startPalaceId", "countValue", "offset", "resultIndex", "resultPalaceId", "formula"],
@@ -115,43 +172,69 @@
         "formula": {"type": "string", "minLength": 1}
       }
     },
-    "calculation": {
+    "threeNumberTrace": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["algorithmId", "algorithmStatus", "palaceOrder", "monthIndex", "dayIndex", "hourIndex", "monthPalaceId", "dayPalaceId", "finalPalaceId", "trace"],
+      "required": ["stage", "startPalaceId", "countValue", "normalizedOffset", "resultIndex", "resultPalaceId", "formula"],
       "properties": {
-        "algorithmId": {"const": "traditional-month-day-hour-v1"},
-        "algorithmStatus": {"enum": ["FROZEN-PROVISIONAL", "FROZEN-REVIEWED"]},
-        "palaceOrder": {
-          "type": "array",
-          "prefixItems": [
-            {"const": "da_an"},
-            {"const": "liu_lian"},
-            {"const": "su_xi"},
-            {"const": "chi_kou"},
-            {"const": "xiao_ji"},
-            {"const": "kong_wang"}
-          ],
-          "items": false
-        },
-        "monthIndex": {"type": "integer", "minimum": 0, "maximum": 5},
-        "dayIndex": {"type": "integer", "minimum": 0, "maximum": 5},
-        "hourIndex": {"type": "integer", "minimum": 0, "maximum": 5},
-        "monthPalaceId": {"$ref": "#/$defs/palaceId"},
-        "dayPalaceId": {"$ref": "#/$defs/palaceId"},
-        "finalPalaceId": {"$ref": "#/$defs/palaceId"},
-        "trace": {
-          "type": "array",
-          "minItems": 3,
-          "maxItems": 3,
-          "prefixItems": [
-            {"allOf": [{"$ref": "#/$defs/trace"}, {"properties": {"stage": {"const": "month"}}}]},
-            {"allOf": [{"$ref": "#/$defs/trace"}, {"properties": {"stage": {"const": "day"}}}]},
-            {"allOf": [{"$ref": "#/$defs/trace"}, {"properties": {"stage": {"const": "hour"}}}]}
-          ],
-          "items": false
-        }
+        "stage": {"enum": ["first_number", "second_number", "third_number"]},
+        "startPalaceId": {"$ref": "#/$defs/palaceId"},
+        "countValue": {"type": "integer", "minimum": 1},
+        "normalizedOffset": {"type": "integer", "minimum": 0, "maximum": 5},
+        "resultIndex": {"type": "integer", "minimum": 0, "maximum": 5},
+        "resultPalaceId": {"$ref": "#/$defs/palaceId"},
+        "formula": {"type": "string", "minLength": 1}
       }
+    },
+    "calculation": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["algorithmId", "algorithmStatus", "palaceOrder", "monthIndex", "dayIndex", "hourIndex", "monthPalaceId", "dayPalaceId", "finalPalaceId", "trace"],
+          "properties": {
+            "algorithmId": {"const": "traditional-month-day-hour-v1"},
+            "algorithmStatus": {"enum": ["FROZEN-PROVISIONAL", "FROZEN-REVIEWED"]},
+            "palaceOrder": {"$ref": "#/$defs/palaceOrder"},
+            "monthIndex": {"type": "integer", "minimum": 0, "maximum": 5},
+            "dayIndex": {"type": "integer", "minimum": 0, "maximum": 5},
+            "hourIndex": {"type": "integer", "minimum": 0, "maximum": 5},
+            "monthPalaceId": {"$ref": "#/$defs/palaceId"},
+            "dayPalaceId": {"$ref": "#/$defs/palaceId"},
+            "finalPalaceId": {"$ref": "#/$defs/palaceId"},
+            "trace": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"$ref": "#/$defs/traditionalTrace"}}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["algorithmId", "algorithmStatus", "palaceOrder", "firstIndex", "secondIndex", "thirdIndex", "finalPalaceId", "trace"],
+          "properties": {
+            "algorithmId": {"const": "three-number-sequential-count-v1"},
+            "algorithmStatus": {"const": "FROZEN-PROVISIONAL"},
+            "palaceOrder": {"$ref": "#/$defs/palaceOrder"},
+            "firstIndex": {"type": "integer", "minimum": 0, "maximum": 5},
+            "secondIndex": {"type": "integer", "minimum": 0, "maximum": 5},
+            "thirdIndex": {"type": "integer", "minimum": 0, "maximum": 5},
+            "finalPalaceId": {"$ref": "#/$defs/palaceId"},
+            "trace": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"$ref": "#/$defs/threeNumberTrace"}}
+          }
+        }
+      ]
+    },
+    "palaceOrder": {
+      "type": "array",
+      "prefixItems": [
+        {"const": "da_an"},
+        {"const": "liu_lian"},
+        {"const": "su_xi"},
+        {"const": "chi_kou"},
+        {"const": "xiao_ji"},
+        {"const": "kong_wang"}
+      ],
+      "items": false,
+      "minItems": 6,
+      "maxItems": 6
     },
     "contentBlock": {
       "type": "object",
@@ -208,25 +291,7 @@
     "ethics": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "mode",
-        "evaluatedRuleIds",
-        "triggeredRuleIds",
-        "retainedClaimIds",
-        "suppressedClaims",
-        "retainedFragmentIds",
-        "blockedFragmentIds",
-        "forcedConclusionCodes",
-        "requiredNotices",
-        "requiredRealityActionCodes",
-        "contextCodes",
-        "allowedTopics",
-        "forbiddenActionTypes",
-        "preferredTerms",
-        "forbiddenTerms",
-        "stopPrimaryDivination",
-        "trace"
-      ],
+      "required": ["mode", "evaluatedRuleIds", "triggeredRuleIds", "retainedClaimIds", "suppressedClaims", "retainedFragmentIds", "blockedFragmentIds", "forcedConclusionCodes", "requiredNotices", "requiredRealityActionCodes", "contextCodes", "allowedTopics", "forbiddenActionTypes", "preferredTerms", "forbiddenTerms", "stopPrimaryDivination", "trace"],
       "properties": {
         "mode": {"enum": ["allow", "allow_with_constraints", "hard_block", "hard_stop"]},
         "evaluatedRuleIds": {"$ref": "#/$defs/uniqueStringArray"},
@@ -258,8 +323,8 @@
         "sourceIds": {"$ref": "#/$defs/uniqueStringArray"},
         "provisionalSourceIds": {"$ref": "#/$defs/uniqueStringArray"},
         "disputedFieldIds": {"$ref": "#/$defs/uniqueStringArray"},
-        "calendarPolicyId": {"type": "string"},
-        "algorithmId": {"const": "traditional-month-day-hour-v1"},
+        "calendarPolicyId": {"type": ["string", "null"]},
+        "algorithmId": {"enum": ["traditional-month-day-hour-v1", "three-number-sequential-count-v1"]},
         "fragmentIds": {"$ref": "#/$defs/uniqueStringArray"},
         "ethicsRuleIds": {"$ref": "#/$defs/uniqueStringArray"}
       }

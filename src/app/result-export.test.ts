@@ -5,14 +5,17 @@ import { createExportPayload, serializeExportPayload } from "./result-export";
 
 function request(overrides: Partial<DivinationRequest> = {}): DivinationRequest {
   return {
-    requestVersion: "1.0.0",
-    inputMode: "civil_datetime",
-    calendarPolicyId: "civil-midnight-reuse-leap-month",
-    timeInput: {
-      kind: "civil_datetime",
-      localDateTime: "2024-02-10T12:00",
-      timezone: "Asia/Shanghai",
-      fold: null,
+    requestVersion: "1.1.0",
+    casting: {
+      kind: "calendar",
+      inputMode: "civil_datetime",
+      calendarPolicyId: "civil-midnight-reuse-leap-month",
+      timeInput: {
+        kind: "civil_datetime",
+        localDateTime: "2024-02-10T12:00",
+        timezone: "Asia/Shanghai",
+        fold: null,
+      },
     },
     questionContext: {
       domainId: "relationship",
@@ -31,8 +34,8 @@ describe("local JSON export", () => {
     const exported = createExportPayload(result);
     const serialized = serializeExportPayload(result);
 
-    expect(exported.input.localDateTime).toBeNull();
-    expect(exported.calendar.localDateTime).toBeNull();
+    expect(exported.input.kind === "calendar" ? exported.input.localDateTime : "unexpected").toBeNull();
+    expect(exported.calendar?.localDateTime).toBeNull();
     expect(exported.input.privacy.questionTextIncludedInExport).toBe(false);
     expect(exported.calculation.trace).toEqual(result.calculation.trace);
     expect(exported.provenance).toEqual(result.provenance);
@@ -44,22 +47,27 @@ describe("local JSON export", () => {
     const result = await runLocalDivination(request());
     const exported = createExportPayload(result, { includePreciseTime: true });
 
-    expect(exported.input.localDateTime).toBe("2024-02-10T12:00:00");
-    expect(exported.calendar.localDateTime).toBe("2024-02-10T12:00:00");
+    expect(exported.input.kind === "calendar" ? exported.input.localDateTime : "unexpected").toBe("2024-02-10T12:00:00");
+    expect(exported.calendar?.localDateTime).toBe("2024-02-10T12:00:00");
     expect(exported.input.privacy.questionTextIncludedInExport).toBe(false);
   });
 
   it("preserves the adapter boundary offset and trace in local JSON", async () => {
     const result = await runLocalDivination(request({
-      calendarPolicyId: "zi-hour-23-reuse-leap-month",
-      timeInput: {
-        kind: "civil_datetime",
-        localDateTime: "2024-02-09T23:00",
-        timezone: "Asia/Shanghai",
-        fold: null,
+      casting: {
+        kind: "calendar",
+        inputMode: "civil_datetime",
+        calendarPolicyId: "zi-hour-23-reuse-leap-month",
+        timeInput: {
+          kind: "civil_datetime",
+          localDateTime: "2024-02-09T23:00",
+          timezone: "Asia/Shanghai",
+          fold: null,
+        },
       },
     }));
     const exported = createExportPayload(result);
+    if (exported.calendar === null || result.calendar === null) throw new Error("Calendar result missing");
     const boundaryTrace = exported.calendar.trace.find((entry) => entry.stage === "calendar-boundary");
 
     expect(exported.calendar.boundaryDecision.appliedDayOffset).toBe(1);
@@ -72,7 +80,19 @@ describe("local JSON export", () => {
     expect(exported.calendar.trace.map((entry) => entry.stage)).toEqual(result.calendar.trace.map((entry) => entry.stage));
 
     const precise = createExportPayload(result, { includePreciseTime: true });
-    expect(precise.calendar.trace).toEqual(result.calendar.trace);
+    expect(precise.calendar?.trace).toEqual(result.calendar.trace);
+  });
+
+  it("exports three-number results without a calendar section", async () => {
+    const result = await runLocalDivination(request({
+      casting: { kind: "three_numbers", input: { kind: "three_numbers", first: 3, second: 5, third: 5 } },
+    }));
+    const exported = createExportPayload(result, { includePreciseTime: true });
+
+    expect(exported.calendar).toBeNull();
+    expect(exported.input.kind).toBe("three_numbers");
+    expect(exported.provenance.calendarPolicyId).toBeNull();
+    expect(JSON.stringify(exported)).not.toContain("lunarMonth");
   });
 
   it.each([

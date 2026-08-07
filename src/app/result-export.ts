@@ -9,25 +9,36 @@ export function createExportPayload(
   options: ExportOptions = {},
 ): DivinationResult {
   const includePreciseTime = options.includePreciseTime === true;
-  const calendarTrace = result.calendar.trace.map((entry) => entry.stage === "calendar-boundary" && !includePreciseTime
-    ? { ...entry, inputLocalDateTime: null, lunarConversionLocalDateTime: null }
-    : entry);
+  const calendar = result.calendar === null
+    ? null
+    : {
+        ...result.calendar,
+        localDateTime: includePreciseTime ? result.calendar.localDateTime ?? null : null,
+        trace: result.calendar.trace.map((entry) => entry.stage === "calendar-boundary" && !includePreciseTime
+          ? { ...entry, inputLocalDateTime: null, lunarConversionLocalDateTime: null }
+          : entry),
+      };
   return {
     ...result,
-    input: {
-      ...result.input,
-      localDateTime: includePreciseTime ? result.input.localDateTime ?? null : null,
-      privacy: {
-        ...result.input.privacy,
-        questionTextStored: false,
-        questionTextIncludedInExport: false,
-      },
-    },
-    calendar: {
-      ...result.calendar,
-      localDateTime: includePreciseTime ? result.calendar.localDateTime ?? null : null,
-      trace: calendarTrace,
-    },
+    input: result.input.kind === "calendar"
+      ? {
+          ...result.input,
+          localDateTime: includePreciseTime ? result.input.localDateTime : null,
+          privacy: {
+            ...result.input.privacy,
+            questionTextStored: false,
+            questionTextIncludedInExport: false,
+          },
+        }
+      : {
+          ...result.input,
+          privacy: {
+            ...result.input.privacy,
+            questionTextStored: false,
+            questionTextIncludedInExport: false,
+          },
+        },
+    calendar,
   };
 }
 

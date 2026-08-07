@@ -6,6 +6,8 @@ import {
   getPalace,
   getSources,
   isProvisionalSource,
+  listDomains,
+  listStageOptions,
   listPalaces,
   searchPalaces,
 } from "./index";
@@ -40,9 +42,9 @@ describe("local knowledge selectors", () => {
 
   it("returns manifest versions and context source coverage", () => {
     const manifest = getKnowledgeManifest();
-    expect(manifest.bundleVersion).toBe("2.1.0");
+    expect(manifest.bundleVersion).toBe("2.2.0");
     expect(manifest.palacesVersion).toBe("1.0.0-provisional.2");
-    expect(manifest.questionDomainsVersion).toBe("1.0.0-provisional.3");
+    expect(manifest.questionDomainsVersion).toBe("1.0.0-provisional.4");
     expect(manifest.interpretationFragmentsVersion).toBe("1.0.0-provisional.2");
     expect(manifest.sourceRegistryVersion).toBe("1.0.0-provisional.1");
     expect(getEthicsRulesVersion()).toBe("1.0.0-provisional.3");
@@ -60,5 +62,20 @@ describe("local knowledge selectors", () => {
     expect(isProvisionalSource(sourceById(sources, "yuxiaji-liuren-shike-web-transcription-8s8s"))).toBe(true);
     expect(isProvisionalSource(sourceById(sources, "moe-revised-dictionary-xiaoliuren"))).toBe(false);
     expect(isProvisionalSource(sourceById(sources, "xiaoliurenarchive-editorial-modern-knowledge-v1"))).toBe(false);
+  });
+
+  it("exposes Chinese stage labels with fail-closed domain coverage", () => {
+    const relationshipStages = listStageOptions("relationship");
+    expect(relationshipStages).toEqual([
+      { id: "seeking", label: "寻找关系" },
+      { id: "new_acquaintance", label: "初识" },
+      { id: "ambiguous", label: "暧昧或关系未明" },
+      { id: "dating", label: "约会与交往" },
+      { id: "committed", label: "稳定承诺关系" },
+      { id: "separated", label: "已经分开" },
+      { id: "reconciliation", label: "考虑复合" },
+    ]);
+    expect(listDomains().every((domain) => domain.stages.length === domain.stageOptions.length)).toBe(true);
+    expect(listStageOptions("study_exam")).toEqual([]);
   });
 });
