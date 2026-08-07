@@ -6,6 +6,14 @@
 
 > 术数计算遵循传统，文本解释区分古今，产品设计服从现代伦理。
 
+## 开源许可
+
+本项目源码以 GNU Affero General Public License v3.0 only（SPDX：`AGPL-3.0-only`）发布。完整条款见 [LICENSE](LICENSE)。
+
+Copyright (C) 2026 Adrerie。
+
+第三方依赖、素材、传统文本和知识条目的版权、来源与许可证仍以各自声明为准，不因本项目采用 AGPL 自动转为 AGPL。发布衍生版本时，请保留相应的版权、来源和许可证信息。
+
 ## 当前状态
 
 R2 Calendar and Knowledge Expansion 已完成并合并到 `main`。
