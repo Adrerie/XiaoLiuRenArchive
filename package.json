@@ -2,6 +2,7 @@
   "name": "xiaoliurenarchive",
   "private": true,
   "version": "0.6.0-beta.1",
+  "license": "AGPL-3.0-only",
   "type": "module",
   "scripts": {
     "dev": "vite",
