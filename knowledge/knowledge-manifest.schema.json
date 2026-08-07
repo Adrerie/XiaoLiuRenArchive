@@ -14,7 +14,9 @@
     "interpretationFragmentsVersion",
     "sourceRegistryVersion",
     "ethicsRulesVersion",
-    "safetyMessagesVersion"
+    "safetyMessagesVersion",
+    "castingMethodsVersion",
+    "relationshipCurrentStateVersion"
   ],
   "properties": {
     "$schema": {"type": "string", "format": "uri"},
@@ -26,6 +28,8 @@
     "interpretationFragmentsVersion": {"type": "string", "minLength": 1},
     "sourceRegistryVersion": {"type": "string", "minLength": 1},
     "ethicsRulesVersion": {"type": "string", "minLength": 1},
-    "safetyMessagesVersion": {"type": "string", "minLength": 1}
+    "safetyMessagesVersion": {"type": "string", "minLength": 1},
+    "castingMethodsVersion": {"type": "string", "minLength": 1},
+    "relationshipCurrentStateVersion": {"type": "string", "minLength": 1}
   }
 }

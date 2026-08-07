@@ -112,7 +112,7 @@ export function createDivinationService(
       }) ?? { interpretation, ethics };
 
       return {
-        resultVersion: "1.2.0",
+        resultVersion: "1.3.0",
         createdAt: null,
         casting: resolved.casting,
         input: resolved.input,

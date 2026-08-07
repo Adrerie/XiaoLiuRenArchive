@@ -1,36 +1,40 @@
 # 09 输出合同
 
-Version: `1.1.0`
+Version: `1.3.0`
 
-## 1. 目标
+## 1. 目的
 
-输出合同保证排盘结果不是一段不可审计的文案，而是由输入摘要、历法解析、传统计算、知识解释、伦理规则和来源追踪共同组成的结构化记录。Web、导出、Android 与未来其他客户端必须消费同一合同。
+`DivinationResult` 是 Web、Android、归档和 JSON 导出共同消费的本地结构化合同。它保留输入摘要、历法解析、固定算法、知识解释、伦理结果和来源追踪；客户端不得把自由生成的断语混入正式结果。
 
-正式运行时以 `knowledge/divination-result.schema.json` 为机器可验证规范，本文件解释其语义。
+机器可验证的字段以 `src/shared/types/divination.ts` 和知识清单为准。
 
 ## 2. 顶层结构
 
 ```ts
 interface DivinationResult {
-  resultVersion: '1.1.0';
-  createdAt?: string | null;
-  input: SanitizedInputSummary;
-  calendar: CalendarResolution;
-  calculation: TraditionalCalculation;
+  resultVersion: '1.3.0';
+  createdAt: string | null;
+  casting: CastingSummary;
+  input: CalendarResultInput | ThreeNumberResultInput;
+  calendar: CalendarResult | null;
+  calculation: TraditionalCalculationResult | ThreeNumberCalculationResult;
   interpretation: InterpretationResult;
-  ethics: EthicsEvaluationResult;
+  ethics: EthicsResult;
   provenance: Provenance;
 }
 ```
 
-`createdAt` 是可选展示元数据，不参与确定性比较。相同请求、知识版本和规则版本的确定性要求针对其他语义字段。
+`calendar` 在三数起课时为 `null`。三数起课使用 `casting.kind = 'three_numbers'` 和 `input.kind = 'three_numbers'`，不得伪装为农历月、日、时。
 
-## 3. 输入摘要
-
-输出不回显完整请求对象，而是保存经过隐私处理的摘要。
+## 3. 起课与输入
 
 ```ts
-interface SanitizedInputSummary {
+type CastingSummary =
+  | { kind: 'calendar'; inputMode: 'civil_datetime' | 'manual_lunar'; calendarPolicyId: string }
+  | { kind: 'three_numbers'; algorithmId: 'three-number-sequential-count-v1'; input: ThreeNumberInput };
+
+interface CalendarResultInput {
+  kind: 'calendar';
   inputMode: 'civil_datetime' | 'manual_lunar';
   timezone: string | null;
   localDateTime: string | null;
@@ -42,84 +46,40 @@ interface SanitizedInputSummary {
   domainId: string;
   stageId: string | null;
   questionFlags: string[];
-  privacy: {
-    questionTextStored: boolean;
-    questionTextIncludedInExport: boolean;
-  };
+  privacy: { questionTextStored: boolean; questionTextIncludedInExport: boolean };
+}
+
+interface ThreeNumberResultInput {
+  kind: 'three_numbers';
+  numbers: { kind: 'three_numbers'; first: string; second: string; third: string };
+  timezone: null;
+  domainId: string;
+  stageId: string | null;
+  questionFlags: string[];
+  privacy: { questionTextStored: boolean; questionTextIncludedInExport: boolean };
 }
 ```
 
-默认不包含完整 `questionText`、姓名、代词、性别、性取向或第三方敏感信息。显示身份字段不属于算法输入，也不应默认进入结果档案。
+身份字段、问题文本、系统时间和网络状态不进入固定算法。问题文本默认不进入结果或导出。
 
-## 4. 历法解析
+## 4. 历法与固定算法
 
-```ts
-interface CalendarResolution {
-  calendarPolicyId: string;
-  localDateTime: string | null;
-  timezone: string | null;
-  resolvedLunarDate: {
-    year: number | null;
-    month: number;
-    day: number;
-    isLeapMonth: boolean;
-  };
-  earthlyBranch: EarthlyBranch;
-  earthlyBranchIndex: number;
-  boundaryDecision: {
-    mode: 'civil_midnight' | 'zi_hour_23' | 'split_early_late_zi';
-    appliedDayOffset: -1 | 0 | 1;
-    manualInputBypass: boolean;
-  };
-  trace: Record<string, unknown>[];
-  warnings: string[];
-}
+日历结果记录 `calendarPolicyId`、时区、边界决策、转换 trace 和警告。手动农历输入可以没有公历时间；系统不得声称已经核验用户手动输入与公历的一致性。
+
+传统月日时算法只接收农历月、农历日和十二时辰序号，顺序固定为：
+
+```text
+大安 → 留连 → 速喜 → 赤口 → 小吉 → 空亡
+monthIndex = (lunarMonth - 1) mod 6
+dayIndex = (monthIndex + lunarDay - 1) mod 6
+hourIndex = (dayIndex + earthlyBranchIndex - 1) mod 6
 ```
 
-手动农历输入时：
+`calculation.algorithmId = 'traditional-month-day-hour-v1'` 时，trace 顺序固定为 `month → day → hour`。`three-number-sequential-count-v1` 独立记录三个输入、三个余数和 `threePalaces`，第三宫为当前主判。
 
-- `manualInputBypass = true`
-- `year` 可以为 null
-- 系统不声称验证用户输入与公历的一致性
+## 5. 解释与伦理
 
-公历模式必须记录时区、边界策略和转换 trace。
-
-## 5. 传统计算
-
-```ts
-interface TraditionalCalculation {
-  algorithmId: 'traditional-month-day-hour-v1';
-  algorithmStatus: 'FROZEN-PROVISIONAL' | 'FROZEN-REVIEWED';
-  palaceOrder: PalaceId[];
-  monthIndex: number;
-  dayIndex: number;
-  hourIndex: number;
-  monthPalaceId: PalaceId;
-  dayPalaceId: PalaceId;
-  finalPalaceId: PalaceId;
-  trace: [CalculationTraceStep, CalculationTraceStep, CalculationTraceStep];
-}
-```
-
-trace 顺序固定为月、日、时。每个 step 至少包含：
-
-```ts
-interface CalculationTraceStep {
-  stage: 'month' | 'day' | 'hour';
-  startPalaceId: PalaceId;
-  countValue: number;
-  offset: number;
-  resultIndex: number;
-  resultPalaceId: PalaceId;
-  formula: string;
-}
-```
-
-`calculation` 只能由传统推理机生成。解释和伦理引擎必须把它视为不可变对象。
-
-## 6. 内容块
-
-所有用户可见的正式解释使用结构化内容块：
+正式解释只能来自已登记的 `ContentBlock`：
 
 ```ts
 interface ContentBlock {
@@ -129,102 +89,25 @@ interface ContentBlock {
   sourceIds: string[];
   status: 'provisional' | 'reviewed' | 'canonical' | 'disputed';
 }
-```
 
-`id` 可以是片段 ID、领域块 ID、传统文本 ID或受控安全消息 ID。无 ID 的自由文本不能进入正式结果。
-
-## 7. 解释结果
-
-```ts
-interface InterpretationResult {
-  domainId: string;
-  stageId: string | null;
-  certaintyMode: 'symbolic-non-deterministic';
-  sections: {
-    neutral: ContentBlock[];
-    domain: ContentBlock[];
-    stage: ContentBlock[];
-    actions: ContentBlock[];
-    traditionalText: ContentBlock[];
-    historicalContext: ContentBlock[];
-    realityChecks: ContentBlock[];
-    ethicsNotices: ContentBlock[];
-  };
-  fragmentIds: string[];
-  candidateClaimIds: string[];
-  trace: Record<string, unknown>[];
+interface InterpretationSections {
+  neutral: ContentBlock[];
+  domain: ContentBlock[];
+  stage: ContentBlock[];
+  actions: ContentBlock[];
+  traditionalText: ContentBlock[];
+  historicalContext: ContentBlock[];
+  realityChecks: ContentBlock[];
+  relationshipCurrentState: ContentBlock[];
+  ethicsNotices: ContentBlock[];
 }
 ```
 
-固定组装顺序：
+伦理结果可以抑制内容、加入现实行动或把模式设为 `hard_stop`，但不得改变 `finalPalaceId`、六宫顺序、计算 trace 或三宫路径。
 
-1. 中性宫位象意
-2. 领域解释
-3. 阶段修正
-4. 可执行行动
-5. 传统原文
-6. 历史语境
-7. 现实核验
-8. 伦理提示
+`hard_stop` 的 UI 顺序必须是现实安全行动优先。计算路径、trace、结构化详情、导出和保存只能放在默认关闭的“传统计算与技术记录（不作为当前现实行动依据）”披露区内。
 
-`hard-stop` 场景的 UI 可以把现实行动置于整个页面最前，但结构化 section 仍保持可追踪顺序。
-
-所有现代文字必须来自本地登记片段、结构化领域知识或受控安全文案。客户端不得将自由生成文本混入正式结果。
-
-## 8. 被抑制结论
-
-```ts
-interface SuppressedClaim {
-  claimId: string;
-  claimType: string;
-  ruleId: string;
-  fragmentIds: string[];
-  reasonCode: string;
-}
-```
-
-被抑制 claim 不得出现在任何用户可见 section 或导出正文中。它只保留在内部审计结构和开发者可见 provenance 中。
-
-## 9. 伦理求值
-
-```ts
-interface EthicsEvaluationResult {
-  mode: 'allow' | 'allow_with_constraints' | 'hard_block' | 'hard_stop';
-  evaluatedRuleIds: string[];
-  triggeredRuleIds: string[];
-  retainedClaimIds: string[];
-  suppressedClaims: SuppressedClaim[];
-  retainedFragmentIds: string[];
-  blockedFragmentIds: string[];
-  forcedConclusionCodes: string[];
-  requiredNotices: string[];
-  requiredRealityActionCodes: string[];
-  contextCodes: string[];
-  allowedTopics: string[];
-  forbiddenActionTypes: string[];
-  preferredTerms: string[];
-  forbiddenTerms: string[];
-  stopPrimaryDivination: boolean;
-  trace: Record<string, unknown>[];
-}
-```
-
-受控代码必须分别解析自：
-
-- `knowledge/safety-messages.v1.json#/conclusions`
-- `knowledge/safety-messages.v1.json#/realityActions`
-- `knowledge/safety-messages.v1.json#/contexts`
-
-伦理引擎可以阻止结论、屏蔽片段、加入现实行动并调整显示优先级，但不能更改 `finalPalaceId`、索引或计算 trace。
-
-### Mode 含义
-
-- `allow`：无额外限制的普通文化解释
-- `allow_with_constraints`：存在语言、现实核验或角色边界
-- `hard_block`：一个或多个请求结论必须被阻止，但仍可展示安全范围内的传统结果
-- `hard_stop`：现实安全行动必须成为首要内容，占断不能作为当前主要行动
-
-## 10. 来源追踪
+## 6. 来源与版本
 
 ```ts
 interface Provenance {
@@ -234,93 +117,23 @@ interface Provenance {
   sourceIds: string[];
   provisionalSourceIds: string[];
   disputedFieldIds: string[];
-  calendarPolicyId: string;
-  algorithmId: 'traditional-month-day-hour-v1';
+  calendarPolicyId: string | null;
+  algorithmId: string;
+  methodId: string;
+  methodVersion: string;
+  methodSourceIds: string[];
   fragmentIds: string[];
   ethicsRuleIds: string[];
 }
 ```
 
-当使用 provisional 或 disputed 数据时，UI 与导出结果必须可见，不得只在调试日志中保留。
+异文、试行来源和争议字段必须在结果或导出中可见，不得静默升级为校定原典。
 
-## 11. 用户界面展示顺序
+## 7. 隐私与错误
 
-普通结果推荐：
-
-1. 最终宫位与非确定性说明
-2. 月宫、日宫、时宫推演路径
-3. 六宫中性象意
-4. 当前领域和阶段解释
-5. 可执行现实行动
-6. 传统原文与版本状态
-7. 伦理边界
-8. 来源、算法与历法策略
-
-`hard-stop` 结果推荐：
-
-1. 紧急或现实安全行动
-2. 已核验事实与边界
-3. 受控结论
-4. 折叠的传统结果
-5. 来源与审计信息
-
-禁止先显示惊吓性断辞，再把限制说明藏在页面底部。
-
-## 12. 错误输出
-
-错误不属于 `DivinationResult`，应使用独立 discriminated union 返回：
-
-```ts
-interface DomainError {
-  ok: false;
-  error: {
-    code: string;
-    message: string;
-    recoverable: boolean;
-    field?: string;
-    details?: Record<string, unknown>;
-  };
-}
-```
-
-最低错误代码：
-
-- `REQUEST_SCHEMA_INVALID`
-- `INVALID_LUNAR_MONTH`
-- `INVALID_LUNAR_DAY`
-- `INVALID_EARTHLY_BRANCH`
-- `CALENDAR_OUT_OF_RANGE`
-- `TIMEZONE_REQUIRED`
-- `AMBIGUOUS_LOCAL_TIME`
-- `NONEXISTENT_LOCAL_TIME`
-- `KNOWLEDGE_SCHEMA_INVALID`
-- `REFERENCE_INTEGRITY_FAILED`
-- `UNSUPPORTED_CALENDAR_POLICY`
-- `UNKNOWN_RULE_CONDITION`
-- `UNKNOWN_RULE_EFFECT`
-- `UNKNOWN_SAFETY_MESSAGE_CODE`
-- `RULE_CONFLICT_ERROR`
-- `OUTPUT_SCHEMA_INVALID`
-- `INVARIANT_VIOLATION`
-
-错误不得回退到随机结果、默认宫位或不完整断语。
-
-## 13. 隐私
-
-- 完整问题文本默认不进入结果。
-- 身份字段默认不进入结果。
-- 被抑制 claim 只保存结构化 ID，不保存敏感自由文本。
-- 生产日志不得默认记录完整 request。
-- 导出默认移除完整问题和精确时间。
-
-## 14. 确定性
-
-下列字段必须对相同请求和版本保持一致：
-
-- calendar 语义结果
-- calculation
-- interpretation 片段和顺序
-- ethics 规则与效果
-- provenance
-
-`createdAt`、本地 UI 展开状态和纯排版差异不属于确定性比较范围。
+- 不保存问题原文、身份字段或未声明的敏感信息。
+- 导出默认移除精确本地时间；用户明确选择后才包含本次精确时间。
+- 归档包装字段（方法、版本、主宫、三宫路径）必须与内部结果一致；无法验证时导入失败，不使用默认宫位。
+- R4/R5 迁移只接受可验证的旧结构。R4 的扁平 `input` 必须从自身历法字段重建 `casting`，缺字段时拒绝导入。
+- localStorage 不可用时，归档保存、导入、修改和删除必须明确失败或禁用，不得宣称已保存到本地。
+- 错误不得回退到随机结果、默认宫位或不完整断语。

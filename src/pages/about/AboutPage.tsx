@@ -7,13 +7,13 @@ export default function AboutPage(): ReactElement {
   return (
     <section className="about-page">
       <header className="page-intro">
-        <span className="section-kicker">ABOUT THE ARCHIVE</span>
+        <span className="section-kicker">档案说明</span>
         <h2>关于小六壬档案</h2>
         <p>这是一个本地优先运行的结构化知识与传统报时起课工具。</p>
       </header>
       <section className="result-section about-build" aria-labelledby="about-build-heading">
         <div className="section-heading">
-          <span className="section-kicker">BETA BUILD</span>
+          <span className="section-kicker">测试版构建</span>
           <h3 id="about-build-heading">测试版信息</h3>
         </div>
         <dl className="provenance-grid">

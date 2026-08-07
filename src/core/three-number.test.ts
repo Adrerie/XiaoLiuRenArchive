@@ -3,12 +3,15 @@ import { computeThreeNumberCasting, ThreeNumberInputError } from "./three-number
 
 describe("three-number casting", () => {
   it("computes the modern three-number 3,5,5 variant without calendar fields", () => {
-    const result = computeThreeNumberCasting({ kind: "three_numbers", first: 3, second: 5, third: 5 });
+    const result = computeThreeNumberCasting({ kind: "three_numbers", first: "3", second: "5", third: "5" });
 
     expect(result.algorithmId).toBe("three-number-sequential-count-v1");
     expect(result.trace.map((step) => step.stage)).toEqual(["first_number", "second_number", "third_number"]);
     expect(result.trace.map((step) => step.resultPalaceId)).toEqual(["su_xi", "da_an", "xiao_ji"]);
     expect(result.finalPalaceId).toBe("xiao_ji");
+    expect(result.threePalaces.map((palace) => palace.palaceId)).toEqual(["su_xi", "da_an", "xiao_ji"]);
+    expect(result.primaryPalaceOrdinal).toBe(3);
+    expect(result.primaryPalaceId).toBe(result.threePalaces[2].palaceId);
     expect("monthIndex" in result).toBe(false);
     expect("lunarMonth" in result).toBe(false);
   });
@@ -16,9 +19,9 @@ describe("three-number casting", () => {
   it("handles large positive numbers with bounded modular arithmetic", () => {
     const result = computeThreeNumberCasting({
       kind: "three_numbers",
-      first: Number.MAX_SAFE_INTEGER,
-      second: 7,
-      third: 13,
+      first: "900719925474099312345678901234567890",
+      second: "7",
+      third: "13",
     });
 
     expect(result.trace).toHaveLength(3);
@@ -27,10 +30,10 @@ describe("three-number casting", () => {
 
   it("rejects empty, zero, negative, fractional and non-finite numbers", () => {
     const invalidInputs = [
-      { kind: "three_numbers" as const, first: 0, second: 1, third: 1 },
-      { kind: "three_numbers" as const, first: -1, second: 1, third: 1 },
-      { kind: "three_numbers" as const, first: 1.5, second: 1, third: 1 },
-      { kind: "three_numbers" as const, first: Number.NaN, second: 1, third: 1 },
+      { kind: "three_numbers" as const, first: "0", second: "1", third: "1" },
+      { kind: "three_numbers" as const, first: "-1", second: "1", third: "1" },
+      { kind: "three_numbers" as const, first: "1.5", second: "1", third: "1" },
+      { kind: "three_numbers" as const, first: "", second: "1", third: "1" },
     ];
 
     for (const input of invalidInputs) {

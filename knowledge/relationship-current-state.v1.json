@@ -1,0 +1,16 @@
+{
+  "$schema": "https://xiaoliurenarchive.local/schemas/relationship-current-state.schema.json",
+  "schemaVersion": "1.0.0",
+  "knowledgeVersion": "1.0.0-provisional.1",
+  "status": "provisional",
+  "id": "relationship-current-state",
+  "sourceIds": ["xiaoliurenarchive-editorial-modern-knowledge-v1"],
+  "entries": [
+    {"palaceId": "da_an", "text": "当前关系可能较稳定，也可能停留在现状，推进速度较慢；仍需以双方实际互动确认。", "sourceIds": ["xiaoliurenarchive-editorial-modern-knowledge-v1"], "status": "provisional"},
+    {"palaceId": "liu_lian", "text": "当前关系可能反复、拖延或边界不清；可以回到已发生的事实并澄清边界。", "sourceIds": ["xiaoliurenarchive-editorial-modern-knowledge-v1"], "status": "provisional"},
+    {"palaceId": "su_xi", "text": "当前互动可能升温较快，但仍需观察回应是否持续，不能把短期速度当作确定承诺。", "sourceIds": ["xiaoliurenarchive-editorial-modern-knowledge-v1"], "status": "provisional"},
+    {"palaceId": "chi_kou", "text": "当前沟通、偏好或价值判断上可能存在摩擦；请以尊重和安全的方式核对事实。", "sourceIds": ["xiaoliurenarchive-editorial-modern-knowledge-v1"], "status": "provisional"},
+    {"palaceId": "xiao_ji", "text": "当前关系可能存在协商、靠近或逐步发展的空间；仍需尊重对方回应与现实条件。", "sourceIds": ["xiaoliurenarchive-editorial-modern-knowledge-v1"], "status": "provisional"},
+    {"palaceId": "kong_wang", "text": "当前期待可能缺少明确回应或现实条件；不要用占断替代直接沟通和现实核验。", "sourceIds": ["xiaoliurenarchive-editorial-modern-knowledge-v1"], "status": "provisional"}
+  ]
+}

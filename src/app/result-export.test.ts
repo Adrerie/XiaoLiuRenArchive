@@ -5,7 +5,7 @@ import { createExportPayload, serializeExportPayload } from "./result-export";
 
 function request(overrides: Partial<DivinationRequest> = {}): DivinationRequest {
   return {
-    requestVersion: "1.1.0",
+    requestVersion: "1.2.0",
     casting: {
       kind: "calendar",
       inputMode: "civil_datetime",
@@ -85,7 +85,7 @@ describe("local JSON export", () => {
 
   it("exports three-number results without a calendar section", async () => {
     const result = await runLocalDivination(request({
-      casting: { kind: "three_numbers", input: { kind: "three_numbers", first: 3, second: 5, third: 5 } },
+      casting: { kind: "three_numbers", input: { kind: "three_numbers", first: "3", second: "5", third: "5" } },
     }));
     const exported = createExportPayload(result, { includePreciseTime: true });
 

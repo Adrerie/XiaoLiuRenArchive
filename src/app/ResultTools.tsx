@@ -16,9 +16,7 @@ interface StructuredDetailsProps {
 export function StructuredDetails({ result, open, onOpenChange }: StructuredDetailsProps): ReactElement {
   const calendar = result.calendar;
   const boundaryTrace = calendar?.trace.find((entry) => entry.stage === "calendar-boundary");
-  const lunarConversionLocalDateTime = typeof boundaryTrace?.lunarConversionLocalDateTime === "string"
-    ? boundaryTrace.lunarConversionLocalDateTime
-    : "手动输入";
+  const conversionTime = typeof boundaryTrace?.lunarConversionLocalDateTime === "string" ? boundaryTrace.lunarConversionLocalDateTime : "手动输入";
   return (
     <section className="result-section structured-details">
       <details id="structured-details" open={open} onToggle={(event) => onOpenChange(event.currentTarget.open)}>
@@ -26,21 +24,12 @@ export function StructuredDetails({ result, open, onOpenChange }: StructuredDeta
         <dl className="provenance-grid detail-grid">
           <dt>casting.kind</dt><dd><code>{result.casting.kind}</code></dd>
           <dt>algorithmId</dt><dd><code>{result.calculation.algorithmId}</code></dd>
-          {calendar ? (
-            <>
-              <dt>calendarPolicyId</dt><dd><code>{calendar.calendarPolicyId}</code></dd>
-              <dt>appliedDayOffset</dt><dd><code>{calendar.boundaryDecision.appliedDayOffset}</code></dd>
-              <dt>lunarConversionLocalDateTime</dt><dd><code>{lunarConversionLocalDateTime}</code></dd>
-            </>
-          ) : (
-            <>
-              <dt>threeNumbers</dt>
-              <dd><code>{result.casting.kind === "three_numbers" ? [result.casting.input.first, result.casting.input.second, result.casting.input.third].join(", ") : "不适用"}</code></dd>
-            </>
-          )}
+          <dt>methodVersion</dt><dd><code>{result.provenance.methodVersion}</code></dd>
+          {calendar ? <><dt>calendarPolicyId</dt><dd><code>{calendar.calendarPolicyId}</code></dd><dt>appliedDayOffset</dt><dd><code>{calendar.boundaryDecision.appliedDayOffset}</code></dd><dt>lunarConversionLocalDateTime</dt><dd><code>{conversionTime}</code></dd></> : <><dt>threeNumbers</dt><dd><code>{result.casting.kind === "three_numbers" ? [result.casting.input.first, result.casting.input.second, result.casting.input.third].join(", ") : "不适用"}</code></dd></>}
           <dt>knowledgeVersion</dt><dd><code>{result.provenance.knowledgeVersion}</code></dd>
           <dt>ruleVersion</dt><dd><code>{result.provenance.ruleVersion}</code></dd>
           <dt>finalPalaceId</dt><dd><code>{result.calculation.finalPalaceId}</code></dd>
+          {result.calculation.algorithmId === "three-number-sequential-count-v1" ? <><dt>primaryPalaceOrdinal</dt><dd><code>{result.calculation.primaryPalaceOrdinal}</code></dd><dt>threePalaces</dt><dd><IdList values={result.calculation.threePalaces.map((palace) => palace.palaceId)} /></dd></> : null}
           <dt>domainId</dt><dd><code>{result.interpretation.domainId}</code></dd>
           <dt>stageId</dt><dd><code>{result.interpretation.stageId ?? "null"}</code></dd>
           <dt>fragmentIds</dt><dd><IdList values={result.provenance.fragmentIds} /></dd>
@@ -57,41 +46,22 @@ export function ExportPanel({ result }: { readonly result: DivinationResult }): 
   const hasCalendarTime = result.input.kind === "calendar";
   const [includePreciseTime, setIncludePreciseTime] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
-  const serialized = useMemo(
-    () => serializeExportPayload(result, { includePreciseTime }),
-    [includePreciseTime, result],
-  );
+  const serialized = useMemo(() => serializeExportPayload(result, { includePreciseTime }), [includePreciseTime, result]);
 
   async function copyJson(): Promise<void> {
-    const action = await copyExportJson(serialized);
-    setStatus(action.message);
+    setStatus((await copyExportJson(serialized)).message);
   }
 
   async function saveOrShareJson(): Promise<void> {
-    const action = await saveOrShareExportJson(serialized);
-    setStatus(action.message);
+    setStatus((await saveOrShareExportJson(serialized)).message);
   }
 
   return (
     <section className="result-section export-panel">
-      <div className="section-heading">
-        <div>
-          <span className="section-kicker">LOCAL EXPORT</span>
-          <h3>隐私优先 JSON</h3>
-        </div>
-        <span className="policy-chip">不上传</span>
-      </div>
-      <p className="helper">默认移除精确本地时间和问题原文；{hasCalendarTime ? "历法策略、" : ""}计算 trace、版本与来源仍会保留。</p>
-      {hasCalendarTime ? (
-        <label className="checkbox-row export-time-option">
-          <input type="checkbox" checked={includePreciseTime} onChange={(event) => setIncludePreciseTime(event.target.checked)} />
-          包含精确时间（仅在本次导出中）
-        </label>
-      ) : null}
-      <div className="export-actions">
-        <button id="copy-json-button" type="button" className="secondary-button" onClick={() => void copyJson()}>复制 JSON</button>
-        <button id="save-share-json-button" type="button" className="secondary-button" onClick={() => void saveOrShareJson()}>保存/分享 JSON</button>
-      </div>
+      <div className="section-heading"><div><span className="section-kicker">本地导出</span><h3>隐私优先 JSON</h3></div><span className="policy-chip">不上云</span></div>
+      <p className="helper">默认移除精确本地时间和问题原文；计算 trace、版本与来源仍会保留。</p>
+      {hasCalendarTime ? <label className="checkbox-row export-time-option"><input type="checkbox" checked={includePreciseTime} onChange={(event) => setIncludePreciseTime(event.target.checked)} />包含精确时间（仅本次导出）</label> : null}
+      <div className="export-actions"><button id="copy-json-button" type="button" className="secondary-button" onClick={() => void copyJson()}>复制 JSON</button><button id="save-share-json-button" type="button" className="secondary-button" onClick={() => void saveOrShareJson()}>保存 / 分享 JSON</button></div>
       {status ? <p id="export-status" className="export-status" role="status">{status}</p> : null}
     </section>
   );

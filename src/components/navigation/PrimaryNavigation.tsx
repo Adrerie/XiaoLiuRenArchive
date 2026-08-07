@@ -1,34 +1,23 @@
 import type { ReactElement } from "react";
-
-export type AppView = "divination" | "library" | "about";
+import { DesktopSidebar } from "./DesktopSidebar";
+import { MobileBottomNav } from "./MobileBottomNav";
+import type { AppView } from "./navigation-data";
 
 interface PrimaryNavigationProps {
   readonly activeView: AppView;
   readonly onChange: (view: AppView) => void;
+  readonly onMore: () => void;
+  readonly moreOpen?: boolean;
 }
 
-const ITEMS: readonly { readonly id: AppView; readonly label: string }[] = [
-  { id: "divination", label: "起课" },
-  { id: "library", label: "资料库" },
-  { id: "about", label: "说明" },
-];
-
-export function PrimaryNavigation({ activeView, onChange }: PrimaryNavigationProps): ReactElement {
+/** Backwards-compatible facade for pages that still import the old symbol. */
+export function PrimaryNavigation({ activeView, onChange, onMore, moreOpen = false }: PrimaryNavigationProps): ReactElement {
   return (
-    <nav className="primary-navigation" aria-label="主导航">
-      {ITEMS.map((item) => (
-        <button
-          id={`nav-${item.id}`}
-          type="button"
-          className={activeView === item.id ? "nav-item nav-item-active" : "nav-item"}
-          aria-current={activeView === item.id ? "page" : undefined}
-          aria-label={item.label}
-          onClick={() => onChange(item.id)}
-          key={item.id}
-        >
-          {item.label}
-        </button>
-      ))}
-    </nav>
+    <>
+      <DesktopSidebar activeView={activeView} onChange={onChange} />
+      <MobileBottomNav activeView={activeView} onChange={onChange} onMore={onMore} moreOpen={moreOpen} />
+    </>
   );
 }
+
+export type { AppView } from "./navigation-data";

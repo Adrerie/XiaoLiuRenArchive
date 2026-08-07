@@ -54,9 +54,9 @@ export type TimeInput = ManualLunarTimeInput | CivilDateTimeInput;
 
 export interface ThreeNumberInput {
   readonly kind: "three_numbers";
-  readonly first: number;
-  readonly second: number;
-  readonly third: number;
+  readonly first: string;
+  readonly second: string;
+  readonly third: string;
 }
 
 export interface CalendarCastingRequest {
@@ -98,7 +98,7 @@ export interface QuestionContext {
 }
 
 export interface DivinationRequest {
-  readonly requestVersion: "1.1.0";
+  readonly requestVersion: "1.2.0";
   readonly casting: CastingRequest;
   readonly questionContext: QuestionContext;
   readonly displayPreferences: DisplayPreferences;
@@ -207,11 +207,19 @@ export interface TraditionalCalculationResult {
 export interface ThreeNumberCalculationTrace {
   readonly stage: "first_number" | "second_number" | "third_number";
   readonly startPalaceId: PalaceId;
-  readonly countValue: number;
+  readonly countValue: string;
   readonly normalizedOffset: PalaceIndex;
   readonly resultIndex: PalaceIndex;
   readonly resultPalaceId: PalaceId;
   readonly formula: string;
+}
+
+export interface ThreePalace {
+  readonly ordinal: 1 | 2 | 3;
+  readonly rawNumber: string;
+  readonly startPalaceId: PalaceId;
+  readonly normalizedOffset: PalaceIndex;
+  readonly palaceId: PalaceId;
 }
 
 export interface ThreeNumberCalculationResult {
@@ -222,6 +230,9 @@ export interface ThreeNumberCalculationResult {
   readonly secondIndex: PalaceIndex;
   readonly thirdIndex: PalaceIndex;
   readonly finalPalaceId: PalaceId;
+  readonly threePalaces: readonly [ThreePalace, ThreePalace, ThreePalace];
+  readonly primaryPalaceOrdinal: 3;
+  readonly primaryPalaceId: PalaceId;
   readonly trace: readonly [ThreeNumberCalculationTrace, ThreeNumberCalculationTrace, ThreeNumberCalculationTrace];
 }
 
@@ -243,6 +254,7 @@ export interface InterpretationSections {
   readonly traditionalText: readonly ContentBlock[];
   readonly historicalContext: readonly ContentBlock[];
   readonly realityChecks: readonly ContentBlock[];
+  readonly relationshipCurrentState: readonly ContentBlock[];
   readonly ethicsNotices: readonly ContentBlock[];
 }
 
@@ -310,6 +322,9 @@ export interface Provenance {
   readonly disputedFieldIds: readonly string[];
   readonly calendarPolicyId: string | null;
   readonly algorithmId: CalculationResult["algorithmId"];
+  readonly methodId: CalculationResult["algorithmId"];
+  readonly methodVersion: string;
+  readonly methodSourceIds: readonly string[];
   readonly fragmentIds: readonly string[];
   readonly ethicsRuleIds: readonly string[];
 }
@@ -327,7 +342,7 @@ export type CastingSummary =
     };
 
 export interface DivinationResult {
-  readonly resultVersion: "1.2.0";
+  readonly resultVersion: "1.3.0";
   readonly createdAt: string | null;
   readonly casting: CastingSummary;
   readonly input: ResultInput;

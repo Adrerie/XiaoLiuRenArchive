@@ -1,0 +1,36 @@
+{
+  "$schema": "https://xiaoliurenarchive.local/schemas/casting-methods.schema.json",
+  "schemaVersion": "1.0.0",
+  "knowledgeVersion": "1.0.0-provisional.1",
+  "status": "provisional",
+  "methods": [
+    {
+      "id": "traditional-month-day-hour-v1",
+      "name": "传统报时起课",
+      "category": "traditional-core",
+      "inputKind": "calendar",
+      "ruleSummary": "以农历月、日和十二时辰依次落宫：月宫 → 日宫 → 时宫。",
+      "pathFields": ["monthPalaceId", "dayPalaceId", "finalPalaceId"],
+      "primaryPalacePosition": "hour",
+      "sourceStatus": "reviewed",
+      "sourceIds": ["moe-revised-dictionary-xiaoliuren", "xiaoliurenarchive-editorial-modern-knowledge-v1"],
+      "version": "1.0.0",
+      "supportedInterpretationLayers": ["traditionalText", "neutral", "domain", "stage", "realityChecks"],
+      "unsupportedClaims": ["确定预测", "身份字段影响落宫", "以现代解释替代传统文本"]
+    },
+    {
+      "id": "three-number-sequential-count-v1",
+      "name": "三数起课（现代变通法）",
+      "category": "modern-variant",
+      "inputKind": "three_numbers",
+      "ruleSummary": "三个正整数按六宫顺序连续起数：第一宫 → 第二宫 → 第三宫，第三宫为主判。",
+      "pathFields": ["threePalaces[0]", "threePalaces[1]", "threePalaces[2]"],
+      "primaryPalacePosition": "third",
+      "sourceStatus": "provisional",
+      "sourceIds": ["xiaoliurenarchive-editorial-modern-knowledge-v1"],
+      "version": "1.0.0",
+      "supportedInterpretationLayers": ["neutral", "domain", "relationship-current-state", "realityChecks"],
+      "unsupportedClaims": ["传统月日时算法等价", "数字越随机越准确", "必然结果", "流派统一的天宫地宫人宫角色"]
+    }
+  ]
+}

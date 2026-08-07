@@ -103,9 +103,9 @@ export function createInitialForm(
     lunarDay: "5",
     branchIndex: 5,
     isLeapMonth: false,
-    firstNumber: "3",
-    secondNumber: "5",
-    thirdNumber: "5",
+    firstNumber: "",
+    secondNumber: "",
+    thirdNumber: "",
     domainId: "relationship",
     stageId: "seeking",
     explicitRefusalExists: false,
@@ -113,14 +113,32 @@ export function createInitialForm(
   };
 }
 
-export function refreshCurrentTime(form: FormState, now: Date = new Date()): FormState {
-  const detection = detectLocalTimeZone();
+export function refreshCurrentTime(
+  form: FormState,
+  now: Date = new Date(),
+  detectedTimeZone?: string,
+): FormState {
+  const detection = detectedTimeZone === undefined
+    ? detectLocalTimeZone()
+    : normalizeTimeZone(detectedTimeZone);
   return {
     ...form,
     currentDateTime: formatLocalDateTime(now, detection.timeZone),
     currentTimezone: detection.timeZone,
     currentTimezoneFallback: detection.usedFallback,
   };
+}
+
+export function selectCastingMode(
+  form: FormState,
+  mode: CastingMode,
+  now: Date = new Date(),
+  detectedTimeZone?: string,
+): FormState {
+  if (mode === "current_civil_time") {
+    return { ...refreshCurrentTime(form, now, detectedTimeZone), castingMode: mode };
+  }
+  return { ...form, castingMode: mode };
 }
 
 export function formatTimeZoneWarning(timeZone: TimeZoneDetection): string | null {

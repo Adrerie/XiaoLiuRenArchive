@@ -31,7 +31,7 @@ const share = vi.mocked(Share.share);
 
 function request(): DivinationRequest {
   return {
-    requestVersion: "1.1.0",
+    requestVersion: "1.2.0",
     casting: {
       kind: "calendar",
       inputMode: "civil_datetime",

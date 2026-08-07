@@ -5,7 +5,9 @@ import {
   getKnowledgeManifest,
   getPalace,
   getSources,
+  getRelationshipCurrentState,
   isProvisionalSource,
+  listCastingMethods,
   listDomains,
   listStageOptions,
   listPalaces,
@@ -42,11 +44,13 @@ describe("local knowledge selectors", () => {
 
   it("returns manifest versions and context source coverage", () => {
     const manifest = getKnowledgeManifest();
-    expect(manifest.bundleVersion).toBe("2.2.0");
+    expect(manifest.bundleVersion).toBe("3.0.0");
     expect(manifest.palacesVersion).toBe("1.0.0-provisional.2");
     expect(manifest.questionDomainsVersion).toBe("1.0.0-provisional.4");
     expect(manifest.interpretationFragmentsVersion).toBe("1.0.0-provisional.2");
     expect(manifest.sourceRegistryVersion).toBe("1.0.0-provisional.1");
+    expect(manifest.castingMethodsVersion).toBe("1.0.0-provisional.1");
+    expect(manifest.relationshipCurrentStateVersion).toBe("1.0.0-provisional.1");
     expect(getEthicsRulesVersion()).toBe("1.0.0-provisional.3");
     const sourceIds = getContextSourceIds({ finalPalaceId: "xiao_ji", domainId: "relationship", stageId: "seeking" });
     expect(sourceIds.length).toBeGreaterThan(0);
@@ -54,6 +58,11 @@ describe("local knowledge selectors", () => {
     expect(sourceIds).toContain("yuxiaji-liuren-shike-web-transcription-8s8s");
     expect(getPalace("xiao_ji").modernSourceIds).toEqual(["xiaoliurenarchive-editorial-modern-knowledge-v1"]);
     expect(getSources(sourceIds).every((source) => source.supports.length > 0)).toBe(true);
+    expect(listCastingMethods().map((method) => method.id)).toEqual([
+      "three-number-sequential-count-v1",
+      "traditional-month-day-hour-v1",
+    ]);
+    expect(getRelationshipCurrentState("xiao_ji").text).toContain("可能");
     const sources = getSources([
       "moe-revised-dictionary-xiaoliuren",
       "yuxiaji-liuren-shike-web-transcription-8s8s",

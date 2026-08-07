@@ -133,7 +133,7 @@ function assertSchemaValue(value: unknown, schemaValue: unknown, path = "result"
 
 function request(overrides: Partial<DivinationRequest> = {}): DivinationRequest {
   return {
-    requestVersion: "1.1.0",
+    requestVersion: "1.2.0",
     casting: {
       kind: "calendar",
       inputMode: "manual_lunar",

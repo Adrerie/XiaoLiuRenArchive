@@ -72,7 +72,7 @@ License.  Each licensee is addressed as "you".  "Licensees" and
   To "modify" a work means to copy from or adapt all or part of the work
 in a fashion requiring copyright permission, other than the making of an
 exact copy.  The resulting work is called a "modified version" of the
-earlier work or a work "based" on the earlier work.
+earlier work or a work "based on" the earlier work.
 
   A "covered work" means either the unmodified Program or a work based
 on the Program.
@@ -274,9 +274,9 @@ in one of these ways:
     available for as long as needed to satisfy these requirements.
 
     e) Convey the object code using peer-to-peer transmission, provided
-you inform other peers where the object code and Corresponding Source
-of the work are being offered to the general public at no charge under
-subsection 6d.
+    you inform other peers where the object code and Corresponding
+    Source of the work are being offered to the general public at no
+    charge under subsection 6d.
 
   A separable portion of the object code, whose source code is excluded
 from the Corresponding Source as a System Library, need not be
@@ -289,11 +289,11 @@ into a dwelling.  In determining whether a product is a consumer product,
 doubtful cases shall be resolved in favor of coverage.  For a particular
 product received by a particular user, "normally used" refers to a
 typical or common use of that class of product, regardless of the status
-of the particular user or of the way in which the particular user actually
-uses, or expects or is expected to use, the product.  A product is a consumer
-product regardless of whether the product has substantial commercial,
-industrial or non-consumer uses, unless such uses represent the only
-significant mode of use of the product.
+of the particular user or of the way in which the particular user
+actually uses, or expects or is expected to use, the product.  A product
+is a consumer product regardless of whether the product has substantial
+commercial, industrial or non-consumer uses, unless such uses represent
+the only significant mode of use of the product.
 
   "Installation Information" for a User Product means any methods,
 procedures, authorization keys, or other information required to install
@@ -441,12 +441,12 @@ for enforcing compliance by third parties with this License.
   An "entity transaction" is a transaction transferring control of an
 organization, or substantially all assets of one, or subdividing an
 organization, or merging organizations.  If propagation of a covered
-work results from an entity transaction, each party to that transaction
-who receives a copy of the work also receives whatever licenses to the
-work the party's predecessor in interest had or could give under the
-previous paragraph, plus a right to possession of the Corresponding
-Source of the work from the predecessor in interest, if the predecessor
-has it or can get it with reasonable efforts.
+work results from an entity transaction, each party to that
+transaction who receives a copy of the work also receives whatever
+licenses to the work the party's predecessor in interest had or could
+give under the previous paragraph, plus a right to possession of the
+Corresponding Source of the work from the predecessor in interest, if
+the predecessor has it or can get it with reasonable efforts.
 
   You may not impose any further restrictions on the exercise of the
 rights granted or affirmed under this License.  For example, you may
@@ -626,8 +626,8 @@ free software which everyone can redistribute and change under these terms.
 
   To do so, attach the following notices to the program.  It is safest
 to attach them to the start of each source file to most effectively
-state the exclusion of warranty; and each file should have at least the
-"copyright" line and a pointer to where the full notice is found.
+state the exclusion of warranty; and each file should have at least
+the "copyright" line and a pointer to where the full notice is found.
 
     <one line to give the program's name and a brief idea of what it does.>
     Copyright (C) <year>  <name of author>

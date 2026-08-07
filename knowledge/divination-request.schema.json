@@ -6,7 +6,7 @@
   "additionalProperties": false,
   "required": ["requestVersion", "casting", "questionContext", "displayPreferences"],
   "properties": {
-    "requestVersion": {"const": "1.1.0"},
+    "requestVersion": {"const": "1.2.0"},
     "casting": {
       "oneOf": [
         {
@@ -68,9 +68,9 @@
               "required": ["kind", "first", "second", "third"],
               "properties": {
                 "kind": {"const": "three_numbers"},
-                "first": {"type": "integer", "minimum": 1},
-                "second": {"type": "integer", "minimum": 1},
-                "third": {"type": "integer", "minimum": 1}
+                "first": {"type": "string", "pattern": "^[0-9]*[1-9][0-9]*$"},
+                "second": {"type": "string", "pattern": "^[0-9]*[1-9][0-9]*$"},
+                "third": {"type": "string", "pattern": "^[0-9]*[1-9][0-9]*$"}
               }
             }
           }
