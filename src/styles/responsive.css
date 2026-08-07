@@ -1,0 +1,83 @@
+@media (max-width: 1120px) {
+  .app-layout { grid-template-columns: 194px minmax(0, 1fr); }
+  .app-content { padding-inline: 26px; }
+  .divination-layout { grid-template-columns: minmax(300px, .85fr) minmax(340px, 1.15fr); }
+  .library-layout { grid-template-columns: minmax(220px, .8fr) minmax(0, 1.2fr); }
+  .method-option small { display: none; }
+}
+
+@media (max-width: 900px) and (hover: hover) and (pointer: fine) {
+  .method-selector { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .casting-intro h2 { text-wrap: balance; }
+}
+
+/* The TB710FU reports an 800dp portrait CSS viewport at its factory density.
+   Treat that as a single-column tablet portrait so the two-pane desktop shell
+   never forces a horizontal page scroll. */
+@media (max-width: 900px) and (orientation: portrait) {
+  .app-layout { grid-template-columns: 76px minmax(0, 1fr); }
+  .desktop-sidebar { width: 76px; padding: 24px 10px; }
+  .sidebar-brand > div, .desktop-nav .nav-item > span:last-child, .sidebar-note { display: none; }
+  .sidebar-brand { justify-content: center; }
+  .desktop-nav .nav-item { justify-content: center; padding-inline: 6px; }
+  .app-content { padding-inline: 20px; }
+  .divination-layout { grid-template-columns: minmax(0, 1fr); }
+  .library-layout { grid-template-columns: 1fr; }
+  .palace-detail-header { flex-direction: column; }
+  .palace-detail-header .hero-tags { justify-content: flex-start; max-width: none; }
+  .method-selector { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 760px) {
+  .app-layout { display: block; min-height: 0; }
+  .desktop-sidebar, .desktop-header { display: none; }
+  .mobile-topbar { position: sticky; z-index: 10; top: 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: calc(12px + var(--safe-top)) 16px 12px; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(15px); }
+  .app-content { padding: 18px 14px calc(82px + var(--safe-bottom)); }
+  .mobile-bottom-navigation { position: fixed; z-index: 12; right: 0; bottom: 0; left: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; padding: 7px 8px calc(7px + var(--safe-bottom)); border-top: 1px solid var(--line); background: color-mix(in srgb, var(--surface) 94%, transparent); backdrop-filter: blur(15px); }
+  .mobile-bottom-navigation .nav-item { display: grid; justify-items: center; gap: 2px; padding: 5px 4px; border-radius: 9px; text-align: center; font-size: 11px; }
+  .mobile-bottom-navigation .nav-item-glyph { width: 22px; height: 22px; font-size: 11px; }
+  .app-footer { margin-top: 24px; padding-bottom: 4px; }
+  .divination-layout { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  .casting-page, .result-section, .result-hero, .empty-state, .ethics-banner { border-radius: 16px; }
+  .casting-page { padding: 18px; }
+  .method-selector { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .method-option { padding: 10px; }
+  .method-option small { display: block; font-size: 10px; }
+  .two-columns, .three-columns { grid-template-columns: 1fr; }
+  .form-grid.three-columns { gap: 10px; }
+  .result-hero { align-items: flex-start; flex-direction: column; }
+  .hero-tags { display: flex; flex-wrap: wrap; justify-items: start; }
+  .palace-flow { grid-template-columns: 1fr; }
+  .palace-flow-step { grid-template-columns: minmax(70px, .35fr) minmax(0, .65fr); align-items: center; }
+  .palace-flow-step strong { font-size: 23px; }
+  .palace-flow-step span:last-child { grid-column: 2; }
+  .archive-layout, .about-grid { grid-template-columns: 1fr; }
+  .knowledge-field-grid, .knowledge-reading-grid { grid-template-columns: 1fr; }
+  .knowledge-source-columns { grid-template-columns: 1fr; }
+  .archive-toolbar { align-items: stretch; }
+  .archive-toolbar .secondary-button { flex: 1 1 140px; }
+  .provenance-grid { grid-template-columns: minmax(94px, .34fr) minmax(0, .66fr); gap: 7px 12px; }
+  .section-heading { align-items: flex-start; }
+  .section-heading h3 { font-size: 21px; }
+}
+
+@media (max-width: 480px) {
+  .casting-intro { display: block; }
+  .casting-intro .policy-chip { margin-top: 12px; }
+  .method-option strong { font-size: 13px; }
+  .current-time-summary strong { font-size: 29px; }
+  .provenance-grid { display: grid; }
+  .provenance-grid dd { font-size: 13px; }
+  .technical-disclosure-section > details { padding-inline: 14px; }
+}
+
+@media (max-height: 520px) and (orientation: landscape) {
+  .desktop-sidebar { width: 72px; padding: 18px 10px; }
+  .app-layout { grid-template-columns: 72px minmax(0, 1fr); }
+  .sidebar-brand > div, .desktop-nav .nav-item > span:last-child, .sidebar-note { display: none; }
+  .sidebar-brand { justify-content: center; }
+  .desktop-nav .nav-item { justify-content: center; padding-inline: 6px; }
+  .mobile-bottom-navigation { display: none; }
+  .app-content { padding: 20px 24px; }
+  .divination-layout { grid-template-columns: minmax(280px, .8fr) minmax(340px, 1.2fr); }
+}

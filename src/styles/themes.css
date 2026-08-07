@@ -1,0 +1,47 @@
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #111b1a;
+  --surface: #182523;
+  --surface-muted: #20312e;
+  --surface-soft: #1b2b28;
+  --ink: #e2ebe5;
+  --ink-muted: #a9bbb3;
+  --ink-faint: #7e958b;
+  --line: #334741;
+  --line-strong: #50675f;
+  --accent: #80b5a0;
+  --accent-soft: #23473d;
+  --accent-strong: #b6d6c5;
+  --gold: #e2b46e;
+  --gold-soft: #46391f;
+  --danger: #e18d78;
+  --danger-soft: #492a26;
+  --shadow: 0 18px 45px rgba(0, 0, 0, .2);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #111b1a;
+    --surface: #182523;
+    --surface-muted: #20312e;
+    --surface-soft: #1b2b28;
+    --ink: #e2ebe5;
+    --ink-muted: #a9bbb3;
+    --ink-faint: #7e958b;
+    --line: #334741;
+    --line-strong: #50675f;
+    --accent: #80b5a0;
+    --accent-soft: #23473d;
+    --accent-strong: #b6d6c5;
+    --gold: #e2b46e;
+    --gold-soft: #46391f;
+    --danger: #e18d78;
+    --danger-soft: #492a26;
+    --shadow: 0 18px 45px rgba(0, 0, 0, .2);
+  }
+}
+
+[data-theme="dark"] .checkbox-row,
+[data-theme="dark"] .content-block p,
+[data-theme="dark"] .trace-card p { color: var(--ink); }

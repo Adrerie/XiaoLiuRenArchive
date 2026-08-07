@@ -113,8 +113,14 @@ export function createInitialForm(
   };
 }
 
-export function refreshCurrentTime(form: FormState, now: Date = new Date()): FormState {
-  const detection = detectLocalTimeZone();
+export function refreshCurrentTime(
+  form: FormState,
+  now: Date = new Date(),
+  detectedTimeZone?: string,
+): FormState {
+  const detection = detectedTimeZone === undefined
+    ? detectLocalTimeZone()
+    : normalizeTimeZone(detectedTimeZone);
   return {
     ...form,
     currentDateTime: formatLocalDateTime(now, detection.timeZone),
@@ -127,9 +133,10 @@ export function selectCastingMode(
   form: FormState,
   mode: CastingMode,
   now: Date = new Date(),
+  detectedTimeZone?: string,
 ): FormState {
   if (mode === "current_civil_time") {
-    return { ...refreshCurrentTime(form, now), castingMode: mode };
+    return { ...refreshCurrentTime(form, now, detectedTimeZone), castingMode: mode };
   }
   return { ...form, castingMode: mode };
 }

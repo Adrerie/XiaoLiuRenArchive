@@ -3,4 +3,7 @@ dist/
 .vite/
 .playwright-cli/
 output/device-smoke/
+output/browser-harness/
+output/r6-screenshots/
+output/device-smoke-r6/
 knowledge/__pycache__/

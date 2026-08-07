@@ -37,6 +37,7 @@ function downloadJson(json: string): void {
 }
 
 export default function ArchivePage({ records, error, onRecordsChange, store }: ArchivePageProps): ReactElement {
+  const storageUnavailable = !store.capability.available;
   const [selectedId, setSelectedId] = useState<string | null>(records[0]?.id ?? null);
   const [titleDraft, setTitleDraft] = useState("");
   const [status, setStatus] = useState<string | null>(null);
@@ -115,10 +116,11 @@ export default function ArchivePage({ records, error, onRecordsChange, store }: 
       </header>
       <div className="archive-toolbar">
         <button type="button" className="secondary-button" onClick={() => downloadJson(store.exportJson())}>导出全部课例</button>
-        <button type="button" className="secondary-button" onClick={() => fileInputRef.current?.click()}>导入课例 JSON</button>
-        <button type="button" className="secondary-button danger-button" onClick={clearAll}>清空全部</button>
+        <button type="button" className="secondary-button" disabled={storageUnavailable} onClick={() => fileInputRef.current?.click()}>导入课例 JSON</button>
+        <button type="button" className="secondary-button danger-button" disabled={storageUnavailable} onClick={clearAll}>清空全部</button>
         <input ref={fileInputRef} className="visually-hidden" type="file" accept="application/json,.json" onChange={(event) => void importFile(event)} />
       </div>
+      {storageUnavailable ? <p className="storage-warning" role="status">{store.capability.message}</p> : null}
       {error ? <p className="error-box" role="alert">{error}</p> : null}
       {status ? <p className="export-status" role="status">{status}</p> : null}
       <div className="archive-layout">
@@ -149,8 +151,8 @@ export default function ArchivePage({ records, error, onRecordsChange, store }: 
             </div>
             <div className="archive-title-editor">
               <label>本地标题<input value={titleDraft} maxLength={120} onChange={(event) => setTitleDraft(event.target.value)} placeholder="可选" /></label>
-              <button type="button" className="secondary-button" onClick={updateTitle}>保存标题</button>
-              <button type="button" className="secondary-button danger-button" onClick={removeSelected}>删除这条</button>
+              <button type="button" className="secondary-button" disabled={storageUnavailable} onClick={updateTitle}>保存标题</button>
+              <button type="button" className="secondary-button danger-button" disabled={storageUnavailable} onClick={removeSelected}>删除这条</button>
             </div>
             <dl className="provenance-grid">
               <dt>起课方法</dt><dd>{selectedRecord.methodName}</dd>

@@ -41,7 +41,7 @@ describe("entry form defaults and independent drafts", () => {
       lunarMonth: "9",
       firstNumber: "8",
     };
-    const refreshed = refreshCurrentTime(edited, new Date("2026-08-07T00:20:00.000Z"));
+    const refreshed = refreshCurrentTime(edited, new Date("2026-08-07T00:20:00.000Z"), "UTC");
 
     expect(refreshed.currentDateTime).not.toBe(edited.currentDateTime);
     expect(refreshed.specifiedDateTime).toBe("2030-01-02T03:04");
@@ -53,12 +53,12 @@ describe("entry form defaults and independent drafts", () => {
   it("refreshes when current time is selected again and keeps other drafts", () => {
     const initial = createInitialForm(fixedNow, "Asia/Shanghai");
     const edited = { ...initial, castingMode: "three_number_variant" as const, thirdNumber: "9007199254740993123" };
-    const refreshed = selectCastingMode(edited, "current_civil_time", new Date("2026-08-07T00:20:00.000Z"));
+    const refreshed = selectCastingMode(edited, "current_civil_time", new Date("2026-08-07T00:20:00.000Z"), "UTC");
     expect(refreshed.castingMode).toBe("current_civil_time");
-    expect(refreshed.currentDateTime).toBe("2026-08-07T08:20");
+    expect(refreshed.currentDateTime).toBe("2026-08-07T00:20");
     expect(refreshed.thirdNumber).toBe("9007199254740993123");
 
-    const selectedAgain = selectCastingMode({ ...refreshed, currentDateTime: "2000-01-01T00:00" }, "current_civil_time", new Date("2026-08-07T01:20:00.000Z"));
-    expect(selectedAgain.currentDateTime).toBe("2026-08-07T09:20");
+    const selectedAgain = selectCastingMode({ ...refreshed, currentDateTime: "2000-01-01T00:00" }, "current_civil_time", new Date("2026-08-07T01:20:00.000Z"), "UTC");
+    expect(selectedAgain.currentDateTime).toBe("2026-08-07T01:20");
   });
 });

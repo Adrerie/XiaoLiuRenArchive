@@ -112,6 +112,24 @@ public final class AndroidDeviceSmokeTest {
         }
     }
 
+    private static void assertNoHorizontalOverflow(ActivityScenario<MainActivity> scenario) throws Exception {
+        CountDownLatch evaluated = new CountDownLatch(1);
+        String[] observed = new String[1];
+        scenario.onActivity(activity -> activity.getBridge().getWebView().evaluateJavascript(
+                "document.documentElement.scrollWidth <= document.documentElement.clientWidth ? 'ok' : document.documentElement.scrollWidth + '/' + document.documentElement.clientWidth",
+                value -> {
+                    observed[0] = value;
+                    evaluated.countDown();
+                }
+        ));
+        if (!evaluated.await(5, TimeUnit.SECONDS)) {
+            throw new AssertionError("Timed out while checking the physical-device viewport width");
+        }
+        if (observed[0] == null || !observed[0].contains("ok")) {
+            throw new AssertionError("The app has horizontal overflow on the physical device: " + observed[0]);
+        }
+    }
+
     @Test
     public void offlineBetaFlowUsesStableDomSelectors() throws Exception {
         UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
@@ -122,6 +140,7 @@ public final class AndroidDeviceSmokeTest {
 
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(launchIntent);
         try {
+            assertNoHorizontalOverflow(scenario);
             onWebView()
                     .withElement(findElement(Locator.ID, "casting-mode-manual_lunar_time"))
                     .perform(webClick())
@@ -139,6 +158,7 @@ public final class AndroidDeviceSmokeTest {
                     .withElement(findElement(Locator.ID, "generate-result-button"))
                     .perform(webClick());
             assertElementText(scenario, "final-palace-result", "\u5c0f\u5409");
+            assertNoHorizontalOverflow(scenario);
 
             onWebView()
                     .withElement(findElement(Locator.ID, "nav-library"))
@@ -154,6 +174,7 @@ public final class AndroidDeviceSmokeTest {
             assertElementText(scenario, "palace-detail", "\u5c0f\u5409");
 
             device.pressBack();
+            onWebView().withElement(findElement(Locator.CSS_SELECTOR, "#technical-disclosure > summary")).perform(webClick());
             onWebView().withElement(findElement(Locator.ID, "copy-json-button")).perform(webClick());
             assertElementText(scenario, "generate-result-button", "\u751f\u6210");
             assertElementTextEventually(scenario, "export-status", "\u526a\u8d34\u677f");
