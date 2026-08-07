@@ -7,6 +7,8 @@ interface ArchivePageProps {
   readonly error: string | null;
   readonly onRecordsChange: () => void;
   readonly store: ArchiveStore;
+  readonly mobileDetailOpen: boolean;
+  readonly onMobileDetailOpenChange: (open: boolean) => void;
 }
 
 const PALACE_LABELS: Readonly<Record<string, string>> = {
@@ -36,7 +38,7 @@ function downloadJson(json: string): void {
   URL.revokeObjectURL(url);
 }
 
-export default function ArchivePage({ records, error, onRecordsChange, store }: ArchivePageProps): ReactElement {
+export default function ArchivePage({ records, error, onRecordsChange, store, mobileDetailOpen, onMobileDetailOpenChange }: ArchivePageProps): ReactElement {
   const storageUnavailable = !store.capability.available;
   const [selectedId, setSelectedId] = useState<string | null>(records[0]?.id ?? null);
   const [titleDraft, setTitleDraft] = useState("");
@@ -48,8 +50,10 @@ export default function ArchivePage({ records, error, onRecordsChange, store }: 
   );
 
   useEffect(() => {
+    const hasSelected = records.some((record) => record.id === selectedId);
     setSelectedId((current) => records.some((record) => record.id === current) ? current : records[0]?.id ?? null);
-  }, [records]);
+    if (!hasSelected) onMobileDetailOpenChange(false);
+  }, [onMobileDetailOpenChange, records, selectedId]);
 
   useEffect(() => {
     setTitleDraft(selectedRecord?.title ?? "");
@@ -76,6 +80,7 @@ export default function ArchivePage({ records, error, onRecordsChange, store }: 
     try {
       store.remove(selectedRecord.id);
       onRecordsChange();
+      onMobileDetailOpenChange(false);
       showStatus("课例已删除。");
     } catch (writeError) {
       showStatus(writeError instanceof Error ? writeError.message : "删除失败。");
@@ -108,7 +113,7 @@ export default function ArchivePage({ records, error, onRecordsChange, store }: 
   }
 
   return (
-    <section className="archive-page">
+    <section className="archive-page" data-mobile-detail={mobileDetailOpen ? "true" : "false"}>
       <header className="page-intro">
         <span className="section-kicker">本地课例册</span>
         <h2>课例册</h2>
@@ -130,7 +135,7 @@ export default function ArchivePage({ records, error, onRecordsChange, store }: 
             <button
               type="button"
               className={record.id === selectedRecord?.id ? "archive-card archive-card-selected" : "archive-card"}
-              onClick={() => setSelectedId(record.id)}
+              onClick={() => { setSelectedId(record.id); onMobileDetailOpenChange(true); }}
               key={record.id}
             >
               <strong>{record.title ?? "未命名课例"}</strong>
@@ -142,6 +147,7 @@ export default function ArchivePage({ records, error, onRecordsChange, store }: 
         </div>
         {selectedRecord ? (
           <article className="archive-detail result-section" aria-labelledby="archive-detail-heading">
+            <button type="button" className="archive-mobile-back secondary-button" onClick={() => onMobileDetailOpenChange(false)}>返回课例列表</button>
             <div className="section-heading">
               <div>
                 <span className="section-kicker">课例详情</span>

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactElement
 import { App as CapacitorApp } from "@capacitor/app";
 import { Capacitor, type PluginListenerHandle } from "@capacitor/core";
 import { runLocalDivination } from "./index";
+import { beginResultGeneration, completeResultGeneration, failResultGeneration } from "./result-lifecycle";
 import AppShell from "./AppShell";
 import CastingPage from "../pages/casting/CastingPage";
 import ResultView from "../pages/result/ResultView";
@@ -123,6 +124,7 @@ export default function App(): ReactElement {
   const [error, setError] = useState<string | null>(null);
   const [archiveStatus, setArchiveStatus] = useState<string | null>(null);
   const [archiveError, setArchiveError] = useState<string | null>(null);
+  const [archiveDetailOpen, setArchiveDetailOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const [themePreference, setThemePreference] = useState<ThemePreference>(readThemePreference);
   const [systemTheme, setSystemTheme] = useState<ResolvedTheme>(detectSystemTheme);
@@ -131,11 +133,15 @@ export default function App(): ReactElement {
   const [structuredDetailsOpen, setStructuredDetailsOpen] = useState(false);
   const viewRef = useRef(view);
   const resultRef = useRef(result);
+  const archiveStatusRef = useRef(archiveStatus);
+  const archiveDetailOpenRef = useRef(archiveDetailOpen);
   const moreOpenRef = useRef(moreOpen);
   const technicalDisclosureOpenRef = useRef(technicalDisclosureOpen);
   const structuredDetailsOpenRef = useRef(structuredDetailsOpen);
   viewRef.current = view;
   resultRef.current = result;
+  archiveStatusRef.current = archiveStatus;
+  archiveDetailOpenRef.current = archiveDetailOpen;
   moreOpenRef.current = moreOpen;
   technicalDisclosureOpenRef.current = technicalDisclosureOpen;
   structuredDetailsOpenRef.current = structuredDetailsOpen;
@@ -201,6 +207,7 @@ export default function App(): ReactElement {
       if (moreOpenRef.current) { setMoreOpen(false); return; }
       if (technicalDisclosureOpenRef.current) { setTechnicalDisclosureOpen(false); return; }
       if (structuredDetailsOpenRef.current) { setStructuredDetailsOpen(false); return; }
+      if (viewRef.current === "archive" && archiveDetailOpenRef.current) { setArchiveDetailOpen(false); return; }
       if (viewRef.current !== "divination") { setView("divination"); return; }
       if (resultRef.current !== null) { setResult(null); return; }
       void CapacitorApp.exitApp();
@@ -214,6 +221,7 @@ export default function App(): ReactElement {
   function changeView(nextView: AppView): void {
     setView(nextView);
     setMoreOpen(false);
+    if (nextView !== "archive") setArchiveDetailOpen(false);
   }
 
   function reloadArchive(): void {
@@ -231,9 +239,10 @@ export default function App(): ReactElement {
   }
 
   function clearResult(): void {
-    setResult(null);
+    const cleared = failResultGeneration<DivinationResult>();
+    setResult(cleared.result);
     setError(null);
-    setArchiveStatus(null);
+    setArchiveStatus(cleared.archiveStatus);
     setTechnicalDisclosureOpen(false);
     setStructuredDetailsOpen(false);
   }
@@ -242,13 +251,20 @@ export default function App(): ReactElement {
     event.preventDefault();
     setBusy(true);
     setError(null);
+    const started = beginResultGeneration<DivinationResult>({ result: resultRef.current, archiveStatus: archiveStatusRef.current });
+    setResult(started.result);
+    setArchiveStatus(started.archiveStatus);
     try {
       setTechnicalDisclosureOpen(false);
       setStructuredDetailsOpen(false);
-      setResult(await runLocalDivination(buildRequest(form)));
+      const completed = completeResultGeneration(await runLocalDivination(buildRequest(form)));
+      setResult(completed.result);
+      setArchiveStatus(completed.archiveStatus);
     } catch (submissionError) {
       setError(readableError(submissionError));
-      setResult(null);
+      const failed = failResultGeneration<DivinationResult>();
+      setResult(failed.result);
+      setArchiveStatus(failed.archiveStatus);
     } finally { setBusy(false); }
   }
 
@@ -260,19 +276,22 @@ export default function App(): ReactElement {
   return (
     <AppShell
       activeView={view}
+      hasResult={result !== null}
       moreOpen={moreOpen}
       themeLabel={themeLabel(themePreference, systemTheme)}
+      themePreference={themePreference}
       onChangeView={changeView}
       onMoreToggle={() => setMoreOpen((open) => !open)}
       onMoreClose={() => setMoreOpen(false)}
       onThemeToggle={() => setThemePreference((current) => nextThemePreference(current, systemTheme))}
+      onThemePreferenceChange={setThemePreference}
     >
-      {view === "archive" ? <ArchivePage records={archiveRecords} error={archiveError} onRecordsChange={reloadArchive} store={archiveStore} /> : null}
+      {view === "archive" ? <ArchivePage records={archiveRecords} error={archiveError} onRecordsChange={reloadArchive} store={archiveStore} mobileDetailOpen={archiveDetailOpen} onMobileDetailOpenChange={setArchiveDetailOpen} /> : null}
       {view === "library" ? <KnowledgeLibraryPage /> : null}
       {view === "methods" ? <MethodsPage /> : null}
       {view === "about" ? <AboutPage /> : null}
       {view === "divination" ? (
-        <div className="divination-layout">
+        <div className={result ? "divination-layout divination-layout-has-result" : "divination-layout divination-layout-pre-result"}>
           <CastingPage
             form={form}
             domains={domains}
@@ -291,9 +310,7 @@ export default function App(): ReactElement {
             onCurrentPolicyChange={(value) => update("currentCalendarPolicyId", civilPolicyOption(value))}
             onSpecifiedPolicyChange={(value) => update("specifiedCalendarPolicyId", civilPolicyOption(value))}
           />
-          <section className="result-column">
-            {result ? <ResultView result={result} domains={domains} technicalDisclosureOpen={technicalDisclosureOpen} structuredDetailsOpen={structuredDetailsOpen} archiveStatus={archiveStatus} archiveCapability={archiveStore.capability} onTechnicalDisclosureOpenChange={setTechnicalDisclosureOpen} onStructuredDetailsOpenChange={setStructuredDetailsOpen} onSaveToArchive={saveResultToArchive} onClearResult={clearResult} /> : <section className="empty-state"><span className="section-kicker">02 · 结果</span><h2>结果会在这里展开</h2><p>提交后可查看主结果、对应路径、本地解释、来源和现实边界。</p></section>}
-          </section>
+          {result ? <section className="result-column"><ResultView result={result} domains={domains} technicalDisclosureOpen={technicalDisclosureOpen} structuredDetailsOpen={structuredDetailsOpen} archiveStatus={archiveStatus} archiveCapability={archiveStore.capability} onTechnicalDisclosureOpenChange={setTechnicalDisclosureOpen} onStructuredDetailsOpenChange={setStructuredDetailsOpen} onSaveToArchive={saveResultToArchive} onClearResult={clearResult} /></section> : null}
         </div>
       ) : null}
     </AppShell>

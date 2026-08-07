@@ -143,6 +143,31 @@ describe("local casebook archive", () => {
     expect(targetStore.list()).toEqual([]);
   });
 
+  it("rejects duplicate IDs inside one import batch without partial writes", async () => {
+    const result = await runLocalDivination(request());
+    const sourceStore = createArchiveStore(createStorage());
+    sourceStore.save(result, "批量记录");
+    const payload = JSON.parse(sourceStore.exportJson()) as { records: Array<Record<string, unknown>>; schemaVersion: string };
+    payload.records.push({ ...payload.records[0] });
+
+    const targetStore = createArchiveStore(createStorage());
+    expect(() => targetStore.importJson(payload)).toThrow(/重复课例 ID/);
+    expect(targetStore.list()).toEqual([]);
+  });
+
+  it("rejects an existing ID without rewriting the current batch", async () => {
+    const result = await runLocalDivination(request());
+    const sourceStore = createArchiveStore(createStorage());
+    sourceStore.save(result, "已有记录");
+    const payload = JSON.parse(sourceStore.exportJson()) as { records: Array<Record<string, unknown>>; schemaVersion: string };
+
+    const targetStore = createArchiveStore(createStorage());
+    targetStore.importJson(payload);
+    const before = targetStore.list();
+    expect(() => targetStore.importJson(payload)).toThrow(/现有记录/);
+    expect(targetStore.list()).toEqual(before);
+  });
+
   it("does not claim local persistence when storage is unavailable", async () => {
     const store = createArchiveStore(createStorage(false));
     const result = await runLocalDivination(request());

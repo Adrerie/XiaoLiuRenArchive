@@ -611,9 +611,17 @@ export function createArchiveStore(storage: ArchiveStorage = defaultStorage()): 
       const imported = directResult
         ? [createRecord(parseImportedResult(payload), null, legacyVersion(payload))]
         : collection?.records ?? [];
-      const normalized = imported.map((record) => ({ ...record, id: current.some((item) => item.id === record.id) ? uniqueId(current) : record.id }));
-      write([...normalized, ...current]);
-      return { importedCount: normalized.length, migratedCount: normalized.filter((record) => record.migratedFrom !== null).length };
+      const importedIds = imported.map((record) => record.id);
+      const duplicateIncomingId = importedIds.find((id, index) => importedIds.indexOf(id) !== index);
+      if (duplicateIncomingId) {
+        throw new ArchiveError("ARCHIVE_IMPORT_ERROR", `导入文件包含重复课例 ID（${duplicateIncomingId}），整批未写入。`);
+      }
+      const existingConflictId = importedIds.find((id) => current.some((record) => record.id === id));
+      if (existingConflictId) {
+        throw new ArchiveError("ARCHIVE_IMPORT_ERROR", `课例 ID 与现有记录冲突（${existingConflictId}），整批未写入。`);
+      }
+      write([...imported, ...current]);
+      return { importedCount: imported.length, migratedCount: imported.filter((record) => record.migratedFrom !== null).length };
     },
   };
 }

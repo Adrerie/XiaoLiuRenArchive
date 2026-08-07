@@ -83,6 +83,16 @@ function EthicsBanner({ result }: { readonly result: DivinationResult }): ReactE
   );
 }
 
+function ArchiveSaveSection({ archiveStatus, archiveCapability, onSaveToArchive }: Pick<ResultViewProps, "archiveStatus" | "archiveCapability" | "onSaveToArchive">): ReactElement {
+  return (
+    <section className="result-section result-actions archive-save-section" aria-labelledby="archive-save-heading">
+      <div className="section-heading"><div><span className="section-kicker">本地案例库</span><h3 id="archive-save-heading">只在明确保存后记录</h3></div><button type="button" className="secondary-button" disabled={!archiveCapability.available} onClick={onSaveToArchive}>保存到案例库</button></div>
+      <p className="helper">默认不保存问题原文，不上传、不云同步。{archiveCapability.message ?? ""}</p>
+      {archiveStatus ? <p className="export-status" role="status">{archiveStatus}</p> : null}
+    </section>
+  );
+}
+
 export default function ResultView({
   result,
   domains,
@@ -100,7 +110,7 @@ export default function ResultView({
     <div className="result-area" aria-live="polite">
       <div className="result-toolbar">
         <span>当前结果已生成</span>
-        <button id="clear-result-button" type="button" className="secondary-button danger-button" onClick={onClearResult}>清除结果</button>
+        <button id="clear-result-button" type="button" className="secondary-button quiet-action" onClick={onClearResult}>清除结果</button>
       </div>
       <EthicsBanner result={result} />
       {!hardStop ? <ResultHero result={result} domains={domains} /> : null}
@@ -108,16 +118,13 @@ export default function ResultView({
       {!hardStop ? <CalendarPath result={result} /> : null}
       {!hardStop ? <ThreePalaceFlow result={result} /> : null}
       <RealitySection result={result} hardStop={hardStop} />
+      {!hardStop ? <ArchiveSaveSection archiveStatus={archiveStatus} archiveCapability={archiveCapability} onSaveToArchive={onSaveToArchive} /> : null}
       <TechnicalDisclosure open={technicalDisclosureOpen} hardStop={hardStop} onOpenChange={onTechnicalDisclosureOpenChange}>
         {hardStop ? <><CalendarPath result={result} /><ThreePalaceFlow result={result} /></> : null}
         <TraceSection result={result} />
         <StructuredDetails result={result} open={structuredDetailsOpen} onOpenChange={onStructuredDetailsOpenChange} />
         <ExportPanel result={result} />
-        <section className="result-section result-actions" aria-labelledby="archive-save-heading">
-          <div className="section-heading"><div><span className="section-kicker">本地案例库</span><h3 id="archive-save-heading">只在明确保存后记录</h3></div><button type="button" className="secondary-button" disabled={!archiveCapability.available} onClick={onSaveToArchive}>保存到案例库</button></div>
-          <p className="helper">默认不保存问题原文，不上传、不云同步。{archiveCapability.message ?? ""}</p>
-          {archiveStatus ? <p className="export-status" role="status">{archiveStatus}</p> : null}
-        </section>
+        {hardStop ? <ArchiveSaveSection archiveStatus={archiveStatus} archiveCapability={archiveCapability} onSaveToArchive={onSaveToArchive} /> : null}
         {!hardStop ? <ProvenanceSection result={result} /> : null}
       </TechnicalDisclosure>
     </div>

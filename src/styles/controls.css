@@ -4,6 +4,7 @@
 .secondary-button { padding: 9px 13px; border-color: var(--line); background: var(--surface); color: var(--ink); }
 .secondary-button:hover { border-color: var(--accent); background: var(--accent-soft); }
 .danger-button { color: var(--danger); }
+.quiet-action { color: var(--ink-muted); }
 .icon-button { width: 34px; height: 34px; border-color: var(--line); background: transparent; color: var(--ink-muted); font-size: 20px; line-height: 1; }
 .theme-toggle { white-space: nowrap; }
 .form-grid { display: grid; gap: 14px; }
