@@ -1,7 +1,7 @@
 .app-shell { min-height: 100vh; background: var(--bg); }
 
 .app-layout { display: grid; grid-template-columns: 236px minmax(0, 1fr); align-items: start; min-height: 100vh; max-width: var(--content-max); margin: 0 auto; }
-.desktop-sidebar { position: static; align-self: start; display: flex; flex-direction: column; gap: 32px; min-height: 100vh; height: auto; padding: 34px 20px; border-right: 1px solid var(--line); background: color-mix(in srgb, var(--bg) 86%, transparent); }
+.desktop-sidebar { position: sticky; z-index: 4; top: 0; align-self: start; display: flex; flex-direction: column; gap: 32px; min-height: 100vh; height: 100vh; max-height: 100vh; overflow-y: auto; padding: calc(34px + var(--safe-top)) 20px 34px; border-right: 1px solid var(--line); background: color-mix(in srgb, var(--bg) 92%, transparent); }
 .sidebar-brand, .mobile-brand { display: flex; align-items: center; gap: 12px; }
 .sidebar-brand strong, .mobile-brand strong { display: block; font-size: 16px; }
 .sidebar-brand span:not(.brand-mark), .mobile-brand .eyebrow { display: block; color: var(--ink-muted); font-size: 11px; }
