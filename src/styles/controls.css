@@ -17,10 +17,11 @@ input[type="checkbox"] { width: 18px; min-height: 18px; accent-color: var(--acce
 .checkbox-row { display: flex; grid-template-columns: none; align-items: flex-start; gap: 9px; color: var(--ink); font-weight: 500; }
 .checkbox-row input { flex: 0 0 18px; margin-top: 4px; }
 fieldset { margin: 0; padding: 24px 16px 16px; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); }
+.question-context-panel fieldset { margin-top: 20px; }
 legend { margin-left: 4px; padding: 0 8px; background: var(--surface); color: var(--accent-strong); font-size: 14px; line-height: 1.4; white-space: nowrap; }
 .flag-list { display: grid; gap: 8px; margin-top: 10px; }
 .form-divider { height: 1px; margin: 24px 0; background: var(--line); }
-.method-selector { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 18px 0; }
+.method-selector { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 8px; margin: 18px 0; }
 .method-option { display: flex; align-items: flex-start; gap: 8px; min-width: 0; padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--ink-muted); text-align: left; }
 .method-option:hover { border-color: var(--accent); }
 .method-option-selected { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-strong); }

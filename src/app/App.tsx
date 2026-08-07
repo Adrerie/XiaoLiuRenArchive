@@ -230,6 +230,14 @@ export default function App(): ReactElement {
     } catch (archiveWriteError) { setArchiveStatus(readableError(archiveWriteError)); }
   }
 
+  function clearResult(): void {
+    setResult(null);
+    setError(null);
+    setArchiveStatus(null);
+    setTechnicalDisclosureOpen(false);
+    setStructuredDetailsOpen(false);
+  }
+
   async function submit(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
     setBusy(true);
@@ -284,7 +292,7 @@ export default function App(): ReactElement {
             onSpecifiedPolicyChange={(value) => update("specifiedCalendarPolicyId", civilPolicyOption(value))}
           />
           <section className="result-column">
-            {result ? <ResultView result={result} domains={domains} technicalDisclosureOpen={technicalDisclosureOpen} structuredDetailsOpen={structuredDetailsOpen} archiveStatus={archiveStatus} archiveCapability={archiveStore.capability} onTechnicalDisclosureOpenChange={setTechnicalDisclosureOpen} onStructuredDetailsOpenChange={setStructuredDetailsOpen} onSaveToArchive={saveResultToArchive} /> : <section className="empty-state"><span className="section-kicker">02 · 结果</span><h2>结果会在这里展开</h2><p>提交后可查看主结果、对应路径、本地解释、来源和现实边界。</p></section>}
+            {result ? <ResultView result={result} domains={domains} technicalDisclosureOpen={technicalDisclosureOpen} structuredDetailsOpen={structuredDetailsOpen} archiveStatus={archiveStatus} archiveCapability={archiveStore.capability} onTechnicalDisclosureOpenChange={setTechnicalDisclosureOpen} onStructuredDetailsOpenChange={setStructuredDetailsOpen} onSaveToArchive={saveResultToArchive} onClearResult={clearResult} /> : <section className="empty-state"><span className="section-kicker">02 · 结果</span><h2>结果会在这里展开</h2><p>提交后可查看主结果、对应路径、本地解释、来源和现实边界。</p></section>}
           </section>
         </div>
       ) : null}

@@ -22,6 +22,7 @@ interface ResultViewProps {
   readonly onTechnicalDisclosureOpenChange: (open: boolean) => void;
   readonly onStructuredDetailsOpenChange: (open: boolean) => void;
   readonly onSaveToArchive: () => void;
+  readonly onClearResult: () => void;
 }
 
 function statusLabel(status: string): string {
@@ -92,10 +93,15 @@ export default function ResultView({
   onTechnicalDisclosureOpenChange,
   onStructuredDetailsOpenChange,
   onSaveToArchive,
+  onClearResult,
 }: ResultViewProps): ReactElement {
   const hardStop = result.ethics.stopPrimaryDivination;
   return (
     <div className="result-area" aria-live="polite">
+      <div className="result-toolbar">
+        <span>当前结果已生成</span>
+        <button id="clear-result-button" type="button" className="secondary-button danger-button" onClick={onClearResult}>清除结果</button>
+      </div>
       <EthicsBanner result={result} />
       {!hardStop ? <ResultHero result={result} domains={domains} /> : null}
       {!hardStop ? <InterpretationSummary result={result} /> : null}
