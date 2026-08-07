@@ -35,7 +35,7 @@ export default function KnowledgeLibraryPage(): ReactElement {
   return (
     <section className="library-page">
       <header className="page-intro">
-        <span className="section-kicker">LOCAL KNOWLEDGE LIBRARY</span>
+        <span className="section-kicker">本地知识库</span>
         <h2>六宫资料库</h2>
         <p>固定传统顺序浏览六宫；搜索只读取本地登记的宫名、原典、现代释义和领域解释。</p>
       </header>

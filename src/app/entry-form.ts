@@ -103,9 +103,9 @@ export function createInitialForm(
     lunarDay: "5",
     branchIndex: 5,
     isLeapMonth: false,
-    firstNumber: "3",
-    secondNumber: "5",
-    thirdNumber: "5",
+    firstNumber: "",
+    secondNumber: "",
+    thirdNumber: "",
     domainId: "relationship",
     stageId: "seeking",
     explicitRefusalExists: false,
@@ -121,6 +121,17 @@ export function refreshCurrentTime(form: FormState, now: Date = new Date()): For
     currentTimezone: detection.timeZone,
     currentTimezoneFallback: detection.usedFallback,
   };
+}
+
+export function selectCastingMode(
+  form: FormState,
+  mode: CastingMode,
+  now: Date = new Date(),
+): FormState {
+  if (mode === "current_civil_time") {
+    return { ...refreshCurrentTime(form, now), castingMode: mode };
+  }
+  return { ...form, castingMode: mode };
 }
 
 export function formatTimeZoneWarning(timeZone: TimeZoneDetection): string | null {

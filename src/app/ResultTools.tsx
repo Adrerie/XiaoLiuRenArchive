@@ -26,6 +26,7 @@ export function StructuredDetails({ result, open, onOpenChange }: StructuredDeta
         <dl className="provenance-grid detail-grid">
           <dt>casting.kind</dt><dd><code>{result.casting.kind}</code></dd>
           <dt>algorithmId</dt><dd><code>{result.calculation.algorithmId}</code></dd>
+          <dt>methodVersion</dt><dd><code>{result.provenance.methodVersion}</code></dd>
           {calendar ? (
             <>
               <dt>calendarPolicyId</dt><dd><code>{calendar.calendarPolicyId}</code></dd>
@@ -41,6 +42,12 @@ export function StructuredDetails({ result, open, onOpenChange }: StructuredDeta
           <dt>knowledgeVersion</dt><dd><code>{result.provenance.knowledgeVersion}</code></dd>
           <dt>ruleVersion</dt><dd><code>{result.provenance.ruleVersion}</code></dd>
           <dt>finalPalaceId</dt><dd><code>{result.calculation.finalPalaceId}</code></dd>
+          {result.calculation.algorithmId === "three-number-sequential-count-v1" ? (
+            <>
+              <dt>primaryPalaceOrdinal</dt><dd><code>{result.calculation.primaryPalaceOrdinal}</code></dd>
+              <dt>threePalaces</dt><dd><IdList values={result.calculation.threePalaces.map((palace) => palace.palaceId)} /></dd>
+            </>
+          ) : null}
           <dt>domainId</dt><dd><code>{result.interpretation.domainId}</code></dd>
           <dt>stageId</dt><dd><code>{result.interpretation.stageId ?? "null"}</code></dd>
           <dt>fragmentIds</dt><dd><IdList values={result.provenance.fragmentIds} /></dd>
@@ -76,7 +83,7 @@ export function ExportPanel({ result }: { readonly result: DivinationResult }): 
     <section className="result-section export-panel">
       <div className="section-heading">
         <div>
-          <span className="section-kicker">LOCAL EXPORT</span>
+          <span className="section-kicker">本地导出</span>
           <h3>隐私优先 JSON</h3>
         </div>
         <span className="policy-chip">不上传</span>

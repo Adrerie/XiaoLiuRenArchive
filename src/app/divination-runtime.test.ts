@@ -4,7 +4,7 @@ import type { DivinationRequest } from "../shared";
 
 function request(overrides: Partial<DivinationRequest> = {}): DivinationRequest {
   return {
-    requestVersion: "1.1.0",
+    requestVersion: "1.2.0",
     casting: {
       kind: "calendar",
       inputMode: "manual_lunar",
@@ -71,20 +71,24 @@ describe("local divination runtime", () => {
     const result = await runLocalDivination(request({
       casting: {
         kind: "three_numbers",
-        input: { kind: "three_numbers", first: 3, second: 5, third: 5 },
+        input: { kind: "three_numbers", first: "3", second: "5", third: "5" },
       },
     }));
 
     expect(result.casting.kind).toBe("three_numbers");
     expect(result.calculation.algorithmId).toBe("three-number-sequential-count-v1");
     expect(result.calculation.finalPalaceId).toBe("xiao_ji");
+    expect(result.calculation.algorithmId === "three-number-sequential-count-v1"
+      ? result.calculation.threePalaces.map((palace) => palace.palaceId)
+      : []).toEqual(["su_xi", "da_an", "xiao_ji"]);
+    expect(result.provenance.methodId).toBe("three-number-sequential-count-v1");
     expect(result.calculation.trace.map((step) => step.stage)).toEqual(["first_number", "second_number", "third_number"]);
     expect(result.calendar).toBeNull();
     expect(result.provenance.calendarPolicyId).toBeNull();
     expect(result.input.kind).toBe("three_numbers");
     if (result.input.kind === "three_numbers") {
       expect(result.input).not.toHaveProperty("lunarMonth");
-      expect(result.input.numbers).toEqual({ kind: "three_numbers", first: 3, second: 5, third: 5 });
+      expect(result.input.numbers).toEqual({ kind: "three_numbers", first: "3", second: "5", third: "5" });
     }
   });
 
@@ -99,6 +103,7 @@ describe("local divination runtime", () => {
       "xiaoliurenarchive-editorial-modern-knowledge-v1",
     ]));
     expect(result.interpretation.sections.domain.every((block) => block.sourceIds.includes("xiaoliurenarchive-editorial-modern-knowledge-v1"))).toBe(true);
+    expect(result.interpretation.sections.relationshipCurrentState).toHaveLength(1);
     expect(result.interpretation.sections.traditionalText.every((block) => block.sourceIds.includes("yuxiaji-liuren-shike-web-transcription-8s8s"))).toBe(true);
     expect(result.provenance.disputedFieldIds).toContain("palace.xiao_ji.classical.element");
     expect(result.provenance.provisionalSourceIds.every((id) => result.provenance.sourceIds.includes(id))).toBe(true);

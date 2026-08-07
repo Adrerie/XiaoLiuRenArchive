@@ -35,6 +35,7 @@ export type {
   ThreeNumberCastingRequest,
   ThreeNumberInput,
   ThreeNumberResultInput,
+  ThreePalace,
   TraditionalCalculationInput,
   TraditionalCalculationResult,
   SelectedFragment,

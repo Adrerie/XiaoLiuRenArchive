@@ -1,12 +1,14 @@
 {
   "$schema": "https://xiaoliurenarchive.local/schemas/knowledge-manifest.schema.json",
-  "bundleVersion": "2.2.0",
+  "bundleVersion": "3.0.0",
   "status": "provisional",
-  "updatedAt": "2026-08-05",
+  "updatedAt": "2026-08-07",
   "palacesVersion": "1.0.0-provisional.2",
   "questionDomainsVersion": "1.0.0-provisional.4",
   "interpretationFragmentsVersion": "1.0.0-provisional.2",
   "sourceRegistryVersion": "1.0.0-provisional.1",
   "ethicsRulesVersion": "1.0.0-provisional.3",
-  "safetyMessagesVersion": "1.0.0-provisional.2"
+  "safetyMessagesVersion": "1.0.0-provisional.2",
+  "castingMethodsVersion": "1.0.0-provisional.1",
+  "relationshipCurrentStateVersion": "1.0.0-provisional.1"
 }

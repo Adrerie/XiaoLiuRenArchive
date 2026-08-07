@@ -5,6 +5,8 @@ import sourcesJson from "../../knowledge/source-registry.json";
 import manifestJson from "../../knowledge/knowledge-manifest.v1.json";
 import ethicsRulesJson from "../../knowledge/ethics-rules.v1.json";
 import safetyMessagesJson from "../../knowledge/safety-messages.v1.json";
+import castingMethodsJson from "../../knowledge/casting-methods.v1.json";
+import relationshipCurrentStateJson from "../../knowledge/relationship-current-state.v1.json";
 import type {
   CandidateClaim,
   ContentBlock,
@@ -123,6 +125,30 @@ export interface KnowledgeManifest {
   readonly sourceRegistryVersion: string;
   readonly ethicsRulesVersion: string;
   readonly safetyMessagesVersion: string;
+  readonly castingMethodsVersion: string;
+  readonly relationshipCurrentStateVersion: string;
+}
+
+export interface CastingMethod {
+  readonly id: string;
+  readonly name: string;
+  readonly category: "traditional-core" | "modern-variant";
+  readonly inputKind: "calendar" | "three_numbers";
+  readonly ruleSummary: string;
+  readonly pathFields: readonly string[];
+  readonly primaryPalacePosition: string;
+  readonly sourceStatus: "provisional" | "reviewed" | "canonical";
+  readonly sourceIds: readonly string[];
+  readonly version: string;
+  readonly supportedInterpretationLayers: readonly string[];
+  readonly unsupportedClaims: readonly string[];
+}
+
+export interface RelationshipCurrentState {
+  readonly palaceId: PalaceId;
+  readonly text: string;
+  readonly sourceIds: readonly string[];
+  readonly status: ContentBlock["status"];
 }
 
 export interface KnowledgeSelection {
@@ -168,6 +194,8 @@ interface KnowledgeRegistry {
   readonly domains: ReadonlyMap<string, KnowledgeDomain>;
   readonly fragments: readonly FragmentRecord[];
   readonly sources: ReadonlyMap<string, KnowledgeSource>;
+  readonly castingMethods: ReadonlyMap<string, CastingMethod>;
+  readonly relationshipCurrentState: ReadonlyMap<PalaceId, RelationshipCurrentState>;
 }
 
 const palaceSet = new Set<PalaceId>(PALACE_ORDER);
@@ -306,6 +334,8 @@ function parseRegistry(): KnowledgeRegistry {
   const sourcesRoot = record(sourcesJson, "sources");
   const ethicsRoot = record(ethicsRulesJson, "ethicsRules");
   const safetyRoot = record(safetyMessagesJson, "safetyMessages");
+  const castingMethodsRoot = record(castingMethodsJson, "castingMethods");
+  const relationshipCurrentStateRoot = record(relationshipCurrentStateJson, "relationshipCurrentState");
   const manifestRoot = record(manifestJson, "knowledgeManifest");
   const manifest: KnowledgeManifest = {
     bundleVersion: stringValue(value(manifestRoot, "bundleVersion", "knowledgeManifest"), "knowledgeManifest.bundleVersion"),
@@ -315,6 +345,8 @@ function parseRegistry(): KnowledgeRegistry {
     sourceRegistryVersion: stringValue(value(manifestRoot, "sourceRegistryVersion", "knowledgeManifest"), "knowledgeManifest.sourceRegistryVersion"),
     ethicsRulesVersion: stringValue(value(manifestRoot, "ethicsRulesVersion", "knowledgeManifest"), "knowledgeManifest.ethicsRulesVersion"),
     safetyMessagesVersion: stringValue(value(manifestRoot, "safetyMessagesVersion", "knowledgeManifest"), "knowledgeManifest.safetyMessagesVersion"),
+    castingMethodsVersion: stringValue(value(manifestRoot, "castingMethodsVersion", "knowledgeManifest"), "knowledgeManifest.castingMethodsVersion"),
+    relationshipCurrentStateVersion: stringValue(value(manifestRoot, "relationshipCurrentStateVersion", "knowledgeManifest"), "knowledgeManifest.relationshipCurrentStateVersion"),
   };
   assertManifestVersion(manifest.palacesVersion, "palacesVersion", palacesRoot, "palaces");
   assertManifestVersion(manifest.questionDomainsVersion, "questionDomainsVersion", domainsRoot, "domains");
@@ -322,6 +354,8 @@ function parseRegistry(): KnowledgeRegistry {
   assertManifestVersion(manifest.sourceRegistryVersion, "sourceRegistryVersion", sourcesRoot, "sources");
   assertManifestVersion(manifest.ethicsRulesVersion, "ethicsRulesVersion", ethicsRoot, "ethicsRules");
   assertManifestVersion(manifest.safetyMessagesVersion, "safetyMessagesVersion", safetyRoot, "safetyMessages");
+  assertManifestVersion(manifest.castingMethodsVersion, "castingMethodsVersion", castingMethodsRoot, "castingMethods");
+  assertManifestVersion(manifest.relationshipCurrentStateVersion, "relationshipCurrentStateVersion", relationshipCurrentStateRoot, "relationshipCurrentState");
 
   const sourceRecords = arrayValue(value(sourcesRoot, "sources", "sources"), "sources.sources");
   const sourceMap = new Map<string, KnowledgeSource>();
@@ -344,6 +378,60 @@ function parseRegistry(): KnowledgeRegistry {
       url: optionalStringValue(source.url),
     });
   }
+
+  const castingMethodRecords = arrayValue(value(castingMethodsRoot, "methods", "castingMethods"), "castingMethods.methods");
+  const castingMethods = new Map<string, CastingMethod>();
+  for (const [index, methodValue] of castingMethodRecords.entries()) {
+    const method = record(methodValue, `castingMethods.methods[${index}]`);
+    const id = stringValue(value(method, "id", `casting method ${index}`), `casting method ${index}.id`);
+    const sourceIds = stringArray(value(method, "sourceIds", `casting method ${id}`), `casting method ${id}.sourceIds`);
+    for (const sourceId of sourceIds) {
+      if (!sourceMap.has(sourceId)) throw new KnowledgeError("KNOWLEDGE_MISSING_REFERENCE", `Unknown source reference: ${sourceId}`);
+    }
+    const category = value(method, "category", `casting method ${id}`);
+    if (category !== "traditional-core" && category !== "modern-variant") throw new KnowledgeError("KNOWLEDGE_INTEGRITY_ERROR", `Unknown casting method category: ${String(category)}`);
+    const inputKind = value(method, "inputKind", `casting method ${id}`);
+    if (inputKind !== "calendar" && inputKind !== "three_numbers") throw new KnowledgeError("KNOWLEDGE_INTEGRITY_ERROR", `Unknown casting method input kind: ${String(inputKind)}`);
+    const sourceStatus = value(method, "sourceStatus", `casting method ${id}`);
+    if (sourceStatus !== "provisional" && sourceStatus !== "reviewed" && sourceStatus !== "canonical") throw new KnowledgeError("KNOWLEDGE_INTEGRITY_ERROR", `Unknown casting method status: ${String(sourceStatus)}`);
+    if (castingMethods.has(id)) throw new KnowledgeError("KNOWLEDGE_INTEGRITY_ERROR", `Duplicate casting method id: ${id}`);
+    castingMethods.set(id, {
+      id,
+      name: stringValue(value(method, "name", `casting method ${id}`), `casting method ${id}.name`),
+      category,
+      inputKind,
+      ruleSummary: stringValue(value(method, "ruleSummary", `casting method ${id}`), `casting method ${id}.ruleSummary`),
+      pathFields: stringArray(value(method, "pathFields", `casting method ${id}`), `casting method ${id}.pathFields`),
+      primaryPalacePosition: stringValue(value(method, "primaryPalacePosition", `casting method ${id}`), `casting method ${id}.primaryPalacePosition`),
+      sourceStatus,
+      sourceIds,
+      version: stringValue(value(method, "version", `casting method ${id}`), `casting method ${id}.version`),
+      supportedInterpretationLayers: stringArray(value(method, "supportedInterpretationLayers", `casting method ${id}`), `casting method ${id}.supportedInterpretationLayers`),
+      unsupportedClaims: stringArray(value(method, "unsupportedClaims", `casting method ${id}`), `casting method ${id}.unsupportedClaims`),
+    });
+  }
+  if (!castingMethods.has("traditional-month-day-hour-v1") || !castingMethods.has("three-number-sequential-count-v1")) {
+    throw new KnowledgeError("KNOWLEDGE_INTEGRITY_ERROR", "The casting method registry is incomplete");
+  }
+
+  const currentStateRecords = arrayValue(value(relationshipCurrentStateRoot, "entries", "relationshipCurrentState"), "relationshipCurrentState.entries");
+  const relationshipCurrentState = new Map<PalaceId, RelationshipCurrentState>();
+  for (const [index, entryValue] of currentStateRecords.entries()) {
+    const entry = record(entryValue, `relationshipCurrentState.entries[${index}]`);
+    const entryPalaceId = palaceId(value(entry, "palaceId", `relationship current state ${index}`), `relationship current state ${index}.palaceId`);
+    const sourceIds = stringArray(value(entry, "sourceIds", `relationship current state ${entryPalaceId}`), `relationship current state ${entryPalaceId}.sourceIds`);
+    for (const sourceId of sourceIds) {
+      if (!sourceMap.has(sourceId)) throw new KnowledgeError("KNOWLEDGE_MISSING_REFERENCE", `Unknown source reference: ${sourceId}`);
+    }
+    if (relationshipCurrentState.has(entryPalaceId)) throw new KnowledgeError("KNOWLEDGE_INTEGRITY_ERROR", `Duplicate relationship current state palace: ${entryPalaceId}`);
+    relationshipCurrentState.set(entryPalaceId, {
+      palaceId: entryPalaceId,
+      text: stringValue(value(entry, "text", `relationship current state ${entryPalaceId}`), `relationship current state ${entryPalaceId}.text`),
+      sourceIds,
+      status: statusValue(value(entry, "status", `relationship current state ${entryPalaceId}`)),
+    });
+  }
+  if (relationshipCurrentState.size !== PALACE_ORDER.length) throw new KnowledgeError("KNOWLEDGE_INTEGRITY_ERROR", "Relationship current state registry is incomplete");
 
   const parsedPalaces = arrayValue(value(palacesRoot, "palaces", "palaces"), "palaces.palaces");
   const palaceMap = new Map<PalaceId, PalaceKnowledge>();
@@ -518,6 +606,8 @@ function parseRegistry(): KnowledgeRegistry {
     domains: domainMap,
     fragments,
     sources: sourceMap,
+    castingMethods,
+    relationshipCurrentState,
   };
 }
 
@@ -565,6 +655,22 @@ export function getKnowledgeManifest(): KnowledgeManifest {
 
 export function getEthicsRulesVersion(): string {
   return registry.manifest.ethicsRulesVersion;
+}
+
+export function listCastingMethods(): readonly CastingMethod[] {
+  return [...registry.castingMethods.values()].sort((left, right) => left.id.localeCompare(right.id));
+}
+
+export function getCastingMethod(methodId: string): CastingMethod {
+  const method = registry.castingMethods.get(methodId);
+  if (!method) throw new KnowledgeError("KNOWLEDGE_INTEGRITY_ERROR", `Unknown casting method: ${methodId}`);
+  return method;
+}
+
+export function getRelationshipCurrentState(palaceId: PalaceId): RelationshipCurrentState {
+  const entry = registry.relationshipCurrentState.get(palaceId);
+  if (!entry) throw new KnowledgeError("KNOWLEDGE_INTEGRITY_ERROR", `Missing relationship current state: ${palaceId}`);
+  return entry;
 }
 
 export function listPalaces(): readonly PalaceKnowledge[] {
@@ -625,6 +731,7 @@ export function getContextSourceIds(input: {
     ...palace.sourceIds,
     ...palace.traditionalSourceIds,
     ...fragments.flatMap((fragment) => fragment.sourceIds),
+    ...(input.domainId === "relationship" ? getRelationshipCurrentState(input.finalPalaceId).sourceIds : []),
   ])];
 }
 
@@ -711,6 +818,9 @@ export function selectInterpretation(input: {
   const realityFragments = matchingFragments("reality_check", input.finalPalaceId, input.domainId, input.stageId);
   const historicalFragments = matchingFragments("historical_context", input.finalPalaceId, input.domainId, input.stageId);
   const ethicsFragments = matchingFragments("ethics_notice", input.finalPalaceId, input.domainId, input.stageId);
+  const relationshipCurrentState = input.domainId === "relationship"
+    ? getRelationshipCurrentState(input.finalPalaceId)
+    : null;
 
   const selected: FragmentRecord[] = [];
   addFragments(selected, [neutral, ...stageFragments, ...actionFragments, ...realityFragments, ...historicalFragments, ...ethicsFragments]);
@@ -733,6 +843,15 @@ export function selectInterpretation(input: {
     actions,
     traditionalText: [block(`palace.${palace.id}.traditional`, palace.traditionalText, "traditional_text", palace.traditionalStatus, palace.traditionalSourceIds)],
     historicalContext: historicalFragments.map((fragment) => block(fragment.id, fragment.text, fragment.kind, fragment.status, fragment.sourceIds)),
+    relationshipCurrentState: relationshipCurrentState
+      ? [block(
+          `relationship-current-state.${relationshipCurrentState.palaceId}`,
+          relationshipCurrentState.text,
+          "relationship_current_state",
+          relationshipCurrentState.status,
+          relationshipCurrentState.sourceIds,
+        )]
+      : [],
     realityChecks: [
       ...realityFragments.map((fragment) => block(fragment.id, fragment.text, fragment.kind, fragment.status, fragment.sourceIds)),
       ...palace.realityChecks.map((text, index) => block(`palace.${palace.id}.reality.${index + 1}`, text, "reality_check", "provisional", palace.modernSourceIds)),
@@ -769,9 +888,24 @@ export function selectInterpretation(input: {
     certainty: "tentative" as const,
     tags,
   })));
+  if (relationshipCurrentState) {
+    const currentStateBlock = sections.relationshipCurrentState[0];
+    if (currentStateBlock) {
+      candidateClaims.push({
+        id: `${currentStateBlock.id}.relationship_current_state`,
+        claimType: "relationship_current_state",
+        sourceKind: "domain",
+        fragmentIds: [currentStateBlock.id],
+        text: currentStateBlock.text,
+        certainty: "tentative",
+        tags: ["relationship_current_state", "modern_editorial"],
+      });
+    }
+  }
   const selectedFragments: SelectedFragment[] = [
     ...selected.map((fragment) => ({ id: fragment.id, tags: fragment.tags })),
     ...domainClaimSpecs.map(({ block: domainBlock, tags }) => ({ id: domainBlock.id, tags })),
+    ...(relationshipCurrentState ? [{ id: `relationship-current-state.${relationshipCurrentState.palaceId}`, tags: ["relationship_current_state", "modern_editorial"] }] : []),
   ];
   const sourceIds = [
     ...domain.sourceIds,
@@ -780,6 +914,7 @@ export function selectInterpretation(input: {
     ...palace.sourceIds,
     ...palace.traditionalSourceIds,
     ...selected.flatMap((fragment) => fragment.sourceIds),
+    ...(relationshipCurrentState ? relationshipCurrentState.sourceIds : []),
   ];
   return {
     sections,

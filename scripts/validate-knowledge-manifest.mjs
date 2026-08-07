@@ -12,6 +12,8 @@ const VERSION_FIELDS = Object.freeze({
   sourceRegistryVersion: "sources",
   ethicsRulesVersion: "ethicsRules",
   safetyMessagesVersion: "safetyMessages",
+  castingMethodsVersion: "castingMethods",
+  relationshipCurrentStateVersion: "relationshipCurrentState",
 });
 
 const REQUIRED_MANIFEST_FIELDS = Object.freeze([
@@ -39,6 +41,8 @@ export function loadKnowledgeBundle(repositoryRoot = DEFAULT_REPOSITORY_ROOT) {
     sources: readJson(repositoryRoot, "knowledge/source-registry.json"),
     ethicsRules: readJson(repositoryRoot, "knowledge/ethics-rules.v1.json"),
     safetyMessages: readJson(repositoryRoot, "knowledge/safety-messages.v1.json"),
+    castingMethods: readJson(repositoryRoot, "knowledge/casting-methods.v1.json"),
+    relationshipCurrentState: readJson(repositoryRoot, "knowledge/relationship-current-state.v1.json"),
   };
 }
 

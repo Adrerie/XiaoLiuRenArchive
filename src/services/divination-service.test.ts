@@ -11,7 +11,7 @@ import { describe, expect, it } from "vitest";
 import { runDivination, type DivinationDependencies } from "./divination-service";
 
 const request: DivinationRequest = {
-  requestVersion: "1.1.0",
+  requestVersion: "1.2.0",
   casting: {
     kind: "calendar",
     inputMode: "manual_lunar",
@@ -97,6 +97,7 @@ const interpretation: InterpretationResult = {
     traditionalText: [],
     historicalContext: [],
     realityChecks: [],
+    relationshipCurrentState: [],
     ethicsNotices: [],
   },
   fragmentIds: [],
@@ -133,6 +134,9 @@ const provenance: Provenance = {
   disputedFieldIds: [],
   calendarPolicyId: request.casting.kind === "calendar" ? request.casting.calendarPolicyId : null,
   algorithmId: calculation.algorithmId,
+  methodId: calculation.algorithmId,
+  methodVersion: "stub",
+  methodSourceIds: [],
   fragmentIds: [],
   ethicsRuleIds: [],
 };

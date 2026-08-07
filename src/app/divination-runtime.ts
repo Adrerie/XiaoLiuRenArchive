@@ -10,7 +10,7 @@ import {
   PALACE_ORDER as CORE_PALACE_ORDER,
   type PalaceStep,
 } from "../core";
-import { computeThreeNumberCasting } from "../core/three-number";
+import { computeThreeNumberCasting, normalizeThreeNumberInput } from "../core/three-number";
 import {
   assertFinalPalaceInvariant,
   evaluateEthics,
@@ -18,6 +18,7 @@ import {
 } from "../ethics";
 import {
   getContextSourceIds,
+  getCastingMethod,
   getEthicsRulesVersion,
   getKnowledgeManifest,
   getPalace,
@@ -199,9 +200,10 @@ function calculate(input: CalculationInput): CalculationResult {
 function resolveCasting(request: DivinationRequest, context: RuntimeQuestionContext): CalendarResolution {
   try {
     if (request.casting.kind === "three_numbers") {
+      const normalizedNumbers = normalizeThreeNumberInput(request.casting.input);
       const input: ThreeNumberResultInput = {
         kind: "three_numbers",
-        numbers: { ...request.casting.input },
+        numbers: normalizedNumbers,
         timezone: null,
         domainId: context.domainId,
         stageId: context.stageId,
@@ -215,11 +217,11 @@ function resolveCasting(request: DivinationRequest, context: RuntimeQuestionCont
         casting: {
           kind: "three_numbers",
           algorithmId: "three-number-sequential-count-v1",
-          input: { ...request.casting.input },
+          input: normalizedNumbers,
         },
         input,
         calendar: null,
-        calculationInput: { ...request.casting.input },
+        calculationInput: normalizedNumbers,
       };
     }
 
@@ -454,13 +456,14 @@ const DISPLAY_SECTION_KEYS = [
   "actions",
   "traditionalText",
   "historicalContext",
+  "relationshipCurrentState",
   "realityChecks",
 ] as const satisfies readonly (keyof InterpretationSections)[];
 
 function present(input: {
   readonly request: DivinationRequest;
   readonly resolvedInput: ResultInput;
-  readonly calendar: CalendarResult;
+  readonly calendar: CalendarResult | null;
   readonly calculation: CalculationResult;
   readonly interpretation: InterpretationResult;
   readonly ethics: EthicsResult;
@@ -487,6 +490,7 @@ function present(input: {
     actions: filterBlocks(input.interpretation.sections.actions),
     traditionalText: filterBlocks(input.interpretation.sections.traditionalText),
     historicalContext: filterBlocks(input.interpretation.sections.historicalContext),
+    relationshipCurrentState: filterBlocks(input.interpretation.sections.relationshipCurrentState),
     realityChecks: filterBlocks(input.interpretation.sections.realityChecks),
     ethicsNotices: [],
   };
@@ -537,6 +541,7 @@ function provenance(input: {
     input.interpretation.sections.actions,
     input.interpretation.sections.traditionalText,
     input.interpretation.sections.historicalContext,
+    input.interpretation.sections.relationshipCurrentState,
     input.interpretation.sections.realityChecks,
     input.interpretation.sections.ethicsNotices,
   ];
@@ -546,7 +551,8 @@ function provenance(input: {
     domainId: input.resolvedInput.domainId,
     stageId: input.resolvedInput.stageId,
   });
-  const sourceIds = [...new Set([...displayedSourceIds, ...contextSourceIds])];
+  const method = getCastingMethod(input.calculation.algorithmId);
+  const sourceIds = [...new Set([...displayedSourceIds, ...contextSourceIds, ...method.sourceIds])];
   const sources = getSources(sourceIds);
   const ruleVersion = getEthicsRulesVersion();
   const manifest = getKnowledgeManifest();
@@ -556,8 +562,10 @@ function provenance(input: {
     ruleVersion,
     schemaVersions: {
       request: input.request.requestVersion,
-      result: "1.2.0",
+      result: "1.3.0",
       calendar: input.request.casting.kind === "calendar" ? "1.0.0" : "not-applicable",
+      castingMethods: manifest.castingMethodsVersion,
+      relationshipCurrentState: manifest.relationshipCurrentStateVersion,
       ethics: ruleVersion,
       palaces: manifest.palacesVersion,
       questionDomains: manifest.questionDomainsVersion,
@@ -570,6 +578,9 @@ function provenance(input: {
     disputedFieldIds: palace.disputedFieldIds,
     calendarPolicyId: input.request.casting.kind === "calendar" ? input.request.casting.calendarPolicyId : null,
     algorithmId: input.calculation.algorithmId,
+    methodId: input.calculation.algorithmId,
+    methodVersion: method.version,
+    methodSourceIds: method.sourceIds,
     fragmentIds: input.interpretation.fragmentIds,
     ethicsRuleIds: input.ethics.triggeredRuleIds,
   };

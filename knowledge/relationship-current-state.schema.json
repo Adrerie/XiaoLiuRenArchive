@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://xiaoliurenarchive.local/schemas/relationship-current-state.schema.json",
+  "title": "Relationship Current State Editorial Layer",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "knowledgeVersion", "status", "id", "sourceIds", "entries"],
+  "properties": {
+    "schemaVersion": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+    "knowledgeVersion": {"type": "string", "minLength": 1},
+    "status": {"enum": ["provisional", "reviewed", "canonical"]},
+    "id": {"const": "relationship-current-state"},
+    "sourceIds": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "entries": {"type": "array", "minItems": 6, "maxItems": 6, "items": {"$ref": "#/$defs/entry"}}
+  },
+  "$defs": {
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["palaceId", "text", "sourceIds", "status"],
+      "properties": {
+        "palaceId": {"enum": ["da_an", "liu_lian", "su_xi", "chi_kou", "xiao_ji", "kong_wang"]},
+        "text": {"type": "string", "minLength": 1},
+        "sourceIds": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "status": {"enum": ["provisional", "reviewed", "canonical"]}
+      }
+    }
+  }
+}

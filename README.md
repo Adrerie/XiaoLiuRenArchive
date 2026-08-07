@@ -14,7 +14,9 @@ R3 Mobile Packaging 已审阅并合并到 `main`：Capacitor Android 容器、�
 
 R4 Device Validation and Beta Hardening 已完成并合并到 `main`：真实 USB Android 平板设备验证、离线资源、导出、权限与 beta 版本一致性已经收口。
 
-R5 Entry Localization and Number Method 当前在 `feature/r5-entry-localization-number-method` 完成：Web 默认当前时间入口、四种起课方式无缝切换、阶段中文化和独立三数起课正在统一验证，随后执行实体设备 launcher 冷启动自查。
+R5 Entry Localization and Number Method 已合入 `main`：Web 默认当前时间入口、四种起课方式无缝切换、阶段中文化和独立三数起课已经收口。
+
+R6 Three Palace Archive and Responsive UI 当前在 `feature/r6-three-palace-archive-responsive-ui` 实施：三数正式三宫合同、关系末宫解释、本地课例册、响应式导航和 Android edge-to-edge 一并交付。
 
 当前已经具备：
 
@@ -23,6 +25,9 @@ R5 Entry Localization and Number Method 当前在 `feature/r5-entry-localization
 - Web 默认读取设备当前本地时间，并支持显式刷新当前时间
 - 当前时间、公历指定时间、手动农历和三数起课四种方式在同一卡片内切换并保留独立草稿
 - 关系阶段中文标签和独立的三数现代变通法（不伪装为农历月日时）
+- 三数十进制字符串与 `BigInt` 精确取模、第一宫到第三宫的正式路径和第三宫主判
+- 起课方法登记、关系当前状态知识块与完整方法 provenance
+- 用户主动保存的本地课例册、标题编辑、删除、清空、导入、导出和 R4/R5 迁移
 - 两种公历日期边界策略、IANA 时区和 fold 处理
 - 固定月、日、时起课算法和完整 trace
 - 本地六宫、领域、阶段、来源和异文知识
@@ -33,12 +38,13 @@ R5 Entry Localization and Number Method 当前在 `feature/r5-entry-localization
 - 六宫资料库、本地搜索、详情、异文和来源卡
 - 结构化结果详情和隐私优先 JSON 复制/下载
 - 移动端与桌面端关键交互验证
-- `0.5.0-beta.1` 测试版版本、beta-debug 渠道与本地优先边界
+- 桌面、平板横竖屏和手机横竖屏响应式布局、浅色/深色/跟随系统主题
+- `0.6.0-beta.1` 测试版版本、Android versionCode `601`、beta-debug 渠道与本地优先边界
 
 当前执行计划：
 
 ```text
-codex/r5-entry-localization-number-method-plan.md
+codex/r6-three-palace-archive-responsive-ui-plan.md
 ```
 
 ## 执行优先
@@ -136,7 +142,25 @@ R3 不做账号、云同步、社区、PDF、PNG、正式商店发布、签名 r
 
 ## R4 Device Validation and Beta Hardening
 
-R4 实现已完成并合并：统一 `xiaoliurenarchive` / `0.4.0-beta.1` / Android versionCode `401` / `beta-debug`，包含 Android 原生隐私 JSON 导出、系统浏览器来源链接、无 INTERNET 权限与无备份配置、项目品牌资源、稳定设备选择器和离线实体设备 smoke。设备验证使用 USB 连接的真实 Android 平板，不创建模拟器、不切换网络或锁屏状态。R5 当前发布版本为 `0.5.0-beta.1` / Android versionCode `501`。
+R4 实现已完成并合并：统一 `xiaoliurenarchive` / `0.4.0-beta.1` / Android versionCode `401` / `beta-debug`，包含 Android 原生隐私 JSON 导出、系统浏览器来源链接、无 INTERNET 权限与无备份配置、项目品牌资源、稳定设备选择器和离线实体设备 smoke。设备验证使用 USB 连接的真实 Android 平板，不创建模拟器、不切换网络或锁屏状态。R5 已在其上升级为 `0.5.0-beta.1` / Android versionCode `501`。
+
+## R6 Three Palace Archive and Responsive UI
+
+R6 在 R5 合入后的 `main` 上完成以下边界内的实现：
+
+- 三数输入保存为规范化十进制字符串，使用精确取模，不改写传统月日时冻结算法。
+- 三数结果显式保存第一宫、第二宫、第三宫，第三宫是主结果；传统结果仍使用月宫、日宫、时宫，时宫为主结果。
+- 关系领域新增独立、登记有来源且使用可能性表达的当前关系状态块。
+- 方法登记和版本清单进入运行时校验与结果 provenance；普通界面只显示中文方法名，技术 ID 保留在技术详情和 JSON。
+- 课例册只在用户明确点击后写入命名空间 localStorage；导入未知未来版本会拒绝，不会覆盖现有记录。
+- 使用桌面侧栏、移动底部导航、平板和横屏布局；主题默认跟随系统，用户切换后本地保存。
+- Android 使用 edge-to-edge、透明系统栏和 `adjustResize`；安装 debug APK 后由用户主动冷启动测试，本轮不自动启动或点击应用。
+
+R6 交付文档：
+
+- `docs/migrations/r6-three-palace-archive-responsive-ui.md`
+- `docs/casebook-privacy.md`
+- `docs/android-manual-test.md`
 
 ## Codex 开发入口
 
@@ -146,7 +170,7 @@ R4 实现已完成并合并：统一 `xiaoliurenarchive` / `0.4.0-beta.1` / Andr
 2. `AGENTS.md`
 3. `CODEX_MASTER_PROMPT.md`
 4. `codex/execution-first-policy.md`
-5. `codex/r5-entry-localization-number-method-plan.md`
+5. `codex/r6-three-palace-archive-responsive-ui-plan.md`
 
 随后按计划执行。只有主代理操作 Git，并持续负责 Capacitor、Android、CI、构建、应用接线和 PR 收尾。
 
@@ -166,7 +190,7 @@ R4 实现已完成并合并：统一 `xiaoliurenarchive` / `0.4.0-beta.1` / Andr
 ## 仓库入口
 
 - `src/`：Web 工程、历法、算法、知识、伦理、服务与界面
-- `android/`：R3 Android 容器、R4 beta 资源与 Gradle wrapper
+- `android/`：Capacitor Android 容器、R4 beta 资源、R6 edge-to-edge 配置与 Gradle wrapper
 - `algorithm/`：传统计算、解释与伦理合同
 - `knowledge/`：结构化知识、规则和 Schema
 - `fixtures/`：黄金与伦理案例
@@ -174,4 +198,4 @@ R4 实现已完成并合并：统一 `xiaoliurenarchive` / `0.4.0-beta.1` / Andr
 - `codex/`：执行计划与子代理任务书
 - `scripts/`：知识校验与发布审计脚本
 
-本项目当前处于 **R4 已完成并合并，R5 Entry Localization and Number Method 正在实施** 阶段。
+本项目当前处于 **R1–R5 已完成并合并，R6 Three Palace Archive and Responsive UI 正在交付** 阶段。
