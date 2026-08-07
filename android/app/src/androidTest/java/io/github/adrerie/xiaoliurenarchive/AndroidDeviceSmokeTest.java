@@ -120,7 +120,8 @@ public final class AndroidDeviceSmokeTest {
                 MainActivity.class
         ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        try (ActivityScenario<MainActivity> ignored = ActivityScenario.launch(launchIntent)) {
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(launchIntent);
+        try {
             onWebView()
                     .withElement(findElement(Locator.ID, "casting-mode-manual_lunar_time"))
                     .perform(webClick())
@@ -137,7 +138,7 @@ public final class AndroidDeviceSmokeTest {
             onWebView()
                     .withElement(findElement(Locator.ID, "generate-result-button"))
                     .perform(webClick());
-            assertElementText(ignored, "final-palace-result", "\u5c0f\u5409");
+            assertElementText(scenario, "final-palace-result", "\u5c0f\u5409");
 
             onWebView()
                     .withElement(findElement(Locator.ID, "nav-library"))
@@ -145,24 +146,30 @@ public final class AndroidDeviceSmokeTest {
             onWebView()
                     .withElement(findElement(Locator.ID, "library-search-input"))
                     .perform(clearElement());
-            setInputValueThroughStandardEvents(ignored, "library-search-input", "\u5c0f\u5409");
-            assertElementTextEventually(ignored, "library-result-count", "1");
+            setInputValueThroughStandardEvents(scenario, "library-search-input", "\u5c0f\u5409");
+            assertElementTextEventually(scenario, "library-result-count", "1");
             onWebView()
                     .withElement(findElement(Locator.ID, "palace-card-xiao_ji"))
                     .perform(webClick());
-            assertElementText(ignored, "palace-detail", "\u5c0f\u5409");
+            assertElementText(scenario, "palace-detail", "\u5c0f\u5409");
 
             device.pressBack();
             onWebView().withElement(findElement(Locator.ID, "copy-json-button")).perform(webClick());
-            assertElementText(ignored, "generate-result-button", "\u751f\u6210");
-            assertElementTextEventually(ignored, "export-status", "\u526a\u8d34\u677f");
+            assertElementText(scenario, "generate-result-button", "\u751f\u6210");
+            assertElementTextEventually(scenario, "export-status", "\u526a\u8d34\u677f");
 
             onWebView()
                     .withElement(findElement(Locator.ID, "nav-about"))
                     .perform(webClick());
-            assertElementText(ignored, "about-app-version", "0.5.0-beta.1");
-            assertElementText(ignored, "about-build-channel", "beta-debug");
-            assertElementText(ignored, "about-build-heading", "\u6d4b\u8bd5\u7248\u4fe1\u606f");
+            assertElementText(scenario, "about-app-version", "0.6.0-beta.1");
+            assertElementText(scenario, "about-build-channel", "beta-debug");
+            assertElementText(scenario, "about-build-heading", "\u6d4b\u8bd5\u7248\u4fe1\u606f");
+        } finally {
+            try {
+                scenario.onActivity(MainActivity::finish);
+            } catch (RuntimeException ignored) {
+                // The app may already be finished by the browser-back flow.
+            }
         }
     }
 }
