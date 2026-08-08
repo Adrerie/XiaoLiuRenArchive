@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactElement
 import { App as CapacitorApp } from "@capacitor/app";
 import { Capacitor, type PluginListenerHandle } from "@capacitor/core";
 import { runLocalDivination } from "./index";
+import { ARCHIVE_COMPACT_MEDIA_QUERY, shouldHandleArchiveBack } from "./archive-viewport";
 import { beginResultGeneration, completeResultGeneration, failResultGeneration } from "./result-lifecycle";
 import AppShell from "./AppShell";
 import CastingPage from "../pages/casting/CastingPage";
@@ -60,6 +61,11 @@ function readThemePreference(): ThemePreference {
 function detectSystemTheme(): ResolvedTheme {
   if (typeof window === "undefined" || typeof window.matchMedia !== "function") return "light";
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
+function detectCompactArchiveViewport(): boolean {
+  if (typeof window === "undefined" || typeof window.matchMedia !== "function") return false;
+  return window.matchMedia(ARCHIVE_COMPACT_MEDIA_QUERY).matches;
 }
 
 function themeLabel(preference: ThemePreference, systemTheme: ResolvedTheme): string {
@@ -125,6 +131,7 @@ export default function App(): ReactElement {
   const [archiveStatus, setArchiveStatus] = useState<string | null>(null);
   const [archiveError, setArchiveError] = useState<string | null>(null);
   const [archiveDetailOpen, setArchiveDetailOpen] = useState(false);
+  const [compactArchiveViewport, setCompactArchiveViewport] = useState(detectCompactArchiveViewport);
   const [moreOpen, setMoreOpen] = useState(false);
   const [themePreference, setThemePreference] = useState<ThemePreference>(readThemePreference);
   const [systemTheme, setSystemTheme] = useState<ResolvedTheme>(detectSystemTheme);
@@ -135,6 +142,7 @@ export default function App(): ReactElement {
   const resultRef = useRef(result);
   const archiveStatusRef = useRef(archiveStatus);
   const archiveDetailOpenRef = useRef(archiveDetailOpen);
+  const compactArchiveViewportRef = useRef(compactArchiveViewport);
   const moreOpenRef = useRef(moreOpen);
   const technicalDisclosureOpenRef = useRef(technicalDisclosureOpen);
   const structuredDetailsOpenRef = useRef(structuredDetailsOpen);
@@ -142,6 +150,7 @@ export default function App(): ReactElement {
   resultRef.current = result;
   archiveStatusRef.current = archiveStatus;
   archiveDetailOpenRef.current = archiveDetailOpen;
+  compactArchiveViewportRef.current = compactArchiveViewport;
   moreOpenRef.current = moreOpen;
   technicalDisclosureOpenRef.current = technicalDisclosureOpen;
   structuredDetailsOpenRef.current = structuredDetailsOpen;
@@ -164,6 +173,26 @@ export default function App(): ReactElement {
     updateSystemTheme();
     mediaQuery.addEventListener("change", updateSystemTheme);
     return () => mediaQuery.removeEventListener("change", updateSystemTheme);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") return;
+    const mediaQuery = window.matchMedia(ARCHIVE_COMPACT_MEDIA_QUERY);
+    const updateCompactArchiveViewport = (): void => {
+      const nextCompact = mediaQuery.matches;
+      if (compactArchiveViewportRef.current && !nextCompact) setArchiveDetailOpen(false);
+      compactArchiveViewportRef.current = nextCompact;
+      setCompactArchiveViewport(nextCompact);
+    };
+    updateCompactArchiveViewport();
+    mediaQuery.addEventListener("change", updateCompactArchiveViewport);
+    window.addEventListener("resize", updateCompactArchiveViewport);
+    window.addEventListener("orientationchange", updateCompactArchiveViewport);
+    return () => {
+      mediaQuery.removeEventListener("change", updateCompactArchiveViewport);
+      window.removeEventListener("resize", updateCompactArchiveViewport);
+      window.removeEventListener("orientationchange", updateCompactArchiveViewport);
+    };
   }, []);
 
   useEffect(() => {
@@ -207,7 +236,7 @@ export default function App(): ReactElement {
       if (moreOpenRef.current) { setMoreOpen(false); return; }
       if (technicalDisclosureOpenRef.current) { setTechnicalDisclosureOpen(false); return; }
       if (structuredDetailsOpenRef.current) { setStructuredDetailsOpen(false); return; }
-      if (viewRef.current === "archive" && archiveDetailOpenRef.current) { setArchiveDetailOpen(false); return; }
+      if (shouldHandleArchiveBack(viewRef.current, compactArchiveViewportRef.current, archiveDetailOpenRef.current)) { setArchiveDetailOpen(false); return; }
       if (viewRef.current !== "divination") { setView("divination"); return; }
       if (resultRef.current !== null) { setResult(null); return; }
       void CapacitorApp.exitApp();
@@ -286,7 +315,7 @@ export default function App(): ReactElement {
       onThemeToggle={() => setThemePreference((current) => nextThemePreference(current, systemTheme))}
       onThemePreferenceChange={setThemePreference}
     >
-      {view === "archive" ? <ArchivePage records={archiveRecords} error={archiveError} onRecordsChange={reloadArchive} store={archiveStore} mobileDetailOpen={archiveDetailOpen} onMobileDetailOpenChange={setArchiveDetailOpen} /> : null}
+      {view === "archive" ? <ArchivePage records={archiveRecords} error={archiveError} onRecordsChange={reloadArchive} store={archiveStore} compactViewport={compactArchiveViewport} mobileDetailOpen={archiveDetailOpen} onMobileDetailOpenChange={setArchiveDetailOpen} /> : null}
       {view === "library" ? <KnowledgeLibraryPage /> : null}
       {view === "methods" ? <MethodsPage /> : null}
       {view === "about" ? <AboutPage /> : null}

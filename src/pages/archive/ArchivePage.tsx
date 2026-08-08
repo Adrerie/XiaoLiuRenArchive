@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ChangeEvent, type ReactElement } from "react";
+import { shouldOpenArchiveMobileDetail } from "../../app/archive-viewport";
 import type { ArchiveRecord, ArchiveStore } from "../../archive";
 import { listDomains } from "../../knowledge";
 
@@ -7,6 +8,7 @@ interface ArchivePageProps {
   readonly error: string | null;
   readonly onRecordsChange: () => void;
   readonly store: ArchiveStore;
+  readonly compactViewport: boolean;
   readonly mobileDetailOpen: boolean;
   readonly onMobileDetailOpenChange: (open: boolean) => void;
 }
@@ -38,7 +40,7 @@ function downloadJson(json: string): void {
   URL.revokeObjectURL(url);
 }
 
-export default function ArchivePage({ records, error, onRecordsChange, store, mobileDetailOpen, onMobileDetailOpenChange }: ArchivePageProps): ReactElement {
+export default function ArchivePage({ records, error, onRecordsChange, store, compactViewport, mobileDetailOpen, onMobileDetailOpenChange }: ArchivePageProps): ReactElement {
   const storageUnavailable = !store.capability.available;
   const [selectedId, setSelectedId] = useState<string | null>(records[0]?.id ?? null);
   const [titleDraft, setTitleDraft] = useState("");
@@ -135,7 +137,7 @@ export default function ArchivePage({ records, error, onRecordsChange, store, mo
             <button
               type="button"
               className={record.id === selectedRecord?.id ? "archive-card archive-card-selected" : "archive-card"}
-              onClick={() => { setSelectedId(record.id); onMobileDetailOpenChange(true); }}
+              onClick={() => { setSelectedId(record.id); onMobileDetailOpenChange(shouldOpenArchiveMobileDetail(compactViewport)); }}
               key={record.id}
             >
               <strong>{record.title ?? "未命名课例"}</strong>
