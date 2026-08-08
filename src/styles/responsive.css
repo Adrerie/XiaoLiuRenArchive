@@ -73,7 +73,7 @@
   .technical-disclosure-section > details { padding-inline: 14px; }
 }
 
-@media (max-height: 520px) and (orientation: landscape) {
+@media (min-width: 761px) and (max-height: 520px) and (orientation: landscape) {
   .desktop-sidebar { width: calc(72px + var(--safe-left)); padding: calc(18px + var(--safe-top)) 10px 18px calc(10px + var(--safe-left)); }
   .app-layout { grid-template-columns: calc(72px + var(--safe-left)) minmax(0, 1fr); }
   .sidebar-brand > div, .desktop-nav .nav-item > span:last-child, .sidebar-note { display: none; }
