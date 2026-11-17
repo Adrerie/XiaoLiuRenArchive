@@ -1,209 +1,134 @@
 # XiaoLiuRenArchive · 小六壬档案
 
-一个面向传统小六壬知识整理、规则推演与现代语境解释的本地专家系统。
+一个本地优先、规则驱动的小六壬知识系统。项目将起课计算、传统资料、现代解释与伦理约束分层处理，提供可追溯的计算路径、知识来源和解释边界。
 
-本项目以传统报时起课法为计算核心，以结构化知识库保存六宫资料、版本异文、问事解释、受控安全文案与伦理规则。核心推演在本地完成，不接入生成式 AI、远程断语服务或云端推理 API。
+它用于整理和呈现传统小六壬规则，支持文化学习与反思。传统术数的预测效力并未因此得到科学验证，本项目也不是科学预测模型。
 
-> 术数计算遵循传统，文本解释区分古今，产品设计服从现代伦理。
+> 传统规则负责计算，来源记录负责说明，现代解释负责语境，伦理规则负责边界。
 
-## 开源许可
+**当前版本：** `0.6.0-beta.1`（测试版）
 
-本项目源码以 GNU Affero General Public License v3.0 only（SPDX：`AGPL-3.0-only`）发布。完整条款见 [LICENSE](LICENSE)。
+## 主要功能
 
-Copyright (C) 2026 Adrerie。
+- **多种起课入口：** 设备当前时间、公历指定时间、手动农历时间，以及独立的三数起课法。
+- **历法处理：** 公历与农历转换、IANA 时区、日期换日策略，以及夏令时重复时间处理。
+- **六宫资料库：** 浏览和搜索六宫资料、传统文本、来源记录、版本异文与现代释义。
+- **结构化解释：** 根据问事领域和阶段匹配本地解释规则，并展示推演路径、知识版本和来源信息。
+- **三数三宫：** 三个数字依次形成第一宫、第二宫和第三宫，以第三宫作为主结果。该方法作为独立的现代变通法登记，不冒充传统月日时起课。
+- **本地课例册：** 用户主动保存结果，可编辑标题、删除记录、导入或导出 JSON。
+- **多设备界面：** 支持桌面、平板和手机布局，提供浅色、深色及跟随系统三种外观。
+- **Android：** 基于 Capacitor 的应用容器，核心推演和本地知识资源支持离线使用。
 
-第三方依赖、素材、传统文本和知识条目的版权、来源与许可证仍以各自声明为准，不因本项目采用 AGPL 自动转为 AGPL。发布衍生版本时，请保留相应的版权、来源和许可证信息。
+## 计算规则
 
-## 当前状态
-
-R2 Calendar and Knowledge Expansion 已完成并合并到 `main`。
-
-R3 Mobile Packaging 已审阅并合并到 `main`：Capacitor Android 容器、离线资源同步、运行时网络审计、系统返回键适配、Android debug build 和短期 APK artifact 已形成闭环。
-
-R4 Device Validation and Beta Hardening 已完成并合并到 `main`：真实 USB Android 平板设备验证、离线资源、导出、权限与 beta 版本一致性已经收口。
-
-R5 Entry Localization and Number Method 已合入 `main`：Web 默认当前时间入口、四种起课方式无缝切换、阶段中文化和独立三数起课已经收口。
-
-R6 Three Palace Archive and Responsive UI 当前在 `feature/r6-three-palace-archive-responsive-ui` 实施：三数正式三宫合同、关系末宫解释、本地课例册、响应式导航和 Android edge-to-edge 一并交付。
-
-当前已经具备：
-
-- React、TypeScript strict 与 Vite 本地 Web 工程
-- 手动农历与公历时间输入
-- Web 默认读取设备当前本地时间，并支持显式刷新当前时间
-- 当前时间、公历指定时间、手动农历和三数起课四种方式在同一卡片内切换并保留独立草稿
-- 关系阶段中文标签和独立的三数现代变通法（不伪装为农历月日时）
-- 三数十进制字符串与 `BigInt` 精确取模、第一宫到第三宫的正式路径和第三宫主判
-- 起课方法登记、关系当前状态知识块与完整方法 provenance
-- 用户主动保存的本地课例册、标题编辑、删除、清空、导入、导出和 R4/R5 迁移
-- 两种公历日期边界策略、IANA 时区和 fold 处理
-- 固定月、日、时起课算法和完整 trace
-- 本地六宫、领域、阶段、来源和异文知识
-- 解释组合与伦理过滤
-- 普通、hard-block 与 hard-stop 结构化结果
-- 知识包 manifest、迁移记录和失败闭合版本校验
-- 完整 provenance、disputed 字段与展示片段聚合
-- 六宫资料库、本地搜索、详情、异文和来源卡
-- 结构化结果详情和隐私优先 JSON 复制/下载
-- 移动端与桌面端关键交互验证
-- 桌面、平板横竖屏和手机横竖屏响应式布局、浅色/深色/跟随系统主题
-- `0.6.0-beta.1` 测试版版本、Android versionCode `601`、beta-debug 渠道与本地优先边界
-
-当前执行计划：
-
-```text
-codex/r6-three-palace-archive-responsive-ui-plan.md
-```
-
-## 执行优先
-
-所有后续计划遵循 `codex/execution-first-policy.md`。
-
-默认优先级：
-
-```text
-实际实现 > 核心功能测试 > 必要修正 > 文档记录
-```
-
-开始时只由主代理快速阅读入口文件。子代理只读取自己的任务书和直接依赖，不进行全仓扫描。已经确认的架构和需求直接继承。验证只保留构建、核心测试、关键交互实测和少量截图。失败时只追查对应模块。
-
-## 系统结构
-
-```text
-用户请求
-  ↓
-Calendar Adapter
-  ↓
-Traditional Inference Engine
-  ↓
-Interpretation Rule Engine
-  ↓
-Ethics Rule Engine
-  ↓
-DivinationResult
-  ↓
-本地 Web / Android UI
-```
-
-### 冻结算法
-
-六宫顺序：
+传统报时起课采用固定六宫顺序：
 
 ```text
 大安 → 留连 → 速喜 → 赤口 → 小吉 → 空亡
 ```
 
-计算：
+按月上起日、日上起时的顺序计算：
 
 ```text
 monthIndex = (lunarMonth - 1) mod 6
-dayIndex = (monthIndex + lunarDay - 1) mod 6
-hourIndex = (dayIndex + earthlyBranchIndex - 1) mod 6
+dayIndex   = (monthIndex + lunarDay - 1) mod 6
+hourIndex  = (dayIndex + earthlyBranchIndex - 1) mod 6
 ```
 
-核心函数只接收农历月、农历日和十二时辰序号。问题文本、领域、性别、性取向和其他身份字段不得进入计算。
+历法转换与核心计算相互独立。核心算法只接收规范化后的农历月、农历日和十二时辰序号，并保留完整推演路径。同一组输入在相同算法版本下应产生相同结果。
 
-## 现代伦理底线
+三数起课使用独立的计算方法和结果结构，不改变传统月日时算法。
 
-- 同性、双性、无性、跨性别与非二元关系按正常亲密关系处理
-- 不强制映射夫位、妻位、攻受或性别化阴阳角色
-- 不推断第三方性取向、性别身份或出柜状态
-- 明确拒绝和现实危险优先于占断
-- 不输出医疗诊断、收益保证、法律保证、死亡预测或无证据犯罪指控
-- 伦理引擎可以阻止结论，但不能修改落宫
+## 系统结构
 
-## R2 Calendar and Knowledge Expansion
+```text
+起课输入与历法规范化
+        ↓
+对应起课算法
+        ↓
+本地知识检索与解释规则
+        ↓
+伦理与安全规则检查
+        ↓
+结构化结果、推演路径与来源
+        ↓
+Web / Android 界面或本地 JSON 导出
+```
 
-R2 已完成：
+计算层、知识层和解释层彼此分离。解释与伦理规则可以限制不适当的表达，但不能反向修改计算结果。系统不接入生成式 AI、远程推理服务或云端断语 API。
 
-1. 知识包版本与迁移记录
-2. 全部展示区块的 provenance 聚合
-3. 公历策略选择和本地 IANA 时区搜索
-4. 六宫资料库、搜索、详情、异文和来源
-5. 结构化结果详情
-6. 隐私优先的本地 JSON 复制与下载
-7. 23:00 子初换日真实偏移追踪
-8. 现代解释与传统资料的来源分离
-9. manifest 与知识文件版本的一致性校验
+## 伦理与使用边界
 
-## R3 Mobile Packaging
+- 用户的性别、性取向、性别表达、婚姻状态和宗教信仰不参与起课计算。
+- 不推断第三方的性取向、性别身份、出柜状态或关系同意情况。
+- 不将同性或非传统关系视为异常关系，也不强制套用丈夫、妻子等性别角色。
+- 不提供医疗诊断、死亡预测、投资收益保证、法律结果保证或无证据的犯罪指控。
+- 明确拒绝、现实危险和可核验事实优先于占断。伦理规则可以阻止危险结论，但不能改变落宫。
 
-R3 已审阅并合并到 `main`，GitHub Android debug build 与短期 APK artifact 已形成闭环。本节保留 R3 交付边界，R4 只在其上增加设备验证和测试版加固。
+小六壬结果应作为传统文化象征材料理解，不能替代现实证据、专业意见或个人判断。
 
-当前实现包含：
+## 隐私与本地数据
 
-- Capacitor 8 Android 容器，固定 appId/appName，构建产物使用本地相对资源路径
-- `npm run mobile:sync`、`npm run mobile:open` 和 `npm run mobile:build:debug`
-- Android 安全区、系统返回键分层返回和离线本地资源运行
-- `npm run audit:network` 运行时网络审计与 PR/main GitHub CI
+- 核心计算、知识检索和解释规则在本地运行，不依赖云端推理。
+- 课例不会自动保存，必须由用户主动选择保存。
+- 课例册默认不保存问事原文，数据保存在设备本地。
+- 不提供账号体系或云同步。
+- 用户可以自行导出 JSON，也可以导入兼容版本的课例数据。未知未来版本或无法安全迁移的数据会被拒绝，不会静默覆盖现有记录。
 
-R3 计划完成：
+详细说明见 [本地课例册隐私边界](docs/casebook-privacy.md)。
 
-1. 修正 `provisionalSourceIds` 状态分类
-2. Capacitor Android 工程与本地资源同步
-3. Android 安全区、系统返回键和离线闭环
-4. 运行时网络审计
-5. GitHub CI 独立验证
-6. debug APK 构建或明确工具链阻塞报告
+## 本地开发
 
-R3 不做账号、云同步、社区、PDF、PNG、正式商店发布、签名 release 包或生成式 AI 解释。
+需要 Node.js 和 npm。
 
-## R4 Device Validation and Beta Hardening
+```bash
+npm install
+npm run dev
+```
 
-R4 实现已完成并合并：统一 `xiaoliurenarchive` / `0.4.0-beta.1` / Android versionCode `401` / `beta-debug`，包含 Android 原生隐私 JSON 导出、系统浏览器来源链接、无 INTERNET 权限与无备份配置、项目品牌资源、稳定设备选择器和离线实体设备 smoke。设备验证使用 USB 连接的真实 Android 平板，不创建模拟器、不切换网络或锁屏状态。R5 已在其上升级为 `0.5.0-beta.1` / Android versionCode `501`。
+常用检查命令：
 
-## R6 Three Palace Archive and Responsive UI
+```bash
+npm run typecheck
+npm test
+npm run test:core
+npm run test:ethics
+npm run build
+```
 
-R6 在 R5 合入后的 `main` 上完成以下边界内的实现：
+构建 Android debug APK：
 
-- 三数输入保存为规范化十进制字符串，使用精确取模，不改写传统月日时冻结算法。
-- 三数结果显式保存第一宫、第二宫、第三宫，第三宫是主结果；传统结果仍使用月宫、日宫、时宫，时宫为主结果。
-- 关系领域新增独立、登记有来源且使用可能性表达的当前关系状态块。
-- 方法登记和版本清单进入运行时校验与结果 provenance；普通界面只显示中文方法名，技术 ID 保留在技术详情和 JSON。
-- 课例册只在用户明确点击后写入命名空间 localStorage；导入未知未来版本会拒绝，不会覆盖现有记录。
-- 使用桌面侧栏、移动底部导航、平板和横屏布局；主题默认跟随系统，用户切换后本地保存。
-- Android 使用 edge-to-edge、透明系统栏和 `adjustResize`；安装 debug APK 后由用户主动冷启动测试，本轮不自动启动或点击应用。
+```bash
+npm run mobile:build:debug
+```
 
-R6 交付文档：
+Android 构建需要可用的 Android SDK 与 Gradle 工具链。
 
-- `docs/migrations/r6-three-palace-archive-responsive-ui.md`
-- `docs/casebook-privacy.md`
-- `docs/android-manual-test.md`
+## 仓库结构
 
-## Codex 开发入口
+| 路径 | 内容 |
+| --- | --- |
+| `src/` | 应用、历法、算法、知识、伦理、课例存储与界面 |
+| `algorithm/` | 算法、解释和伦理规则合同 |
+| `knowledge/` | 结构化知识、来源登记、规则与 Schema |
+| `fixtures/` | 算法和伦理测试案例 |
+| `android/` | Capacitor Android 工程 |
+| `docs/` | 项目说明、算法规范、隐私边界与迁移文档 |
+| `scripts/` | 知识校验、版本校验和构建审计脚本 |
 
-主代理只需先阅读：
+## 项目文档
 
-1. `README.md`
-2. `AGENTS.md`
-3. `CODEX_MASTER_PROMPT.md`
-4. `codex/execution-first-policy.md`
-5. `codex/r6-three-palace-archive-responsive-ui-plan.md`
+- [项目目标](docs/00-project-charter.md)
+- [系统架构](docs/01-system-architecture.md)
+- [算法规范](docs/02-algorithm-spec.md)
+- [现代伦理规范](docs/06-modern-ethics.md)
+- [本地课例册隐私边界](docs/casebook-privacy.md)
+- [R6 三宫、课例册与响应式界面迁移说明](docs/migrations/r6-three-palace-archive-responsive-ui.md)
 
-随后按计划执行。只有主代理操作 Git，并持续负责 Capacitor、Android、CI、构建、应用接线和 PR 收尾。
+## 开源许可
 
-## R3 必要验收
+本项目源码以 **GNU Affero General Public License v3.0 only**（SPDX：`AGPL-3.0-only`）发布，完整条款见 [LICENSE](LICENSE)。
 
-- `npm run validate:knowledge` 成功
-- `npm run audit:network` 成功
-- `npm run typecheck` 成功
-- `npm run build` 成功
-- `npm test`、`npm run test:core`、`npm run test:ethics` 成功
-- Capacitor Android 工程可完成资源同步
-- 本机工具链可用时 debug APK 构建成功
-- 手动农历、公历、hard-block、hard-stop 和资料库无回归
-- Android 核心流程离线可用
-- CI 提供独立可见的验证状态
+Copyright (C) 2026 Adrerie。
 
-## 仓库入口
-
-- `src/`：Web 工程、历法、算法、知识、伦理、服务与界面
-- `android/`：Capacitor Android 容器、R4 beta 资源、R6 edge-to-edge 配置与 Gradle wrapper
-- `algorithm/`：传统计算、解释与伦理合同
-- `knowledge/`：结构化知识、规则和 Schema
-- `fixtures/`：黄金与伦理案例
-- `docs/`：产品、UI、来源、构建和历史决策
-- `codex/`：执行计划与子代理任务书
-- `scripts/`：知识校验与发布审计脚本
-
-本项目当前处于 **R1–R5 已完成并合并，R6 Three Palace Archive and Responsive UI 正在交付** 阶段。
+第三方依赖、素材、传统文本和知识条目的版权、来源与许可证仍以各自声明为准，不因本项目采用 AGPL 自动转为 AGPL。
